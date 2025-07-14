@@ -80,11 +80,11 @@ const about = {
     title: "Introduction",
     description: (
       <>
-        Je suis un développeur Full Stack Web freelance avec 1 à 3 ans
-        d’expérience professionnelle, passionné par la création d’expériences
-        numériques fluides. J’interviens autant sur le front-end que sur le
-        back-end, en veillant à concevoir des interfaces utilisateur claires et
-        à mettre en place une infrastructure solide.
+        Je suis un développeur Full Stack Web freelance avec 2 ans d’expérience
+        professionnelle, passionné par la création d’expériences numériques
+        fluides. J’interviens autant sur le front-end que sur le back-end, en
+        veillant à concevoir des interfaces utilisateur claires et à mettre en
+        place une infrastructure solide.
       </>
     ),
   },
