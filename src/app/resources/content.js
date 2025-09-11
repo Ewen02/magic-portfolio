@@ -53,9 +53,7 @@ const home = {
   headline: <>Full-stack développeur</>,
   subline: (
     <>
-      Je suis Ewen, développeur Full-stack, et je conçois des expériences
-      utilisateur intuitives. <br /> Hors missions, je développe mes projets
-      personnels et reste ouvert à de nouveaux défis.
+      Je suis Ewen, développeur web fullstack, diplômé d’Epitech, avec 3 ans d’expérience en entreprise et une envie constante d’explorer de nouveaux défis.
     </>
   ),
 };
@@ -80,16 +78,23 @@ const about = {
     title: "Introduction",
     description: (
       <>
-        Je suis un développeur Full Stack Web freelance avec 2 ans d’expérience
-        professionnelle, passionné par la création d’expériences numériques
-        fluides. J’interviens autant sur le front-end que sur le back-end, en
-        veillant à concevoir des interfaces utilisateur claires et à mettre en
-        place une infrastructure solide.
+        <p>
+          Développeur web fullstack, diplômé de la 5ᵉ année à l’école Epitech, je recherche une opportunité 
+          professionnelle à partir de <strong>novembre 2025</strong>. Fort de près de <strong>3 ans d’expérience</strong> en entreprise, 
+          dont deux stages de 6 mois lors de ma dernière année, j’ai eu l’occasion de contribuer à des projets 
+          variés et exigeants qui m’ont permis de consolider mes acquis.
+        </p>
+        <p>
+          J’ai développé des compétences solides en <strong>front-end</strong>, <strong>back-end</strong> et <strong>APIs</strong>. 
+          Passionné par les nouvelles technologies et motivé à relever de nouveaux défis, 
+          je suis prêt à mettre mon expertise et mon savoir-faire au service de votre équipe.
+        </p>
       </>
     ),
   },
+
   work: {
-    display: true, // set to false to hide this section
+    display: true,
     title: "Work Experience",
     experiences: [
       {
@@ -98,31 +103,56 @@ const about = {
         role: "Fullstack développeur",
         achievements: [
           <>
-            Développement complet d’un système d’affiliation en mission
-            freelance pour Hercules Thrustmaster, actuellement en production et
-            évoluant grâce à de nouvelles fonctionnalités et à la maintenance
-            continue.
+            Développement complet d’un <strong>système d’affiliation</strong>, commencé lors de mon stage puis poursuivi en mission freelance pour Hercules Thrustmaster. 
+            Projet stratégique pour le département marketing, en production et évoluant grâce à de nouvelles fonctionnalités et à la maintenance continue. 
+          </>,
+          <>
+            Collaboration interservices (<em>marketing, légal, comptabilité, esport</em>) et intégration des retours utilisateurs dans une démarche <strong>agile</strong> (Kanban, sprints).
+          </>,
+          <>
+            <strong>Hard skills :</strong> PHP/Laravel, CodeIgniter 4, MySQL, GitLab
+          </>,
+          <>
+            <strong>Soft skills :</strong> autonomie, rigueur, communication inter-équipes, gestion de projet
           </>,
         ],
-        images: [
-          // optional: leave the array empty if you don't want to display images
-          // {
-          //   src: "/images/projects/project-01/cover-01.png",
-          //   alt: "Once UI Project",
-          //   width: 16,
-          //   height: 9,
-          // },
-        ],
+        images: [],
       },
       {
         company: "Coexya",
         timeframe: "2024 - 2025",
-        role: "Fullstack développeur",
+        role: "Intern - Fullstack développeur",
         achievements: [
           <>
-            Participation à l’implémentation d’ un logiciel SaaS (Software as a
-            Service) de comparaison de marques déposées et dessins et modèles
-            industriels.
+            Participation à l’implémentation d’un logiciel SaaS (Software as a Service) de comparaison de marques déposées et dessins et modèles industriels.
+          </>,
+          <>
+            <strong>Hard skills :</strong> TypeScript, Angular, .NET, C#, MySQL
+          </>,
+        ],
+        images: [],
+      },
+      {
+        company: "Moment",
+        timeframe: "2025",
+        role: "Intern – Fullstack développeur",
+        achievements: [
+          <>
+            Participation au développement de la plateforme <strong>Mood</strong> (clients Ouigo & TGV Lyria) : 
+            évolutions front-end avec <strong>Next.js</strong> et <strong>TypeScript</strong>, intégration de demandes spécifiques 
+            et contribution au Design System pour améliorer la cohérence des interfaces.
+          </>,
+          <>
+            Implémentation de l’API <strong>Universal Music France</strong> dans le projet interne Colombo : 
+            génération d’un client avec <strong>TypeSpec</strong>, intégration dans un back-end <strong>NestJS</strong> 
+            <br/>et automatisation de la gestion des playlists.
+          </>,
+          <>
+            <strong>Hard skills :</strong> TypeScript, React, Next.js, NestJS, TypeSpec, PostgreSQL
+          </>,
+          <>
+            <strong>Soft skills :</strong> Adaptabilité, collaboration en équipe, autonomie, communication 
+            avec designers, chefs de projet et équipe contenu.
           </>,
         ],
         images: [],
@@ -137,36 +167,81 @@ const about = {
         name: "Epitech",
         description: <>Promotion 2025 | Certification Professionnelle RNCP 7</>,
       },
+      {
+        name: "Epitech Berlin",
+        description: <>Promotion 2024 | Certification développement jeu vidéo</>,
+      },
     ],
   },
+
   technical: {
     display: true, // set to false to hide this section
     title: "Technical skills",
     skills: [
       {
-        title: "Angular",
+        title: "Frontend",
         description: (
-          <>Able to prototype in Figma with Once UI with unnatural speed.</>
+          <>
+            <ul>
+              <li>React</li>
+              <li>Next.js</li>
+              <li>Angular</li>
+            </ul>
+          </>
         ),
-        // optional: leave the array empty if you don't want to display images
         images: [],
       },
       {
-        title: "Next.js",
-        description: <>Building next gen apps with Next.js</>,
-        // optional: leave the array empty if you don't want to display images
+        title: "Backend",
+        description: (
+          <>
+            <ul>
+              <li>NestJS</li>
+              <li>PHP/Laravel</li>
+              <li>CodeIgniter 4</li>
+              <li>.NET</li>
+              <li>C#</li>
+            </ul>
+          </>
+        ),
         images: [],
       },
       {
-        title: "PHP/Laravel",
-        description: <>Building next gen apps with Next.js</>,
-        // optional: leave the array empty if you don't want to display images
+        title: "Database",
+        description: (
+          <>
+            <ul>
+              <li>MySQL</li>
+              <li>PostgreSQL</li>
+            </ul>
+          </>
+        ),
         images: [],
       },
       {
-        title: "Codeigniter 4",
-        description: <>Building next gen apps with Next.js</>,
-        // optional: leave the array empty if you don't want to display images
+        title: "Design",
+        description: (
+          <>
+            <ul>
+              <li>Figma</li>
+              <li>Zeplin</li>
+            </ul>
+          </>
+        ),
+        images: [],
+      },
+      {
+        title: "Outils, API & DevOps",
+        description: (
+          <>
+            <ul>
+              <li>Git (GitHub, GitLab)</li>
+              <li>Typespec</li>
+              <li>Docker</li>
+              <li>CI/CD</li>
+            </ul>
+          </>
+        ),
         images: [],
       },
     ],
