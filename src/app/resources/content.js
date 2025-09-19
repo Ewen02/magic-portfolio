@@ -138,7 +138,7 @@ const about = {
         role: "Intern – Fullstack développeur",
         achievements: [
           <>
-            Participation au développement de la plateforme <strong>Mood</strong> (clients Ouigo & TGV Lyria) : 
+            Participation au développement de la plateforme <strong>Mood</strong>: 
             évolutions front-end avec <strong>Next.js</strong> et <strong>TypeScript</strong>, intégration de demandes spécifiques 
             et contribution au Design System pour améliorer la cohérence des interfaces.
           </>,
