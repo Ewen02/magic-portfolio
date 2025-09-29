@@ -207,6 +207,18 @@ const about = {
         images: [],
       },
       {
+        title: "Mobile",
+        description: (
+          <>
+            <ul>
+              <li>Dart</li>
+              <li>Flutter</li>
+            </ul>
+          </>
+        ),
+        images: [],
+      },
+      {
         title: "Database",
         description: (
           <>
