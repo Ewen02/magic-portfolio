@@ -1,0 +1,128 @@
+---
+title: "Swipe Movie"
+publishedAt: "2025-12-25"
+summary: "Application web collaborative permettant à un groupe d'amis de trouver un film ou une série à regarder ensemble grâce à un système de swipe. Quand tout le monde aime le même film, c'est un match ! Architecture Turborepo avec Next.js 16 et NestJS."
+images:
+  - "/images/projects/swipe-movie/cover-01.png"
+  - "/images/projects/swipe-movie/cover-02.png"
+  - "/images/projects/swipe-movie/cover-03.png"
+link: "https://swipe-movie.com/"
+---
+
+## Vue d'ensemble
+
+**Swipe Movie** est une application web collaborative qui permet à un groupe d'amis de trouver un film ou une série à regarder ensemble. Le concept est simple : chaque participant swipe (like/dislike) sur des films, et quand tout le monde aime le même film, c'est un **match** !
+
+L'application résout un problème universel : passer des heures à décider quoi regarder ensemble. Grâce à un système de rooms avec codes de partage, les utilisateurs peuvent rejoindre une session même sans compte.
+
+## Architecture Monorepo
+
+Le projet utilise une architecture **Turborepo** avec **pnpm workspaces** :
+
+```
+swipe-movie/
+├── apps/
+│   ├── web/          # Frontend Next.js 16 (App Router)
+│   └── api/          # Backend NestJS
+├── packages/
+│   ├── database/     # Prisma schema + client partagé
+│   ├── ui/           # Design system (Atomic Design + Storybook)
+│   ├── types/        # Types TypeScript partagés
+│   ├── email/        # Service email (Resend)
+│   └── subscription/ # Logique de plans (FREE/PRO)
+└── turbo.json        # Configuration Turborepo
+```
+
+Cette architecture permet un partage efficace du code entre le frontend et le backend, avec des packages dédiés pour la base de données, les types et le design system.
+
+## Stack Technique
+
+### Frontend (apps/web)
+- **Framework** : Next.js 16 avec App Router et Turbopack
+- **UI** : Tailwind CSS 4, Radix UI, Framer Motion
+- **State** : SWR pour le data fetching
+- **Auth** : Better Auth (Google OAuth)
+- **Real-time** : Socket.IO client
+- **i18n** : next-intl (FR/EN)
+- **PWA** : Serwist (Service Worker)
+- **Payments** : Stripe
+- **Monitoring** : Sentry, Vercel Analytics
+- **Tests** : Jest + Playwright (E2E)
+
+### Backend (apps/api)
+- **Framework** : NestJS 11
+- **Database** : PostgreSQL + Prisma ORM
+- **Cache** : Redis (avec fallback in-memory)
+- **Real-time** : Socket.IO (WebSocket)
+- **Auth** : JWT + Passport
+- **API externe** : TMDB (The Movie Database)
+- **Payments** : Stripe webhooks
+- **Email** : Resend
+- **Sécurité** : Helmet, rate limiting multi-niveaux
+- **Documentation** : Swagger
+
+### Packages partagés
+- **@swipe-movie/database** : Prisma client + schema (PostgreSQL)
+- **@swipe-movie/ui** : Composants React (Atomic Design : atoms/molecules/organisms)
+- **@swipe-movie/types** : DTOs et types partagés frontend/backend
+- **@swipe-movie/email** : Templates et service d'envoi (Resend)
+- **@swipe-movie/subscription** : Logique des plans FREE/PRO et limites
+
+## Fonctionnalités Principales
+
+### Core
+- Système de swipe avec animations fluides (Framer Motion)
+- Rooms avec codes de partage (join sans compte)
+- Matching en temps réel via WebSocket
+- Support Films & Séries TV
+- PWA installable sur mobile
+
+### Filtres avancés
+- Genres (20+)
+- Note minimum (0-10)
+- Année de sortie (min/max)
+- Durée (min/max)
+- Plateformes de streaming (50+ providers)
+- Langue originale
+- Région de disponibilité
+
+### Intégrations externes
+- **TMDB** : Catalogue de 10,000+ films/séries
+- **Trakt.tv** : Sync historique de visionnage (OAuth)
+- **AniList** : Sync bibliothèque anime (OAuth)
+- **Stripe** : Paiements et abonnements
+
+### Système de plans
+- **FREE** : 2 rooms actives, 5 participants/room, 100 swipes/mois
+- **PRO** : Rooms illimitées, 20 participants, swipes illimités, tous les filtres
+
+### UX/UI
+- Dark/Light mode
+- Design responsive (mobile-first)
+- Animations Framer Motion
+- Glassmorphism design
+
+## Environnement technique
+
+- **Frontend** : Next.js 16, React, TypeScript, Tailwind CSS 4, Radix UI, Framer Motion
+- **Backend** : NestJS 11, Prisma, PostgreSQL, Redis, Socket.IO
+- **Outils & DevOps** : Turborepo, pnpm, Docker, GitHub Actions
+- **Monitoring** : Sentry, Vercel Analytics
+- **Déploiement** : Vercel (Frontend), Railway/Render (Backend)
+
+## Défis et enseignements
+
+- Concevoir une **architecture monorepo scalable** avec Turborepo et pnpm workspaces.
+- Implémenter un **système de matching en temps réel** performant avec WebSocket et Redis.
+- Gérer la **synchronisation d'état** entre plusieurs clients dans une même room.
+- Intégrer des **APIs OAuth tierces** (Trakt.tv, AniList) pour enrichir l'expérience utilisateur.
+- Mettre en place un **système de plans et limites** flexible (FREE/PRO) avec Stripe.
+- Optimiser les **performances du swipe** avec des animations fluides et du prefetching.
+
+## Impact
+
+- Application **fonctionnelle et déployée** avec une architecture production-ready.
+- Expérience utilisateur fluide grâce au **real-time WebSocket** et aux **animations Framer Motion**.
+- Architecture **modulaire et maintenable** facilitant l'ajout de nouvelles fonctionnalités.
+- Intégration complète d'un **système de paiement** avec Stripe pour la monétisation.
+- Projet démontrant une maîtrise du **développement fullstack moderne** et des **bonnes pratiques DevOps**.
