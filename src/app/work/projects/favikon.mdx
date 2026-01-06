@@ -1,0 +1,127 @@
+---
+title: "Favikon – Plateforme SaaS de Marketing d'Influence IA"
+publishedAt: "2025-12-01"
+summary: "Développeur Full Stack sur une plateforme SaaS B2B de marketing d'influence augmentée par l'IA. Contribution majeure sur l'architecture frontend, les systèmes temps réel et l'intégration de systèmes multi-agents."
+images:
+  - "/images/projects/favikon/cover-01.png"
+link: "https://www.favikon.com/"
+---
+
+## Vue d'ensemble
+
+**Favikon** est une plateforme SaaS B2B de **marketing d'influence augmentée par l'IA**, utilisée par des équipes marketing, agences et marques pour découvrir, analyser, contacter et gérer des créateurs de contenu à grande échelle.
+
+La plateforme combine :
+- **Données massives** : créateurs, campagnes, performances sur tous les réseaux sociaux
+- **Temps réel** : messagerie, analytics, widgets dynamiques
+- **Intelligence artificielle** : LLM, recherche sémantique, agents autonomes
+- **Automatisation** : outreach, contrats, reporting
+
+J'interviens en tant que **développeur Full Stack (Frontend Focus)** sur un produit à fort volume fonctionnel, en collaboration avec les équipes produit, design et data.
+
+## Contributions Frontend (Next.js / React)
+
+### Architecture & Patterns
+- Mise en place d'une **architecture feature-based modulaire** à grande échelle
+- Définition de patterns standards : `.api` → `.hook` → `.type` → `.socket`
+- Forte attention à la **performance** (lazy loading, virtualisation, streaming)
+
+### Gestion d'état avancée
+- **React Query** : cache serveur, invalidation intelligente, optimistic updates
+- **Redux Toolkit** : state global persistant pour les données cross-features
+
+### Temps réel
+- Implémentation de **Socket.io** et **SSE** pour les mises à jour live
+- **Streaming token-par-token** pour une UX type "live typing" sur les réponses IA
+- Widgets drag & drop avec synchronisation temps réel
+
+### Fonctionnalités complexes
+- Système de **recherche globale cross-features**
+- **Widgets drag & drop** configurables
+- Interfaces de **messaging** avec streaming IA
+
+## Contributions Backend (Node.js / Express)
+
+### Modules métier critiques
+- **Campaigns** : gestion complète des campagnes d'influence
+- **Discovery** : recherche et filtrage de créateurs
+- **Messaging** : communication avec les influenceurs
+- **Reports** : génération de rapports analytics
+
+### Architecture
+- Pattern **Service / Controller / Repository**
+- Intégration de bases de données adaptées aux différents cas d'usage (SQL, NoSQL, vector DB, cache)
+
+### Performance
+- Caching multi-niveaux
+- Optimisation des connexions temps réel (SSE, WebSockets)
+
+## Systèmes IA & Agents
+
+### Multi-agents (LangChain / LangGraph)
+- Développement de **systèmes multi-agents** orchestrés
+- Agents spécialisés : sélection de canal, analyse contextuelle, mémoire conversationnelle
+- Orchestration intelligente des workflows IA
+
+### Streaming IA
+- **Streaming SSE** pour les réponses IA en temps réel
+- Affichage **token-by-token** côté frontend
+- Gestion des interruptions et du contexte
+
+### Recherche sémantique
+- Intégration **Qdrant** avec embeddings
+- Recherche de créateurs par similarité sémantique
+- Amélioration continue de la pertinence des résultats
+
+### Génération automatisée
+- Messages personnalisés pour l'outreach
+- Contrats influenceurs
+- Recommandations intelligentes de créateurs
+
+### Observabilité IA
+- Tracing des requêtes IA
+- Métriques de performance et de qualité
+- Système de feedback pour l'amélioration continue
+
+## Stack technique
+
+### Frontend
+- **Framework** : Next.js, React, TypeScript
+- **State** : React Query, Redux Toolkit
+- **UI** : Radix UI, composants custom
+- **Real-time** : Socket.io client, SSE
+
+### Backend
+- **Runtime** : Node.js, Express
+- **Databases** : SQL, NoSQL, Vector DB, Cache
+- **Architecture** : Services modulaires
+
+### IA
+- **Frameworks** : LangChain, LangGraph
+- **Capabilities** : Embeddings, recherche sémantique, agents
+
+### DevOps
+- Git, Docker, CI/CD
+
+## Défis et enseignements
+
+- Travailler sur une **codebase conséquente** avec des standards de qualité élevés
+- Concevoir des **architectures frontend scalables** pour des features complexes
+- Intégrer des **LLM en production** avec des contraintes de latence et de coût
+- Gérer le **temps réel à grande échelle** (WebSocket, SSE, streaming)
+- Collaborer efficacement avec des équipes **produit, design et data**
+
+## Impact
+
+- Amélioration significative de l'**expérience utilisateur** grâce au streaming IA
+- Réduction du temps de recherche de créateurs grâce à la **recherche sémantique**
+- Architecture frontend devenue **référence interne** pour les nouvelles features
+
+## Ce que cette expérience apporte
+
+Cette expérience chez Favikon m'a permis de :
+- Travailler sur un **produit SaaS complexe en production**
+- Maîtriser des **architectures frontend & backend à grande échelle**
+- Intégrer des **LLM et systèmes agentiques** dans un produit réel
+- Développer une approche orientée **performance, UX et maintenabilité**
+- Évoluer sur des problématiques **temps réel, streaming et IA appliquée**

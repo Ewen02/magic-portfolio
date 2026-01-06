@@ -1,7 +1,7 @@
 ---
-title: "Swipe Movie"
+title: "Swipe Movie – Trouve ton film en groupe"
 publishedAt: "2025-12-25"
-summary: "Application web collaborative permettant à un groupe d'amis de trouver un film ou une série à regarder ensemble grâce à un système de swipe. Quand tout le monde aime le même film, c'est un match ! Architecture Turborepo avec Next.js 16 et NestJS."
+summary: "Application web collaborative pour trouver un film à regarder en groupe grâce à un système de swipe. Quand tout le monde aime le même film, c'est un match ! Architecture Turborepo avec Next.js et NestJS."
 images:
   - "/images/projects/swipe-movie/cover-01.png"
   - "/images/projects/swipe-movie/cover-02.png"
@@ -11,118 +11,102 @@ link: "https://swipe-movie.com/"
 
 ## Vue d'ensemble
 
-**Swipe Movie** est une application web collaborative qui permet à un groupe d'amis de trouver un film ou une série à regarder ensemble. Le concept est simple : chaque participant swipe (like/dislike) sur des films, et quand tout le monde aime le même film, c'est un **match** !
+**Swipe Movie** résout un problème universel : passer des heures à décider quoi regarder ensemble.
 
-L'application résout un problème universel : passer des heures à décider quoi regarder ensemble. Grâce à un système de rooms avec codes de partage, les utilisateurs peuvent rejoindre une session même sans compte.
+Chaque participant swipe (like/dislike) sur des films, et quand tout le monde aime le même film, c'est un **match** ! Grâce aux rooms avec codes de partage, les utilisateurs peuvent rejoindre une session même sans compte.
+
+## Fonctionnalités principales
+
+### Core
+- Système de **swipe** avec animations fluides
+- **Rooms** avec codes de partage (join sans compte)
+- **Matching en temps réel** via WebSocket
+- Support **Films & Séries TV**
+- **PWA** installable sur mobile
+
+### Filtres avancés
+- Genres (20+)
+- Note minimum, année de sortie, durée
+- **Plateformes de streaming** (50+ providers)
+- Langue originale, région de disponibilité
+
+### Intégrations
+- **TMDB** : catalogue de 10,000+ films/séries
+- **Trakt.tv** : sync historique de visionnage (OAuth)
+- **AniList** : sync bibliothèque anime (OAuth)
+- **Stripe** : paiements et abonnements
+
+### Plans
+| | FREE | PRO |
+|---|---|---|
+| Rooms actives | 2 | Illimité |
+| Participants/room | 5 | 20 |
+| Swipes/mois | 100 | Illimité |
+| Filtres avancés | Limités | Tous |
 
 ## Architecture Monorepo
-
-Le projet utilise une architecture **Turborepo** avec **pnpm workspaces** :
 
 ```
 swipe-movie/
 ├── apps/
-│   ├── web/          # Frontend Next.js 16 (App Router)
-│   └── api/          # Backend NestJS
+│   ├── web/          # Next.js 16 (App Router)
+│   └── api/          # NestJS 11
 ├── packages/
-│   ├── database/     # Prisma schema + client partagé
-│   ├── ui/           # Design system (Atomic Design + Storybook)
-│   ├── types/        # Types TypeScript partagés
+│   ├── database/     # Prisma schema + client
+│   ├── ui/           # Design system (Atomic Design)
+│   ├── types/        # Types partagés
 │   ├── email/        # Service email (Resend)
-│   └── subscription/ # Logique de plans (FREE/PRO)
-└── turbo.json        # Configuration Turborepo
+│   └── subscription/ # Logique plans FREE/PRO
+└── turbo.json
 ```
 
-Cette architecture permet un partage efficace du code entre le frontend et le backend, avec des packages dédiés pour la base de données, les types et le design system.
+## Stack technique
 
-## Stack Technique
-
-### Frontend (apps/web)
-- **Framework** : Next.js 16 avec App Router et Turbopack
+### Frontend
+- **Framework** : Next.js 16, App Router, Turbopack
 - **UI** : Tailwind CSS 4, Radix UI, Framer Motion
-- **State** : SWR pour le data fetching
+- **State** : SWR
 - **Auth** : Better Auth (Google OAuth)
-- **Real-time** : Socket.IO client
+- **Real-time** : Socket.IO
 - **i18n** : next-intl (FR/EN)
-- **PWA** : Serwist (Service Worker)
-- **Payments** : Stripe
+- **PWA** : Serwist
 - **Monitoring** : Sentry, Vercel Analytics
-- **Tests** : Jest + Playwright (E2E)
 
-### Backend (apps/api)
+### Backend
 - **Framework** : NestJS 11
-- **Database** : PostgreSQL + Prisma ORM
-- **Cache** : Redis (avec fallback in-memory)
+- **Database** : PostgreSQL + Prisma
+- **Cache** : Redis
 - **Real-time** : Socket.IO (WebSocket)
 - **Auth** : JWT + Passport
-- **API externe** : TMDB (The Movie Database)
 - **Payments** : Stripe webhooks
-- **Email** : Resend
-- **Sécurité** : Helmet, rate limiting multi-niveaux
-- **Documentation** : Swagger
+- **Docs** : Swagger
 
-### Packages partagés
-- **@swipe-movie/database** : Prisma client + schema (PostgreSQL)
-- **@swipe-movie/ui** : Composants React (Atomic Design : atoms/molecules/organisms)
-- **@swipe-movie/types** : DTOs et types partagés frontend/backend
-- **@swipe-movie/email** : Templates et service d'envoi (Resend)
-- **@swipe-movie/subscription** : Logique des plans FREE/PRO et limites
-
-## Fonctionnalités Principales
-
-### Core
-- Système de swipe avec animations fluides (Framer Motion)
-- Rooms avec codes de partage (join sans compte)
-- Matching en temps réel via WebSocket
-- Support Films & Séries TV
-- PWA installable sur mobile
-
-### Filtres avancés
-- Genres (20+)
-- Note minimum (0-10)
-- Année de sortie (min/max)
-- Durée (min/max)
-- Plateformes de streaming (50+ providers)
-- Langue originale
-- Région de disponibilité
-
-### Intégrations externes
-- **TMDB** : Catalogue de 10,000+ films/séries
-- **Trakt.tv** : Sync historique de visionnage (OAuth)
-- **AniList** : Sync bibliothèque anime (OAuth)
-- **Stripe** : Paiements et abonnements
-
-### Système de plans
-- **FREE** : 2 rooms actives, 5 participants/room, 100 swipes/mois
-- **PRO** : Rooms illimitées, 20 participants, swipes illimités, tous les filtres
-
-### UX/UI
-- Dark/Light mode
-- Design responsive (mobile-first)
-- Animations Framer Motion
-- Glassmorphism design
-
-## Environnement technique
-
-- **Frontend** : Next.js 16, React, TypeScript, Tailwind CSS 4, Radix UI, Framer Motion
-- **Backend** : NestJS 11, Prisma, PostgreSQL, Redis, Socket.IO
-- **Outils & DevOps** : Turborepo, pnpm, Docker, GitHub Actions
-- **Monitoring** : Sentry, Vercel Analytics
-- **Déploiement** : Vercel (Frontend), Railway/Render (Backend)
+### DevOps
+- **Monorepo** : Turborepo + pnpm
+- **CI/CD** : GitHub Actions
+- **Deploy** : Vercel (frontend), Railway (backend)
 
 ## Défis et enseignements
 
-- Concevoir une **architecture monorepo scalable** avec Turborepo et pnpm workspaces.
-- Implémenter un **système de matching en temps réel** performant avec WebSocket et Redis.
-- Gérer la **synchronisation d'état** entre plusieurs clients dans une même room.
-- Intégrer des **APIs OAuth tierces** (Trakt.tv, AniList) pour enrichir l'expérience utilisateur.
-- Mettre en place un **système de plans et limites** flexible (FREE/PRO) avec Stripe.
-- Optimiser les **performances du swipe** avec des animations fluides et du prefetching.
+- Concevoir une **architecture monorepo scalable** avec Turborepo
+- Implémenter un **matching temps réel** performant avec WebSocket et Redis
+- Gérer la **synchronisation d'état** entre plusieurs clients dans une room
+- Intégrer des **APIs OAuth tierces** (Trakt.tv, AniList)
+- Mettre en place un **système de plans** flexible avec Stripe
+- Optimiser les **performances du swipe** (animations, prefetching)
 
 ## Impact
 
-- Application **fonctionnelle et déployée** avec une architecture production-ready.
-- Expérience utilisateur fluide grâce au **real-time WebSocket** et aux **animations Framer Motion**.
-- Architecture **modulaire et maintenable** facilitant l'ajout de nouvelles fonctionnalités.
-- Intégration complète d'un **système de paiement** avec Stripe pour la monétisation.
-- Projet démontrant une maîtrise du **développement fullstack moderne** et des **bonnes pratiques DevOps**.
+- Application **en production** sur [swipe-movie.com](https://swipe-movie.com/)
+- UX fluide grâce au **real-time** et aux **animations Framer Motion**
+- Architecture **modulaire** facilitant l'ajout de features
+- Système de **monétisation** complet avec Stripe
+
+## État actuel
+
+Le projet est en **production** et continue d'évoluer :
+- Ajout de nouvelles intégrations (streaming platforms)
+- Amélioration de l'algorithme de recommandation
+- Optimisations performance mobile
+
+Ce projet démontre une maîtrise du **développement fullstack moderne**, des **architectures monorepo** et des **bonnes pratiques DevOps**.
