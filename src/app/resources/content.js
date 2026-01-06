@@ -59,6 +59,7 @@ const home = {
     <>
       Je suis Ewen, développeur Full Stack diplômé d'Epitech, avec 3 ans d'expérience
       en entreprise. Passionné par les architectures modernes, le temps réel et l'IA appliquée.
+      <br /><strong>Ouvert à toute opportunité.</strong>
     </>
   ),
 };
@@ -101,7 +102,9 @@ const about = {
         <p>
           Mon expertise couvre le <strong>frontend</strong> (React, Next.js), le <strong>backend</strong> (Node.js,
           NestJS, PHP) et l'intégration de <strong>systèmes IA</strong> (LLM, agents, recherche sémantique).
-          Je recherche une opportunité à partir de <strong>novembre 2025</strong>.
+        </p>
+        <p>
+          <strong>Ouvert à toute opportunité</strong> — n'hésitez pas à me contacter.
         </p>
       </>
     ),
