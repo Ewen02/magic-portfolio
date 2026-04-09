@@ -19,11 +19,14 @@ export async function generateMetadata() {
     metadataBase: new URL(`https://${baseURL}`),
     title: home.title,
     description: home.description,
+    alternates: {
+      canonical: `https://${baseURL}`,
+    },
     openGraph: {
-      title: `${person.firstName}'s Portfolio`,
-      description: "Portfolio website showcasing my work.",
+      title: `Portfolio de ${person.name}`,
+      description: `Portfolio de ${person.name}, ${person.role}.`,
       url: baseURL,
-      siteName: `${person.firstName}'s Portfolio`,
+      siteName: `Portfolio de ${person.name}`,
       locale: "fr_FR",
       type: "website",
     },

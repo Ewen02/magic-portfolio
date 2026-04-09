@@ -52,13 +52,13 @@ const newsletter = {
 
 const home = {
   label: "Home",
-  title: `${person.name}'s Portfolio`,
-  description: `Portfolio website showcasing my work as a ${person.role}`,
+  title: `Portfolio de ${person.name}`,
+  description: `${person.name}, ${person.role} diplômé d'Epitech. Spécialisé en React, Next.js, Node.js, NestJS et IA appliquée (RAG, LLM, agents).`,
   headline: <>Développeur Full Stack</>,
   subline: (
     <>
       Je suis Ewen, développeur Full Stack diplômé d'Epitech, avec 3 ans d'expérience
-      en entreprise. Passionné par les architectures modernes, le temps réel et l'IA appliquée.
+      en entreprise et en side-project. Passionné par les architectures modernes, le temps réel et l'IA appliquée.
       <br /><strong>Ouvert à toute opportunité.</strong>
     </>
   ),
@@ -70,8 +70,8 @@ const home = {
 
 const about = {
   label: "About",
-  title: "About me",
-  description: `Meet ${person.name}, ${person.role} from ${person.location}`,
+  title: "À propos",
+  description: `${person.name}, ${person.role} basé à Paris. 3 ans d'expérience en SaaS, temps réel et IA appliquée.`,
 
   tableOfContent: {
     display: true,
@@ -97,11 +97,14 @@ const about = {
       <>
         <p>
           Développeur Full Stack diplômé d'Epitech (Bac+5), je dispose de <strong>3 ans d'expérience</strong> en
-          entreprise sur des projets variés : SaaS B2B, plateformes marketing, systèmes temps réel et IA appliquée.
+          entreprise et en freelance sur des projets variés : SaaS B2B, plateformes marketing, systèmes temps réel et IA appliquée.
         </p>
         <p>
           Mon expertise couvre le <strong>frontend</strong> (React, Next.js), le <strong>backend</strong> (Node.js,
-          NestJS, PHP) et l'intégration de <strong>systèmes IA</strong> (LLM, agents, recherche sémantique).
+          NestJS) et l'intégration de <strong>systèmes IA</strong> (LLM, pipelines RAG, agents, recherche sémantique).
+        </p>
+        <p>
+          Je conçois également des <strong>produits SaaS complets</strong> en side-project, de l'architecture monorepo au déploiement.
         </p>
         <p>
           <strong>Ouvert à toute opportunité</strong> — n'hésitez pas à me contacter.
@@ -120,7 +123,7 @@ const about = {
       {
         company: "Favikon",
         timeframe: "2025 - Présent",
-        role: "Développeur Full Stack (Frontend Focus)",
+        role: "Développeur Full Stack",
         achievements: [
           <>
             Développement de features sur une plateforme <strong>SaaS B2B de marketing d'influence</strong> augmentée
@@ -217,7 +220,7 @@ const about = {
         title: "Frontend",
         description: (
           <>
-            React / Next.js, TypeScript, React Query, Redux Toolkit, Socket.io / SSE, Angular
+            React / Next.js, TypeScript, Tailwind CSS, React Query, Redux Toolkit, Socket.io / SSE, Angular
           </>
         ),
         images: [],
@@ -226,7 +229,7 @@ const about = {
         title: "Backend",
         description: (
           <>
-            Node.js / Express, NestJS, PHP / Laravel, .NET / C#
+            Node.js / Express, NestJS, Prisma, BullMQ, .NET / C#
           </>
         ),
         images: [],
@@ -235,7 +238,7 @@ const about = {
         title: "IA & Agents",
         description: (
           <>
-            LangChain / LangGraph, Systèmes multi-agents, Streaming IA (SSE), Recherche sémantique (embeddings)
+            LangChain / LangGraph, Pipeline RAG (chunking, embeddings, reranking), Systèmes multi-agents, Streaming IA (SSE), Qdrant / Recherche sémantique
           </>
         ),
         images: [],
@@ -253,7 +256,7 @@ const about = {
         title: "DevOps & Outils",
         description: (
           <>
-            Git (GitHub, GitLab), Docker, CI/CD, TypeSpec
+            Git (GitHub, GitLab), Docker, CI/CD, Turborepo / pnpm, TypeSpec
           </>
         ),
         images: [],
@@ -278,7 +281,7 @@ const about = {
 const blog = {
   label: "Blog",
   title: "Articles",
-  description: `Read what ${person.name} has been up to recently`,
+  description: `Articles et réflexions de ${person.name} sur le développement et la tech.`,
 };
 
 // ============================================================================
@@ -288,7 +291,7 @@ const blog = {
 const work = {
   label: "Work",
   title: "Mes projets",
-  description: `Design and dev projects by ${person.name}`,
+  description: `Projets de développement fullstack par ${person.name} : SaaS, IA, temps réel et architectures modernes.`,
 };
 
 // ============================================================================
@@ -299,22 +302,8 @@ const gallery = {
   label: "Gallery",
   title: "My photo gallery",
   description: `A photo collection by ${person.name}`,
-  images: [
-    { src: "/images/gallery/img-01.jpg", alt: "image", orientation: "vertical" },
-    { src: "/images/gallery/img-02.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-03.jpg", alt: "image", orientation: "vertical" },
-    { src: "/images/gallery/img-04.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-05.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-06.jpg", alt: "image", orientation: "vertical" },
-    { src: "/images/gallery/img-07.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-08.jpg", alt: "image", orientation: "vertical" },
-    { src: "/images/gallery/img-09.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-10.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-11.jpg", alt: "image", orientation: "vertical" },
-    { src: "/images/gallery/img-12.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-13.jpg", alt: "image", orientation: "horizontal" },
-    { src: "/images/gallery/img-14.jpg", alt: "image", orientation: "horizontal" },
-  ],
+  /** @type {{ src: string, alt: string, orientation: string }[]} */
+  images: [],
 };
 
 // ============================================================================

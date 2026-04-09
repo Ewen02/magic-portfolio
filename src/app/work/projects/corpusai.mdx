@@ -1,0 +1,128 @@
+---
+title: "CorpusAI – Plateforme SaaS d'IA conversationnelle par documents"
+publishedAt: "2026-04-09"
+summary: "Plateforme SaaS permettant aux créateurs de transformer leurs documents en assistants IA conversationnels. Pipeline RAG complet (parsing, chunking, embeddings, reranking), streaming temps réel, widget embeddable, billing Stripe et API publique. Architecture monorepo Turborepo avec Next.js 15, NestJS 11, BullMQ et Qdrant."
+images:
+  - "/images/projects/corpusai/cover-01.png"
+  - "/images/projects/corpusai/cover-02.png"
+  - "/images/projects/corpusai/cover-03.png"
+link: "https://corpus-ai-web.vercel.app/fr"
+---
+
+## Vue d'ensemble
+
+**CorpusAI** permet à n'importe quel expert (formateur, consultant, coach, créateur de contenu) de transformer ses documents en un **assistant IA conversationnel** intelligent, partageable et embeddable.
+
+L'utilisateur importe ses fichiers (PDF, Word, Markdown, TXT), la plateforme les indexe automatiquement via un **pipeline RAG complet**, puis génère un chatbot capable de répondre aux questions en citant ses sources avec un **score de confiance**.
+
+## Fonctionnalités principales
+
+### Pipeline RAG
+
+- **Parsing** multi-format : PDF, DOCX, TXT, Markdown, CSV, HTML
+- **Chunking** parent-enfant (150 tokens enfants, 512 tokens parents, tiktoken)
+- **Embeddings** : OpenAI `text-embedding-3-small` (1536d, optimisé Matryoshka 512d)
+- **Vector Store** : Qdrant Cloud (HNSW, cosine similarity)
+- **Reranking** hybride : 60% sémantique + 40% BM25 lexical
+- **Cache** embeddings Redis avec TTL 7 jours
+
+### Chat IA en temps réel
+
+- **Streaming SSE** token-par-token via Server-Sent Events
+- Conversations multi-tours avec historique (6 derniers messages)
+- Citations des sources avec **score de confiance** (HIGH / MEDIUM / LOW)
+- Feedback utilisateur (thumbs up/down)
+- LLM configurable (OpenAI `gpt-4o-mini` par défaut)
+
+### Widget embeddable
+
+- Chat intégrable via **iframe ou script**
+- Personnalisable : thème (light/dark), couleurs, header/footer, dimensions
+- **4 modes d'accès** : public, token secret, code d'accès, invitation
+- Portail end-user avec authentification **magic link** et historique persistant
+
+### Extras
+
+- **Billing Stripe** : 4 plans (FREE → ENTERPRISE), webhooks, portail client
+- **API publique REST** + SDK TypeScript officiel (zéro dépendances)
+- **i18n** FR/EN complet (400+ clés, next-intl)
+- **Onboarding** guidé en 7 étapes avec 7 templates d'IA
+- **Analytics** : dashboard global + per-IA (conversations, questions, tokens)
+- **381 tests** : 127 corpus, 140 API, 50 frontend, 24 E2E (Playwright)
+
+## Architecture monorepo
+
+```
+corpusai/
+├── apps/
+│   ├── web/          # Next.js 15 — dashboard + widget + landing
+│   ├── api/          # NestJS 11 — API REST (15+ modules)
+│   └── ai-worker/    # BullMQ — traitement documents async
+├── packages/
+│   ├── corpus/       # Pipeline RAG complet (127 tests)
+│   ├── database/     # Prisma 6 + PostgreSQL (14 modèles)
+│   ├── ui/           # 40+ composants (Atomic Design)
+│   ├── types/        # Types & enums partagés
+│   ├── subscription/ # Logique plans & limites
+│   ├── ai-rules/     # Prompts système & règles
+│   ├── queue/        # BullMQ config & job types
+│   └── sdk/          # SDK public TypeScript
+└── tooling/
+    └── typescript-config/
+```
+
+## Stack technique
+
+### Frontend
+- **Framework** : Next.js 15, React 19, TypeScript strict
+- **State** : React Query (TanStack v5)
+- **UI** : Tailwind CSS, Radix UI, composants custom (Atomic Design)
+- **Auth** : Better Auth (OAuth Google/GitHub, 2FA)
+- **Real-time** : SSE (streaming chat + progression documents)
+- **i18n** : next-intl (FR/EN)
+- **Monitoring** : Sentry, PostHog, Vercel Analytics
+
+### Backend
+- **Framework** : NestJS 11 (15+ modules)
+- **Database** : PostgreSQL (Neon) + Prisma 6
+- **Cache/Queue** : Redis + BullMQ (concurrency 3)
+- **Vector DB** : Qdrant Cloud
+- **Email** : Resend (magic links, invitations)
+- **Paiements** : Stripe (checkout, webhooks, portail client)
+- **Sécurité** : Helmet, CORS, rate limiting, protection SSRF
+- **API Docs** : Swagger/OpenAPI
+
+### IA / RAG
+- **Embeddings** : OpenAI `text-embedding-3-small`
+- **LLM** : OpenAI `gpt-4o-mini` (configurable)
+- **Vector Store** : Qdrant (HNSW, cosine)
+- **Reranking** : Hybride sémantique + BM25
+- **Chunking** : Parent-enfant avec tiktoken
+- **Streaming** : SSE token-par-token
+
+### DevOps
+- **Monorepo** : Turborepo + pnpm
+- **Containers** : Docker multi-stage (3 services)
+- **Deploy** : Railway (API + Worker + DB + Redis) + Qdrant Cloud
+
+## Défis et enseignements
+
+- Concevoir un **pipeline RAG production-ready** (parsing → chunking → embedding → reranking → génération) avec scoring de confiance
+- Implémenter le **streaming SSE** bout en bout (worker → API → frontend) pour le chat et la progression des documents
+- Architecturer un **système d'accès contrôlé** flexible (4 modes) avec authentification magic link pour les end-users
+- Gérer le **traitement asynchrone** de documents avec BullMQ, progression temps réel et retry automatique
+- Construire un **monorepo scalable** avec 8 packages partagés et 3 applications
+- Intégrer un **billing Stripe complet** (4 plans, limites d'usage, webhooks, portail client)
+
+## Impact
+
+- Pipeline RAG **complet et testé** : 127 tests unitaires, reranking hybride, scoring de confiance
+- **Streaming bout en bout** : UX fluide type "live typing" sur les réponses IA
+- Architecture monorepo de **8 packages + 3 apps** réutilisable et maintenable
+- Produit **feature-complete** avec billing, API publique, widget embeddable et analytics
+
+## État actuel
+
+Le projet est **feature-complete** (V1-V4 roadmap terminée) et en phase de polish. Le pipeline RAG est testé en production, le billing Stripe est opérationnel, et l'application comprend 15+ pages dashboard, une landing page et un widget embeddable avec un design system dark theme.
+
+Ce projet illustre la conception d'un **produit SaaS complet de bout en bout**, combinant **pipeline RAG/IA en production**, **architecture monorepo à grande échelle** et **intégration de systèmes complexes** (streaming, billing, vector search, auth multi-niveaux).

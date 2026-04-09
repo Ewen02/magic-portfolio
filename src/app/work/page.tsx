@@ -12,11 +12,14 @@ export async function generateMetadata() {
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://${baseURL}/work`,
+    },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `https://${baseURL}/work/`,
+      url: `https://${baseURL}/work`,
       images: [
         {
           url: ogImage,
@@ -47,8 +50,8 @@ export default function Work() {
             "@type": "CollectionPage",
             headline: work.title,
             description: work.description,
-            url: `https://${baseURL}/projects`,
-            image: `${baseURL}/og?title=Design%20Projects`,
+            url: `https://${baseURL}/work`,
+            image: `${baseURL}/og?title=${encodeURIComponent(work.title)}`,
             author: {
               "@type": "Person",
               name: person.name,
@@ -57,7 +60,7 @@ export default function Work() {
               "@type": "CreativeWork",
               headline: project.metadata.title,
               description: project.metadata.summary,
-              url: `https://${baseURL}/projects/${project.slug}`,
+              url: `https://${baseURL}/work/${project.slug}`,
               image: `${baseURL}/${project.metadata.image}`,
             })),
           }),

@@ -42,6 +42,9 @@ export function generateMetadata({ params: { slug } }: WorkParams) {
     description,
     images,
     team,
+    alternates: {
+      canonical: `https://${baseURL}/work/${post.slug}`,
+    },
     openGraph: {
       title,
       description,
@@ -51,6 +54,7 @@ export function generateMetadata({ params: { slug } }: WorkParams) {
       images: [
         {
           url: ogImage,
+          alt: title,
         },
       ],
     },
@@ -83,7 +87,7 @@ export default function Project({ params }: WorkParams) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "BlogPosting",
+            "@type": "CreativeWork",
             headline: post.metadata.title,
             datePublished: post.metadata.publishedAt,
             dateModified: post.metadata.publishedAt,
@@ -101,7 +105,7 @@ export default function Project({ params }: WorkParams) {
       />
       <Column maxWidth="xs" gap="16">
         <Button href="/work" variant="tertiary" weight="default" size="s" prefixIcon="chevronLeft">
-          Projects
+          Projets
         </Button>
         <Heading variant="display-strong-s">{post.metadata.title}</Heading>
       </Column>
@@ -110,7 +114,7 @@ export default function Project({ params }: WorkParams) {
           priority
           aspectRatio="16 / 9"
           radius="m"
-          alt="image"
+          alt={post.metadata.title}
           src={post.metadata.images[0]}
         />
       )}

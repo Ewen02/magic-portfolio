@@ -23,6 +23,9 @@ export async function generateMetadata() {
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://${baseURL}/about`,
+    },
     openGraph: {
       title,
       description,
@@ -154,7 +157,7 @@ export default function About() {
                 vertical="center"
               >
                 <Icon paddingLeft="12" name="calendar" onBackground="brand-weak" />
-                <Flex paddingX="8">Schedule a call</Flex>
+                <Flex paddingX="8">Planifier un appel</Flex>
                 <IconButton
                   href={about.calendar.link}
                   data-border="rounded"
