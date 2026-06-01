@@ -30,6 +30,9 @@ export async function generateMetadata() {
     alternates: {
       canonical: `https://${baseURL}`,
     },
+    verification: {
+      google: "MIp6DeTsl4i1kKPH7GRp8816dJtrR_g6VGs7KFsOpbc",
+    },
     openGraph: {
       title: `Portfolio de ${person.name}`,
       description: `Portfolio de ${person.name}, ${person.role}.`,
