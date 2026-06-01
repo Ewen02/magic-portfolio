@@ -32,10 +32,11 @@ export function generateMetadata({ params: { slug } }: WorkParams) {
     publishedAt: publishedTime,
     summary: description,
     images,
-    image,
     team,
   } = post.metadata;
-  let ogImage = image ? `https://${baseURL}${image}` : `https://${baseURL}/og?title=${title}`;
+  let ogImage = images?.[0]
+    ? `https://${baseURL}${images[0]}`
+    : `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
   return {
     title,
@@ -92,13 +93,15 @@ export default function Project({ params }: WorkParams) {
             datePublished: post.metadata.publishedAt,
             dateModified: post.metadata.publishedAt,
             description: post.metadata.summary,
-            image: post.metadata.image
-              ? `https://${baseURL}${post.metadata.image}`
-              : `https://${baseURL}/og?title=${post.metadata.title}`,
+            inLanguage: "fr-FR",
+            image: post.metadata.images?.[0]
+              ? `https://${baseURL}${post.metadata.images[0]}`
+              : `https://${baseURL}/og?title=${encodeURIComponent(post.metadata.title)}`,
             url: `https://${baseURL}/work/${post.slug}`,
             author: {
               "@type": "Person",
               name: person.name,
+              url: `https://${baseURL}/about`,
             },
           }),
         }}

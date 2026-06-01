@@ -32,14 +32,18 @@ export function generateMetadata({ params: { slug } }: BlogParams) {
     publishedAt: publishedTime,
     summary: description,
     images,
-    image,
     team,
   } = post.metadata;
-  let ogImage = image ? `https://${baseURL}${image}` : `https://${baseURL}/og?title=${title}`;
+  let ogImage = images?.[0]
+    ? `https://${baseURL}${images[0]}`
+    : `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://${baseURL}/blog/${post.slug}`,
+    },
     openGraph: {
       title,
       description,
@@ -86,11 +90,17 @@ export default function Blog({ params }: BlogParams) {
             datePublished: post.metadata.publishedAt,
             dateModified: post.metadata.publishedAt,
             description: post.metadata.summary,
-            image: post.metadata.image
-              ? `https://${baseURL}${post.metadata.image}`
-              : `https://${baseURL}/og?title=${post.metadata.title}`,
+            inLanguage: "fr-FR",
+            image: post.metadata.images?.[0]
+              ? `https://${baseURL}${post.metadata.images[0]}`
+              : `https://${baseURL}/og?title=${encodeURIComponent(post.metadata.title)}`,
             url: `https://${baseURL}/blog/${post.slug}`,
             author: {
+              "@type": "Person",
+              name: person.name,
+              url: `https://${baseURL}/about`,
+            },
+            publisher: {
               "@type": "Person",
               name: person.name,
             },

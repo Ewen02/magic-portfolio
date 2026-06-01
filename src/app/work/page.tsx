@@ -51,17 +51,21 @@ export default function Work() {
             headline: work.title,
             description: work.description,
             url: `https://${baseURL}/work`,
-            image: `${baseURL}/og?title=${encodeURIComponent(work.title)}`,
+            inLanguage: "fr-FR",
+            image: `https://${baseURL}/og?title=${encodeURIComponent(work.title)}`,
             author: {
               "@type": "Person",
               name: person.name,
+              url: `https://${baseURL}/about`,
             },
             hasPart: allProjects.map((project) => ({
               "@type": "CreativeWork",
               headline: project.metadata.title,
               description: project.metadata.summary,
               url: `https://${baseURL}/work/${project.slug}`,
-              image: `${baseURL}/${project.metadata.image}`,
+              image: project.metadata.images?.[0]
+                ? `https://${baseURL}${project.metadata.images[0]}`
+                : `https://${baseURL}/og?title=${encodeURIComponent(project.metadata.title)}`,
             })),
           }),
         }}

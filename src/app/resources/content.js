@@ -10,9 +10,36 @@ const person = {
   },
   role: "Développeur Full Stack",
   avatar: "/images/avatar.jpg",
+  email: "ewen.le-quere@epitech.eu",
   location: "Europe/Paris",
   languages: ["Français", "Anglais"],
 };
+
+// ============================================================================
+// SEO KEYWORDS (utilisés dans les metadata de toutes les pages)
+// ============================================================================
+
+const keywords = [
+  "Ewen Le Quéré",
+  "développeur full stack",
+  "développeur full stack Paris",
+  "développeur React",
+  "développeur Next.js",
+  "développeur Node.js",
+  "développeur NestJS",
+  "développeur TypeScript",
+  "développeur IA",
+  "ingénieur logiciel",
+  "freelance développeur",
+  "Epitech",
+  "RAG",
+  "LLM",
+  "pipeline RAG",
+  "recherche sémantique",
+  "SaaS",
+  "temps réel",
+  "portfolio développeur",
+];
 
 // ============================================================================
 // SOCIAL LINKS
@@ -32,7 +59,7 @@ const social = [
   {
     name: "Email",
     icon: "email",
-    link: "ewen.le-quere@epitech.eu",
+    link: "mailto:ewen.le-quere@epitech.eu",
   },
 ];
 
@@ -310,4 +337,4 @@ const gallery = {
 // EXPORTS
 // ============================================================================
 
-export { person, social, newsletter, home, about, blog, work, gallery };
+export { person, social, newsletter, home, about, blog, work, gallery, keywords };

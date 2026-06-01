@@ -18,7 +18,7 @@ export async function GET(request: Request) {
         display: "flex",
         width: "100%",
         height: "100%",
-        padding: "8rem",
+        padding: "5rem",
         background: "#151515",
       }}
     >
@@ -27,7 +27,7 @@ export async function GET(request: Request) {
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
-          gap: "4rem",
+          gap: "3rem",
           fontFamily: "Inter",
           fontStyle: "normal",
           color: "white",
@@ -35,8 +35,8 @@ export async function GET(request: Request) {
       >
         <span
           style={{
-            fontSize: "8rem",
-            lineHeight: "8rem",
+            fontSize: "5rem",
+            lineHeight: "5rem",
             letterSpacing: "-0.05em",
             whiteSpace: "pre-wrap",
             textWrap: "balance",
@@ -48,14 +48,14 @@ export async function GET(request: Request) {
           style={{
             display: "flex",
             alignItems: "center",
-            gap: "5rem",
+            gap: "2.5rem",
           }}
         >
           <img
             src={"https://" + baseURL + person.avatar}
             style={{
-              width: "12rem",
-              height: "12rem",
+              width: "7rem",
+              height: "7rem",
               objectFit: "cover",
               borderRadius: "100%",
             }}
@@ -69,8 +69,8 @@ export async function GET(request: Request) {
           >
             <span
               style={{
-                fontSize: "4.5rem",
-                lineHeight: "4.5rem",
+                fontSize: "2.75rem",
+                lineHeight: "2.75rem",
                 whiteSpace: "pre-wrap",
                 textWrap: "balance",
               }}
@@ -79,8 +79,8 @@ export async function GET(request: Request) {
             </span>
             <span
               style={{
-                fontSize: "2.5rem",
-                lineHeight: "2.5rem",
+                fontSize: "1.75rem",
+                lineHeight: "1.75rem",
                 whiteSpace: "pre-wrap",
                 textWrap: "balance",
                 opacity: "0.6",
@@ -93,8 +93,8 @@ export async function GET(request: Request) {
       </div>
     </div>,
     {
-      width: 1920,
-      height: 1080,
+      width: 1200,
+      height: 630,
       fonts: [
         {
           name: "Inter",

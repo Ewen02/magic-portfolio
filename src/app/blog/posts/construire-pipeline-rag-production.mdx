@@ -1,0 +1,71 @@
+---
+title: "Construire un pipeline RAG en production : du parsing au reranking"
+publishedAt: "2026-06-02"
+summary: "Retour d'expérience sur la conception d'un pipeline RAG (Retrieval-Augmented Generation) complet et performant : parsing multi-format, chunking parent-enfant, embeddings, reranking hybride et cache. Les choix d'architecture qui font la différence en production avec Next.js, NestJS et Qdrant."
+tag: "IA"
+---
+
+## Pourquoi le RAG est devenu incontournable
+
+Le **RAG (Retrieval-Augmented Generation)** est aujourd'hui l'approche de référence pour brancher un LLM sur des données privées sans réentraîner le modèle. Plutôt que de tout mettre dans le contexte — coûteux et limité — on récupère uniquement les passages pertinents et on les injecte au moment de la génération.
+
+En théorie c'est simple. En production, la qualité d'un pipeline RAG se joue dans les détails : comment on découpe les documents, comment on classe les résultats, et comment on évite de payer deux fois pour le même calcul. Voici les choix qui ont fait la différence sur [CorpusAI](/work/corpusai).
+
+## 1. Le parsing : tout commence par la donnée
+
+Un pipeline RAG ne vaut que ce que vaut son ingestion. Avant même de penser embeddings, il faut extraire proprement le texte de formats hétérogènes :
+
+- **PDF** : le piège classique, entre colonnes, tableaux et PDF scannés
+- **DOCX, Markdown, TXT, CSV, HTML** : chacun avec ses spécificités de structure
+
+L'objectif n'est pas seulement d'extraire le texte brut, mais de **préserver la structure** (titres, listes, sections) qui servira de signal au moment du chunking.
+
+## 2. Le chunking parent-enfant : la clé de la pertinence
+
+C'est l'étape la plus sous-estimée. Découper trop fin, on perd le contexte. Trop large, on dilue la pertinence et on gonfle les coûts.
+
+La stratégie **parent-enfant** résout ce dilemme :
+
+- On indexe des **chunks enfants** courts (~150 tokens) pour une recherche précise
+- On retourne au LLM le **chunk parent** plus large (~512 tokens) qui entoure l'enfant
+
+On gagne sur les deux tableaux : la précision du retrieval *et* la richesse du contexte fourni au modèle. Le comptage de tokens se fait avec `tiktoken` pour rester aligné sur le tokenizer du modèle.
+
+## 3. Embeddings et vector store
+
+Pour la vectorisation, `text-embedding-3-small` d'OpenAI offre un excellent rapport qualité/prix (1536 dimensions). Astuce coût : la propriété **Matryoshka** de ces embeddings permet de tronquer à 512 dimensions avec une perte de qualité minime — moins de stockage, recherche plus rapide.
+
+Côté stockage, **Qdrant** s'impose : index HNSW, similarité cosinus, filtrage par métadonnées natif et déploiement cloud simple.
+
+## 4. Le reranking hybride : sémantique + lexical
+
+La recherche vectorielle seule rate parfois des correspondances exactes (noms propres, références, codes). La solution : un **reranking hybride** qui combine deux signaux.
+
+- **60 % sémantique** (similarité vectorielle) pour le sens
+- **40 % lexical** (BM25) pour les correspondances exactes de mots-clés
+
+Ce mélange capture à la fois l'intention et la précision littérale. C'est souvent ce qui sépare un RAG "démo" d'un RAG qui tient en production.
+
+## 5. Le cache : performance et coût
+
+Recalculer les mêmes embeddings encore et encore est un gaspillage pur. Un **cache Redis** sur les embeddings (TTL de 7 jours) réduit drastiquement la latence et la facture API sur les requêtes répétées.
+
+## Architecture globale
+
+L'ensemble tient dans un **monorepo Turborepo** :
+
+- **Frontend** : Next.js 15 avec streaming token-par-token (SSE)
+- **Backend** : NestJS 11 pour l'API et l'orchestration
+- **Jobs asynchrones** : BullMQ pour l'ingestion lourde (parsing, embeddings) en arrière-plan
+- **Stockage** : Qdrant (vecteurs) + Redis (cache) + PostgreSQL (métadonnées)
+
+L'ingestion d'un document ne doit jamais bloquer l'utilisateur : on accuse réception, on traite en file d'attente, on notifie quand c'est prêt.
+
+## Les leçons à retenir
+
+1. **Le chunking est l'investissement le plus rentable** — avant d'optimiser le modèle, optimisez le découpage.
+2. **Le retrieval hybride bat le pur sémantique** dans la plupart des cas réels.
+3. **Citez vos sources avec un score de confiance** : la transparence est ce qui rend un assistant IA digne de confiance.
+4. **Traitez l'ingestion en asynchrone** : l'expérience utilisateur ne doit jamais attendre un pipeline.
+
+Vous voulez voir le résultat en action ? Le projet complet est détaillé sur la page [CorpusAI](/work/corpusai). N'hésitez pas à [me contacter](/about) pour en discuter.

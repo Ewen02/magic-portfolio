@@ -9,7 +9,7 @@ import { baseURL, effects, style } from "@/app/resources";
 import { Inter } from "next/font/google";
 import { Source_Code_Pro } from "next/font/google";
 
-import { person, home } from "@/app/resources/content";
+import { person, home, keywords } from "@/app/resources/content";
 import { Background, Column, Flex, ToastProvider } from "@/once-ui/components";
 
 import { Analytics } from "@vercel/analytics/next"
@@ -17,18 +17,31 @@ import { Analytics } from "@vercel/analytics/next"
 export async function generateMetadata() {
   return {
     metadataBase: new URL(`https://${baseURL}`),
-    title: home.title,
+    title: {
+      default: home.title,
+      template: `%s | ${person.name}`,
+    },
     description: home.description,
+    keywords,
+    authors: [{ name: person.name, url: `https://${baseURL}/about` }],
+    creator: person.name,
+    publisher: person.name,
+    applicationName: `Portfolio de ${person.name}`,
     alternates: {
       canonical: `https://${baseURL}`,
     },
     openGraph: {
       title: `Portfolio de ${person.name}`,
       description: `Portfolio de ${person.name}, ${person.role}.`,
-      url: baseURL,
+      url: `https://${baseURL}`,
       siteName: `Portfolio de ${person.name}`,
       locale: "fr_FR",
       type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Portfolio de ${person.name}`,
+      description: `Portfolio de ${person.name}, ${person.role}.`,
     },
     robots: {
       index: true,

@@ -80,12 +80,37 @@ export default function About() {
             "@context": "https://schema.org",
             "@type": "Person",
             name: person.name,
+            givenName: person.firstName,
+            familyName: person.lastName,
             jobTitle: person.role,
-            description: about.intro.description,
+            description: about.description,
             url: `https://${baseURL}/about`,
-            image: `${baseURL}/images/${person.avatar}`,
+            image: `https://${baseURL}${person.avatar}`,
+            email: "ewen.le-quere@epitech.eu",
+            knowsLanguage: person.languages,
+            knowsAbout: [
+              "React",
+              "Next.js",
+              "Node.js",
+              "NestJS",
+              "TypeScript",
+              "Intelligence Artificielle",
+              "RAG",
+              "LLM",
+              "Architecture logicielle",
+              "Développement Full Stack",
+            ],
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Paris",
+              addressCountry: "FR",
+            },
+            alumniOf: about.studies.institutions.map((institution) => ({
+              "@type": "EducationalOrganization",
+              name: institution.name,
+            })),
             sameAs: social
-              .filter((item) => item.link && !item.link.startsWith("mailto:")) // Filter out empty links and email links
+              .filter((item) => item.link && item.link.startsWith("http"))
               .map((item) => item.link),
             worksFor: {
               "@type": "Organization",
