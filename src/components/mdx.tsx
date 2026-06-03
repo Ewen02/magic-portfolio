@@ -128,6 +128,32 @@ function createParagraph({ children }: TextProps) {
   );
 }
 
+// Inline code (`code`) — rendered as a styled <code> chip.
+function InlineCode({ children }: { children?: ReactNode }) {
+  return <code className="inline-code">{children}</code>;
+}
+
+// Map markdown fenced code blocks (```lang ... ```) to the once-ui CodeBlock.
+// The MDX `pre` element wraps a `code` element whose className carries the language.
+function CodeBlockWrapper({ children }: { children?: ReactNode }) {
+  const codeElement = React.isValidElement(children) ? (children as React.ReactElement) : null;
+  const props = codeElement?.props ?? {};
+  const className: string = props.className || "";
+  const language = className.replace(/language-/, "") || "tsx";
+  const rawCode = props.children;
+  const code = typeof rawCode === "string" ? rawCode.replace(/\n$/, "") : String(rawCode ?? "");
+
+  return (
+    <CodeBlock
+      marginTop="12"
+      marginBottom="16"
+      compact
+      copyButton
+      codeInstances={[{ code, language, label: language }]}
+    />
+  );
+}
+
 const components = {
   p: createParagraph as any,
   h1: createHeading(1) as any,
@@ -138,6 +164,8 @@ const components = {
   h6: createHeading(6) as any,
   img: createImage as any,
   a: CustomLink as any,
+  pre: CodeBlockWrapper as any,
+  code: InlineCode as any,
   Table,
   CodeBlock,
 };
