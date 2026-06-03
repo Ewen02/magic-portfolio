@@ -1,5 +1,5 @@
 import { getPosts } from "@/app/utils/utils";
-import { Column } from "@/once-ui/components";
+import { Column, Heading, Text } from "@/once-ui/components";
 import { Projects } from "@/components/work/Projects";
 import { baseURL } from "@/app/resources";
 import { person, work } from "@/app/resources/content";
@@ -70,6 +70,14 @@ export default function Work() {
           }),
         }}
       />
+      <Column maxWidth="s" gap="m" marginBottom="xl" paddingX="l">
+        <Heading variant="display-strong-s">
+          Projets de développement Full Stack
+        </Heading>
+        <Text variant="body-default-l" onBackground="neutral-weak" wrap="balance">
+          {work.description}
+        </Text>
+      </Column>
       <Projects />
     </Column>
   );

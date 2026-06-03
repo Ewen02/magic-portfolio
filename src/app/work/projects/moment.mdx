@@ -9,11 +9,13 @@ link: "https://www.moment.tech/"
 
 ## Vue d'ensemble
 
-Stage de **5ème année Epitech** (avril – octobre 2025) chez **Moment**, entreprise spécialisée dans les solutions de divertissement embarqué pour les transports.
+Stage de **5ème année Epitech** (avril – octobre 2025) chez **Moment**, entreprise spécialisée dans les solutions de **divertissement embarqué** pour les transports.
 
 J'ai travaillé en tant que **développeur fullstack** sur deux projets majeurs :
 - **Mood** : plateforme de divertissement utilisée dans les trains (Ouigo, TGV Lyria)
 - **Colombo** : outil interne d'intégration de contenu musical
+
+Ce stage m'a permis d'évoluer dans un contexte produit réel, où les interfaces sont consultées par les passagers directement à bord des trains, avec les contraintes propres au **divertissement embarqué** : connectivité variable, diversité des terminaux et exigences fortes en matière de cohérence visuelle.
 
 ## Projet Mood
 
@@ -25,6 +27,16 @@ Plateforme de divertissement proposée aux passagers des trains Ouigo et TGV Lyr
 - Contribution au **Design System** pour améliorer la cohérence des interfaces
 - Création de composants modulaires réutilisables
 - Collaboration avec l'équipe design via Zeplin
+
+### Le Design System en pratique
+Un **Design System** est un ensemble structuré de composants, de styles et de règles partagés qui garantissent une expérience cohérente sur l'ensemble d'une application. Pour une plateforme déclinée par opérateur (Ouigo, TGV Lyria), cette approche est essentielle : elle permet d'adapter l'apparence et les contenus à chaque client tout en conservant une **base générique** commune.
+
+Concrètement, j'ai contribué à la création de **composants modulaires réutilisables** en React et TypeScript. L'intérêt de cette modularité est multiple :
+- **Réutilisabilité** : un même composant sert dans plusieurs écrans et contextes, ce qui évite la duplication de code.
+- **Maintenabilité** : une correction ou une évolution appliquée au composant se propage partout où il est utilisé.
+- **Cohérence** : les interfaces respectent automatiquement les mêmes règles visuelles, ce qui renforce la qualité perçue par les passagers.
+
+La collaboration avec l'équipe design s'appuyait sur **Zeplin**, qui sert de passerelle entre les maquettes et l'implémentation : récupération des spécifications (espacements, couleurs, typographies) et traduction fidèle en composants Next.js.
 
 ### Résultat
 Nouvelles fonctionnalités déployées en production, améliorant l'expérience des passagers.
@@ -39,8 +51,34 @@ Outil interne pour automatiser l'intégration de contenu musical dans la platefo
 - Mise en place d'un flux complet : récupération ZIP → extraction playlists → intégration CMS
 - Résolution des défis liés à la complexité de l'API Universal Music
 
+### TypeSpec et le client API typé
+**TypeSpec** est un langage permettant de décrire des contrats d'API de manière concise, puis de générer automatiquement des artefacts (schémas, modèles et clients). À partir de cette description, j'ai généré un **client API fortement typé** consommable directement depuis le backend.
+
+L'intérêt d'un **client API typé** est central dans un projet d'intégration :
+- **Sécurité de type** : les structures de données échangées avec l'API Universal Music sont vérifiées dès la compilation, et non au moment de l'exécution.
+- **Réduction des erreurs d'intégration** : les incohérences de champs ou de formats sont détectées tôt, ce qui limite les bugs en production.
+- **Maintenabilité** : une évolution du contrat se répercute automatiquement dans le code généré, ce qui réduit la dette technique.
+
+### Pipeline d'intégration de contenu musical
+Le cœur de Colombo est un **pipeline** automatisé d'intégration. Le flux suit plusieurs étapes :
+1. **Récupération** des archives ZIP contenant les contenus musicaux fournis par Universal Music France.
+2. **Extraction et parsing** des données : ouverture des archives, lecture des playlists et des métadonnées associées.
+3. **Mapping** des informations extraites vers le modèle attendu par le **CMS**.
+4. **Intégration** dans la plateforme afin que les contenus soient exploitables côté Mood.
+
+Cette automatisation remplace une intégration manuelle fastidieuse et limite les risques d'erreurs lors du traitement des playlists.
+
 ### Résultat
 Automatisation du processus d'import de playlists, réduisant les erreurs manuelles et le temps de traitement pour l'équipe contenu.
+
+## Architecture & monorepo
+
+Les projets de Moment s'inscrivent dans un **monorepo Nx**, qui regroupe plusieurs applications et bibliothèques au sein d'un même dépôt. Cette organisation présente plusieurs avantages que j'ai exploités au quotidien :
+- **Partage de bibliothèques** : les composants du Design System et les utilitaires communs sont mutualisés entre les applications, ce qui évite la duplication.
+- **Cohérence de la base de code** : un seul jeu de conventions et d'outils s'applique à l'ensemble du projet.
+- **Outillage centralisé** : Nx facilite la gestion des dépendances internes et l'exécution ciblée des tâches.
+
+Cette architecture impose en contrepartie une discipline particulière : comprendre les frontières entre bibliothèques partagées et applications, et mesurer l'impact d'une modification sur les autres modules du monorepo.
 
 ## Stack technique
 
@@ -54,6 +92,8 @@ Automatisation du processus d'import de playlists, réduisant les erreurs manuel
 - Intégrer rapidement une **API complexe** (UMF) dans un projet existant
 - Travailler dans un **environnement monorepo** avec partage de bibliothèques
 - Améliorer ma communication technique (tickets Jira, documentation)
+
+La collaboration s'est faite dans un cadre **agile**, structuré autour de **Jira** pour le suivi des tickets et la priorisation des tâches, et de **Confluence** pour la documentation partagée. Cette organisation m'a appris à découper le travail en unités claires, à rendre mes contributions traçables et à communiquer efficacement avec une équipe pluridisciplinaire (développeurs, designers, équipe contenu).
 
 ## Impact
 

@@ -13,6 +13,16 @@ Dans le cadre d'une **mission freelance** pour **Hercules Thrustmaster** (2023 �
 
 Ce projet stratégique est aujourd'hui **en production** et continue d'évoluer avec de nouvelles fonctionnalités.
 
+Un système de **marketing d'affiliation** permet à une marque de s'appuyer sur un réseau de partenaires (créateurs de contenu, médias, joueurs) pour promouvoir ses produits. Chaque affilié dispose de **liens de tracking uniques** et perçoit une commission sur les ventes qu'il génère. Développer une telle plateforme en interne plutôt que de recourir à une solution tierce offre un contrôle total sur les règles métier, les données et l'intégration à l'écosystème de la marque.
+
+## Comment fonctionne le système d'affiliation
+
+Le cœur de la plateforme repose sur trois mécanismes complémentaires :
+
+- **Tracking par liens uniques** : à chaque affilié validé est associé un identifiant unique, propagé dans ses liens. Lorsqu'un visiteur clique, le clic est horodaté et rattaché à l'affilié source.
+- **Attribution des conversions** : une commande passée à la suite d'un clic est rattachée à l'affilié responsable selon une fenêtre d'attribution définie, ce qui permet de relier précisément un revenu à la source qui l'a généré.
+- **Calcul des commissions** : pour chaque conversion attribuée, le système calcule la commission due en appliquant le taux correspondant au niveau de l'affilié, puis consolide ces montants pour le reporting et la comptabilité.
+
 ## Fonctionnalités principales
 
 ### Gestion des affiliés
@@ -31,12 +41,28 @@ Ce projet stratégique est aujourd'hui **en production** et continue d'évoluer 
 - **Bounties** : bonus sur produits spécifiques si objectifs atteints dans un temps imparti
 - **Parrainage** : commission sur le volume généré par les filleuls
 
-## Stack technique
+## Architecture & modélisation des données
 
-- **Backend** : PHP 8, CodeIgniter 4 (MVC)
-- **Base de données** : MySQL (schéma optimisé pour les données transactionnelles)
-- **Frontend** : HTML, CSS, JavaScript (charte graphique Thrustmaster)
-- **Outils** : GitLab, environnement de staging
+Le backend suit le pattern **MVC** offert par **CodeIgniter 4** : les contrôleurs orchestrent les requêtes, les modèles encapsulent l'accès aux données et la logique métier, et les vues gèrent l'affichage des dashboards. Cette séparation des responsabilités facilite la maintenance et l'ajout de nouvelles fonctionnalités sans refonte.
+
+La base **MySQL** a été modélisée pour supporter des **données transactionnelles** fiables. Les principales entités s'articulent autour des affiliés, des clics, des conversions, des commissions et des niveaux de progression. Les relations entre ces tables permettent de remonter, pour chaque revenu, l'ensemble de la chaîne (du clic initial à la commission versée), tout en gardant des requêtes performantes pour les tableaux de bord en temps réel.
+
+### Mécanique de gamification
+
+La gamification est pensée comme un levier d'engagement des affiliés :
+
+- **Niveaux et paliers de commission** : la progression débloque automatiquement des taux de commission plus élevés, récompensant les partenaires les plus actifs.
+- **Bounties limités dans le temps** : des objectifs ciblés sur certains produits, valables sur une période donnée, créent des pics d'activité maîtrisés.
+- **Parrainage multi-niveaux** : un affilié peut recruter d'autres partenaires et percevoir une part du volume qu'ils génèrent.
+- **Points de fidélité** : accumulés selon l'activité et échangeables contre des avantages.
+
+## Sécurité & fiabilité
+
+Manipuler des données financières impose un haut niveau d'exigence :
+
+- **Validation des données** : contrôle systématique des entrées (inscriptions, paramètres de tracking) pour éviter les incohérences et les injections.
+- **Prévention de la fraude au clic** : détection des comportements anormaux afin de garantir que seules les interactions légitimes alimentent les commissions.
+- **Intégrité transactionnelle** : la cohérence entre clics, conversions et commissions est préservée pour que les montants reportés à la comptabilité soient toujours justes et auditables.
 
 ## Défis et enseignements
 
@@ -44,6 +70,15 @@ Ce projet stratégique est aujourd'hui **en production** et continue d'évoluer 
 - **Collaboration inter-services** : coordination avec marketing, comptabilité, légal et esport
 - **Itérations utilisateurs** : ajustements continus basés sur les retours des affiliés et équipes internes
 - **Mise en production progressive** : staging, migrations de BDD, sécurité, monitoring
+
+La dimension transversale a été déterminante : chaque service apportait ses contraintes propres (besoins de pilotage côté marketing, exigences d'exactitude côté comptabilité, cadre réglementaire côté légal, opérations spécifiques côté esport). Traduire ces exigences en specs claires, puis en modèle de données et en itérations livrées sur l'environnement de staging avant production, a constitué le fil conducteur du projet.
+
+## Stack technique
+
+- **Backend** : PHP 8, CodeIgniter 4 (MVC)
+- **Base de données** : MySQL (schéma optimisé pour les données transactionnelles)
+- **Frontend** : HTML, CSS, JavaScript (charte graphique Thrustmaster)
+- **Outils** : GitLab, environnement de staging
 
 ## Impact
 

@@ -107,6 +107,36 @@ export default function Blog({ params }: BlogParams) {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Accueil",
+                item: `https://${baseURL}`,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Blog",
+                item: `https://${baseURL}/blog`,
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: post.metadata.title,
+                item: `https://${baseURL}/blog/${post.slug}`,
+              },
+            ],
+          }),
+        }}
+      />
       <Button href="/blog" weight="default" variant="tertiary" size="s" prefixIcon="chevronLeft">
         Posts
       </Button>

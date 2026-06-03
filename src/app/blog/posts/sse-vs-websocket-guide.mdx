@@ -1,0 +1,96 @@
+---
+title: "SSE vs WebSocket : quand choisir l'un ou l'autre"
+publishedAt: "2026-03-30"
+summary: "Guide comparatif entre SSE (Server-Sent Events) et WebSocket pour le temps réel. Direction du flux, reconnexion, scaling, cas d'usage : comment choisir entre streaming unidirectionnel et communication bidirectionnelle."
+tag: "Guide"
+---
+
+## Deux protocoles pour le temps réel, deux philosophies
+
+Dès qu'une application doit pousser des données vers le navigateur sans attendre qu'il les réclame, deux technologies reviennent systématiquement : les **Server-Sent Events (SSE)** et les **WebSocket**. On les confond souvent, alors qu'elles ne résolvent pas le même problème.
+
+La règle mentale la plus simple : **SSE est unidirectionnel** (serveur → client) et repose sur du HTTP classique, tandis que **WebSocket est bidirectionnel** et utilise un protocole dédié après une phase de négociation. Tout le reste découle de cette différence fondamentale.
+
+J'utilise les deux en production : **SSE** pour le streaming des réponses d'un LLM token par token, et **WebSocket** (via **Socket.IO**) pour des rooms multi-utilisateurs synchronisées. Voici comment décider, sans dogmatisme.
+
+## SSE en deux minutes
+
+Un client ouvre une connexion HTTP `GET` vers un endpoint, le serveur garde la connexion ouverte et envoie des messages au format `text/event-stream` au fil de l'eau. Côté navigateur, l'API `EventSource` fait tout le travail :
+
+```javascript
+const source = new EventSource("/api/stream");
+
+source.onmessage = (event) => {
+  console.log("Reçu :", event.data);
+};
+// Reconnexion automatique gérée nativement par le navigateur
+```
+
+Deux atouts majeurs : c'est du **HTTP simple** (donc compatible avec la quasi-totalité des proxys, CDN et load balancers), et la **reconnexion automatique est native**. Si la connexion tombe, le navigateur la rétablit seul et peut même reprendre via l'en-tête `Last-Event-ID`.
+
+## WebSocket en deux minutes
+
+WebSocket démarre par un *handshake* HTTP (`Upgrade: websocket`) puis bascule sur un protocole binaire full-duplex. Une fois ouvert, **client et serveur peuvent s'envoyer des messages à tout moment**, dans les deux sens, avec une latence minimale.
+
+C'est plus puissant, mais aussi plus exigeant : pas de reconnexion automatique en standard, gestion d'état de connexion à votre charge, et certaines infrastructures (proxys d'entreprise stricts) peuvent bloquer l'upgrade. Des bibliothèques comme **Socket.IO** ajoutent la reconnexion, les *rooms* et un fallback transport pour lisser ces aspérités.
+
+## Tableau comparatif
+
+| Critère | SSE (Server-Sent Events) | WebSocket |
+| --- | --- | --- |
+| Direction du flux | Unidirectionnel (serveur → client) | Bidirectionnel (full-duplex) |
+| Protocole | HTTP standard (`text/event-stream`) | Protocole dédié après handshake HTTP |
+| Reconnexion | Automatique et native (`EventSource`) | À implémenter (ou via Socket.IO) |
+| Compatibilité proxy/CDN | Excellente (c'est du HTTP) | Bonne, mais l'upgrade peut être bloqué |
+| Complexité de mise en œuvre | Faible | Moyenne à élevée |
+| Format des données | Texte (UTF-8) | Texte ou binaire |
+| Scaling | Simple (stateless côté requête) | Nécessite souvent un backplane (Redis) |
+| Cas d'usage typique | Notifications, flux, streaming IA | Chat, jeux, collaboration |
+
+## Quand choisir SSE
+
+Optez pour SSE dès que le flux part **du serveur vers le client** et que le client n'a presque rien à renvoyer en temps réel :
+
+- **Notifications** push et alertes en direct.
+- **Feeds live** : cours de bourse, scores sportifs, tableaux de bord temps réel.
+- **Streaming LLM/IA token par token** : c'est mon usage. Quand un modèle génère une réponse, je la diffuse mot à mot vers l'interface via SSE. Le flux est purement unidirectionnel, la reconnexion native est précieuse, et ça passe sans friction par les CDN.
+- Tout cas où la **simplicité** et la robustesse réseau priment sur la bidirectionnalité.
+
+Bonus : SSE évite la complexité d'un protocole séparé et s'intègre naturellement dans une stack HTTP existante (middlewares d'auth, headers, etc.).
+
+## Quand choisir WebSocket
+
+Passez au WebSocket dès que **les deux extrémités doivent émettre en continu**, avec une latence faible :
+
+- **Chat bidirectionnel** où chaque message d'un utilisateur doit atteindre les autres instantanément.
+- **Jeux temps réel** et toute mécanique où chaque action client compte au milliseconde près.
+- **Collaboration** : curseurs partagés, édition simultanée d'un document, présence.
+- **Rooms multi-utilisateurs** : c'est mon second usage. Avec Socket.IO, chaque room est un canal isolé, et un événement émis vers une room n'atteint que ses membres.
+
+Si vous vous surprenez à empiler des hacks pour faire « remonter » des données vers le serveur en SSE (en doublant avec des appels `fetch`), c'est le signal qu'il faut basculer sur WebSocket.
+
+## Bonnes pratiques communes
+
+Quel que soit le choix, quelques réflexes évitent bien des incidents en production :
+
+- **Heartbeat / keep-alive** : envoyez un ping périodique (un commentaire `:` en SSE, un `ping/pong` en WebSocket) pour détecter les connexions mortes et empêcher les proxys de couper une connexion jugée inactive.
+- **Gestion des reconnexions** : SSE la fournit gratuitement ; pour WebSocket, prévoyez un *backoff* exponentiel et une resynchronisation d'état au retour. Côté SSE, exploitez `Last-Event-ID` pour reprendre sans trou.
+- **Scaling horizontal** : avec plusieurs instances serveur, un message émis sur l'instance A doit atteindre un client connecté à l'instance B. La solution standard pour WebSocket est un **backplane Redis pub/sub** (l'adapter Redis de Socket.IO le gère). Pour SSE, le même principe s'applique : un événement publié dans Redis est relayé sur toutes les connexions ouvertes, quelle que soit l'instance.
+- **Limiter les connexions ouvertes** : chaque connexion persistante consomme des ressources. Surveillez le nombre de sockets et fermez proprement celles devenues inutiles.
+
+## Les deux peuvent coexister
+
+Le faux dilemme, c'est de croire qu'il faut trancher pour toute l'application. Dans la pratique, **SSE et WebSocket cohabitent très bien**. C'est exactement mon architecture : SSE pour le **streaming** des réponses IA (flux unidirectionnel serveur → client), WebSocket pour les **interactions temps réel** entre utilisateurs (bidirectionnel). Chaque outil sur le besoin pour lequel il est taillé, plutôt qu'un protocole forcé partout.
+
+Le bon réflexe : partez du **sens du flux**. S'il est à sens unique, SSE est souvent le choix le plus simple et le plus robuste. S'il est à double sens et soutenu, le WebSocket s'impose.
+
+---
+
+## Pour aller plus loin
+
+Si vous voulez voir ces principes appliqués sur des cas concrets :
+
+- [Streaming IA avec SSE : afficher les réponses token par token](/blog/streaming-ia-sse-token-par-token) — comment je diffuse les réponses d'un LLM en temps réel.
+- [Matching en temps réel avec WebSocket et Redis](/blog/matching-temps-reel-websocket-redis) — rooms multi-utilisateurs et scaling avec un backplane Redis.
+
+Une question d'architecture temps réel ou un projet en tête ? [Parlons-en sur ma page à propos](/about).

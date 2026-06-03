@@ -11,33 +11,62 @@ link: "https://www.coexya.eu/notre-offre/search/"
 
 Stage de **6 mois** (2024 - 2025) chez **Coexya**, ESN spécialisée dans les solutions logicielles pour les secteurs juridique et propriété intellectuelle.
 
-J'ai participé au développement d'un **logiciel SaaS de comparaison de marques déposées** et dessins/modèles industriels, utilisé par des cabinets de propriété intellectuelle et services juridiques d'entreprises.
+J'ai participé au développement d'un **logiciel SaaS de comparaison de marques déposées** et dessins/modèles industriels, utilisé par des cabinets de propriété intellectuelle et services juridiques d'entreprises. Ce projet s'inscrit dans le domaine de la **LegalTech**, à l'intersection du droit et de l'ingénierie logicielle.
 
 ## Contexte métier
 
-La propriété intellectuelle nécessite des outils performants pour :
-- **Rechercher** des marques existantes avant dépôt
-- **Comparer** visuellement des logos et dessins industriels
-- **Analyser** les risques de confusion entre marques
-- **Générer** des rapports de recherche d'antériorité
+Avant de déposer une marque ou un dessin/modèle industriel, une entreprise doit s'assurer qu'un signe identique ou similaire n'existe pas déjà. Cette étape, appelée **recherche d'antériorité**, est déterminante : un dépôt qui entre en conflit avec une marque existante peut être refusé par les offices (INPI, EUIPO) ou attaqué en justice par le titulaire antérieur.
+
+L'enjeu central est l'évaluation du **risque de confusion**. Deux marques peuvent se ressembler sur plusieurs plans :
+- **Phonétique et verbal** : sonorités proches, racines communes, fautes d'orthographe volontaires.
+- **Visuel** : logos, formes, palettes de couleurs ou dessins industriels présentant des similitudes graphiques.
+- **Conceptuel** : évocation d'une même idée ou d'un même univers sémantique.
+
+La **comparaison visuelle de logos et de dessins industriels** est particulièrement délicate à outiller : il faut présenter rapidement à un juriste des signes candidats potentiellement proches, sur des bases de **marques déposées** comptant des millions d'enregistrements internationaux. Le logiciel a pour rôle d'assister cette analyse en automatisant la recherche, en classant les résultats et en facilitant la production de rapports d'antériorité exploitables par les experts.
+
+Concrètement, l'outil permet aux professionnels de :
+- **Rechercher** des marques existantes avant dépôt sur de gros volumes de données.
+- **Comparer** visuellement des logos et dessins industriels.
+- **Analyser** les risques de confusion entre marques.
+- **Générer** des rapports de recherche d'antériorité.
+
+## Architecture
+
+L'application suit une architecture classique de type SPA + API, découplant clairement la présentation, la logique métier et la persistance :
+
+- **Client (SPA Angular)** : application monopage en TypeScript, qui consomme l'API via des appels HTTP et gère l'affichage, la pagination et la comparaison visuelle.
+- **API (.NET / C#)** : couche de services exposant des endpoints REST, encapsulant la logique métier de recherche et de comparaison, et orchestrant l'accès aux données.
+- **Base de données (MySQL)** : stockage des marques et dessins/modèles, avec des index et de la recherche full-text adaptés à la volumétrie.
+
+Le flux nominal est le suivant : `SPA Angular` → `API .NET (REST)` → `MySQL`, les résultats remontant ensuite paginés et triés vers l'interface.
 
 ## Contributions
 
 ### Frontend (Angular)
-- Développement de nouvelles fonctionnalités sur l'interface utilisateur
-- Implémentation de composants de comparaison visuelle
-- Intégration des APIs backend
-- Amélioration de l'expérience utilisateur
+- Développement de nouvelles fonctionnalités sur l'interface utilisateur.
+- Création de **composants Angular réutilisables**, notamment pour la comparaison visuelle de marques et dessins.
+- Mise en place de la **pagination** côté client pour parcourir de longues listes de résultats sans dégrader l'affichage.
+- Intégration des APIs backend via des services Angular dédiés.
+- Amélioration de l'expérience utilisateur et de la lisibilité des résultats de recherche.
 
 ### Backend (.NET / C#)
-- Développement de services métier
-- Intégration avec les bases de données de marques
-- Optimisation des requêtes de recherche
-- Tests unitaires et d'intégration
+- Développement de **services métier en C#** exposés via des endpoints REST.
+- Intégration avec les bases de données de marques et de dessins/modèles.
+- Optimisation des requêtes de recherche et de la pagination côté serveur.
+- Écriture de **tests unitaires et d'intégration** pour fiabiliser les fonctionnalités livrées.
 
 ### Base de données
-- Requêtes SQL optimisées pour la recherche full-text
-- Manipulation de données volumineuses (bases de marques internationales)
+- Rédaction de **requêtes SQL optimisées** pour la recherche full-text sur de gros volumes.
+- Travail sur l'indexation pour réduire les temps de réponse sur les bases de marques internationales.
+- Manipulation de données volumineuses dans le respect des contraintes de performance.
+
+## Méthodologie et travail en ESN
+
+Le développement s'est déroulé dans un cadre d'**ESN**, avec des pratiques de travail en équipe structurées :
+- Gestion des tâches et suivi du backlog sur **Azure DevOps**.
+- **Revues de code** systématiques avant intégration, et respect des conventions de la codebase existante.
+- Collaboration régulière avec des **experts métier** (juristes et consultants en propriété intellectuelle) pour traduire des besoins juridiques en spécifications techniques.
+- Intégration progressive de mes contributions sur un produit déjà en production.
 
 ## Stack technique
 
@@ -48,20 +77,20 @@ La propriété intellectuelle nécessite des outils performants pour :
 
 ## Défis et enseignements
 
-- Comprendre un **domaine métier complexe** (propriété intellectuelle)
-- Travailler sur une **codebase existante** avec ses conventions
-- Collaborer avec des experts métier (juristes, consultants PI)
-- Gérer des **données volumineuses** (millions de marques)
+- Comprendre un **domaine métier complexe** (propriété intellectuelle, recherche d'antériorité).
+- Travailler sur une **codebase existante** avec ses conventions et son historique.
+- Collaborer avec des experts métier (juristes, consultants PI).
+- Gérer des **données volumineuses** (millions de marques) avec des contraintes de performance.
 
 ## Impact
 
-- Nouvelles fonctionnalités déployées en production
-- Amélioration de l'efficacité des recherches d'antériorité
-- Contribution à un produit utilisé par des professionnels du droit
+- Nouvelles fonctionnalités déployées en production.
+- Amélioration de l'efficacité des recherches d'antériorité.
+- Contribution à un produit utilisé par des professionnels du droit.
 
 ## Ce que ce stage m'a apporté
 
-- Découverte du secteur **LegalTech / PropTech**
-- Expérience sur stack **.NET / Angular** en environnement entreprise
-- Compréhension des enjeux de la **propriété intellectuelle**
-- Travail en équipe dans un contexte **ESN**
+- Découverte du secteur **LegalTech / PropTech**.
+- Expérience sur stack **.NET / Angular** en environnement entreprise.
+- Compréhension des enjeux de la **propriété intellectuelle** et des **marques déposées**.
+- Travail en équipe dans un contexte **ESN**.

@@ -1,0 +1,100 @@
+---
+title: "React Query vs Redux : quel gestionnaire d'état en 2026"
+publishedAt: "2026-03-18"
+summary: "Guide comparatif React Query vs Redux pour la gestion d'état en React : la distinction état serveur vs état client, un tableau comparatif, et la vraie réponse pour bien choisir en 2026."
+tag: "Guide"
+---
+
+## React Query vs Redux : une fausse opposition
+
+Si vous cherchez à savoir s'il faut choisir **React Query** ou **Redux** pour votre application React, vous posez probablement la mauvaise question. Ces deux outils sont souvent présentés comme des concurrents, mais ils ne résolvent pas le même problème. Les opposer, c'est comparer un cache HTTP à un store applicatif.
+
+La clé pour bien décider en 2026, c'est de comprendre une distinction fondamentale en **gestion d'état** : l'état serveur et l'état client. Une fois cette frontière claire, le choix devient évident — et il consiste rarement à prendre l'un *contre* l'autre.
+
+## La distinction fondamentale : état serveur vs état client
+
+Tout l'état d'une application React se range dans deux catégories.
+
+L'**état serveur** désigne les données qui appartiennent à votre backend et que vous consommez via une API : la liste des utilisateurs, le profil courant, les résultats d'une recherche. Vous n'en êtes pas le propriétaire, vous en détenez une copie temporaire. Cet état est asynchrone, peut devenir obsolète à tout moment, et doit être synchronisé, mis en **cache**, puis rafraîchi.
+
+L'**état client** (ou état UI) désigne ce qui vit uniquement dans le navigateur : un menu ouvert ou fermé, un thème sombre, le contenu d'un panier avant validation, les étapes d'un formulaire multi-pages. Personne d'autre que votre application ne connaît cet état. Il est synchrone et vous en êtes la seule source de vérité.
+
+La plupart des bugs et de la complexité viennent de la confusion entre ces deux mondes : stocker des données serveur dans Redux force à réimplémenter à la main du cache, du *refetch* et de la gestion d'erreurs. C'est exactement ce que React Query fait pour vous.
+
+## React Query : l'outil de l'état serveur
+
+**React Query** (désormais **TanStack Query**) est une bibliothèque conçue exclusivement pour l'état serveur. Elle gère le **cache**, la déduplication des requêtes, le *refetch* automatique en arrière-plan, l'invalidation ciblée, les *optimistic updates* et les états `loading` / `error` — le tout avec très peu de code.
+
+```tsx
+import { useQuery } from "@tanstack/react-query";
+
+function UserProfile({ id }: { id: string }) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["user", id],
+    queryFn: () => fetch(`/api/users/${id}`).then((r) => r.json()),
+  });
+
+  if (isLoading) return <Spinner />;
+  if (error) return <Error />;
+  return <h1>{data.name}</h1>;
+}
+```
+
+En quelques lignes, vous obtenez du cache, du *refetch* et la gestion des erreurs. Important : **React Query n'est pas un remplaçant de Redux** pour l'état UI. Il ne sait pas gérer un thème ou l'ouverture d'une modale — ce n'est tout simplement pas son rôle.
+
+## Redux Toolkit : l'outil de l'état client global
+
+**Redux Toolkit** (RTK) est la façon moderne d'utiliser Redux. Il est conçu pour l'**état client** global, partagé entre plusieurs fonctionnalités, prévisible et persistant. Il brille quand de nombreux composants éloignés dans l'arbre doivent lire et modifier le même état, avec un flux strict et traçable.
+
+```tsx
+import { createSlice } from "@reduxjs/toolkit";
+
+const uiSlice = createSlice({
+  name: "ui",
+  initialState: { theme: "light", sidebarOpen: false },
+  reducers: {
+    toggleTheme: (s) => {
+      s.theme = s.theme === "light" ? "dark" : "light";
+    },
+    toggleSidebar: (s) => {
+      s.sidebarOpen = !s.sidebarOpen;
+    },
+  },
+});
+```
+
+RTK reste plus verbeux que React Query — slices, actions, store, *selectors* — mais cette structure apporte une vraie prévisibilité et des **devtools** redoutables pour le *time-travel debugging*. Le prix de la rigueur.
+
+## Tableau comparatif
+
+| Critère | React Query (TanStack Query) | Redux Toolkit |
+| --- | --- | --- |
+| Type d'état géré | État serveur (données d'API) | État client global (UI, métier local) |
+| Cache automatique | Oui, natif et configurable | Non, à implémenter soi-même |
+| Refetch / invalidation | Intégrés | Manuels |
+| Boilerplate | Faible | Modéré à élevé |
+| Courbe d'apprentissage | Douce | Plus raide |
+| Devtools | Oui (React Query Devtools) | Oui (Redux DevTools, time-travel) |
+| Cas d'usage idéal | Synchroniser des données serveur | Partager un état UI complexe |
+
+## La vraie réponse : ce n'est pas l'un ou l'autre
+
+Dans une application réelle, vous avez les deux types d'état. La solution optimale en 2026 est donc souvent une **combinaison** : React Query pour tout ce qui vient du serveur, et un store léger pour l'état UI global.
+
+C'est exactement l'approche que j'utilise en production sur [Favikon](/work/favikon), une plateforme SaaS B2B. **React Query** gère le cache des données serveur avec invalidation intelligente et *optimistic updates*, pendant que **Redux Toolkit** porte l'état global persistant partagé entre fonctionnalités. Chaque outil reste sur son terrain, et la base de code respire.
+
+À noter : pour l'état client global, **Zustand** est une alternative de plus en plus populaire à Redux — bien plus légère, sans *boilerplate*, parfaite quand vous n'avez pas besoin de toute la machinerie de Redux.
+
+## Quand choisir quoi
+
+- **React Query seul suffit** quand votre application est essentiellement un client d'API : beaucoup de lectures/écritures serveur, et très peu d'état UI partagé (que `useState` et le Context API couvrent largement).
+- **Redux (ou Zustand) seul suffit** quand l'essentiel de votre complexité est de l'état client : éditeurs, configurateurs, applications très interactives avec peu d'appels réseau.
+- **Combiner les deux** dès que vous avez à la fois des données serveur non triviales *et* un état UI global partagé — le cas de la majorité des SaaS modernes.
+
+## Ce qu'il faut retenir
+
+React Query et Redux ne sont pas concurrents : l'un gère l'**état serveur**, l'autre l'**état client**. Posez-vous toujours la question « cette donnée appartient-elle au serveur ou à mon UI ? » avant de choisir où la stocker. Dans le doute, séparez : laissez TanStack Query s'occuper du cache et de la synchronisation réseau, et réservez votre store global à ce qui vit vraiment dans le navigateur.
+
+---
+
+Vous voulez voir cette architecture appliquée à un vrai produit ? Découvrez [Favikon](/work/favikon), la plateforme SaaS B2B sur laquelle je combine React Query et Redux Toolkit au quotidien, ou apprenez-en plus [à propos de mon parcours](/about) de développeur Full Stack.

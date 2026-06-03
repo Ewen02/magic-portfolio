@@ -16,6 +16,7 @@ const routeMeta: Record<string, { priority: number; changeFrequency: ChangeFreq 
   "/about": { priority: 0.9, changeFrequency: "monthly" },
   "/work": { priority: 0.9, changeFrequency: "weekly" },
   "/blog": { priority: 0.8, changeFrequency: "weekly" },
+  "/uses": { priority: 0.6, changeFrequency: "monthly" },
 };
 
 export default async function sitemap() {

@@ -69,6 +69,11 @@ export default function About() {
       display: about.technical.display,
       items: about.technical.skills.map((skill) => skill.title),
     },
+    {
+      title: about.faq?.title,
+      display: about.faq?.display,
+      items: [],
+    },
   ];
   return (
     <Column maxWidth="m">
@@ -119,6 +124,26 @@ export default function About() {
           }),
         }}
       />
+      {about.faq?.display && (
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "FAQPage",
+              mainEntity: about.faq.items.map((item) => ({
+                "@type": "Question",
+                name: item.question,
+                acceptedAnswer: {
+                  "@type": "Answer",
+                  text: item.answer,
+                },
+              })),
+            }),
+          }}
+        />
+      )}
       {about.tableOfContent.display && (
         <Column
           left="0"
@@ -362,6 +387,32 @@ export default function About() {
                         ))}
                       </Flex>
                     )}
+                  </Column>
+                ))}
+              </Column>
+            </>
+          )}
+
+          {about.faq?.display && (
+            <>
+              <Heading
+                as="h2"
+                id={about.faq.title}
+                variant="display-strong-s"
+                marginTop="40"
+                marginBottom="m"
+              >
+                {about.faq.title}
+              </Heading>
+              <Column fillWidth gap="l">
+                {about.faq.items.map((item, index) => (
+                  <Column key={`faq-${index}`} fillWidth gap="8">
+                    <Text as="h3" variant="heading-strong-m">
+                      {item.question}
+                    </Text>
+                    <Text variant="body-default-m" onBackground="neutral-weak">
+                      {item.answer}
+                    </Text>
                   </Column>
                 ))}
               </Column>

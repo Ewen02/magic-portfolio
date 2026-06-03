@@ -106,6 +106,36 @@ export default function Project({ params }: WorkParams) {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              {
+                "@type": "ListItem",
+                position: 1,
+                name: "Accueil",
+                item: `https://${baseURL}`,
+              },
+              {
+                "@type": "ListItem",
+                position: 2,
+                name: "Projets",
+                item: `https://${baseURL}/work`,
+              },
+              {
+                "@type": "ListItem",
+                position: 3,
+                name: post.metadata.title,
+                item: `https://${baseURL}/work/${post.slug}`,
+              },
+            ],
+          }),
+        }}
+      />
       <Column maxWidth="xs" gap="16">
         <Button href="/work" variant="tertiary" weight="default" size="s" prefixIcon="chevronLeft">
           Projets

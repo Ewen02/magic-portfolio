@@ -81,7 +81,7 @@ const home = {
   label: "Home",
   title: `Portfolio de ${person.name}`,
   description: `${person.name}, ${person.role} diplômé d'Epitech. Spécialisé en React, Next.js, Node.js, NestJS et IA appliquée (RAG, LLM, agents).`,
-  headline: <>Développeur Full Stack</>,
+  headline: <>Ewen Le Quéré, Développeur Full Stack</>,
   subline: (
     <>
       Je suis Ewen, développeur Full Stack diplômé d'Epitech, avec 3 ans d'expérience
@@ -237,6 +237,41 @@ const about = {
   },
 
   // --------------------------------------------------------------------------
+  // FAQ (alimente aussi le schema FAQPage pour les rich snippets Google)
+  // --------------------------------------------------------------------------
+  faq: {
+    display: true,
+    title: "Questions fréquentes",
+    items: [
+      {
+        question: "Es-tu disponible pour de nouvelles opportunités ?",
+        answer:
+          "Oui, je suis ouvert à toute opportunité : CDI, freelance ou mission. Vous pouvez me contacter par email ou planifier un appel directement depuis cette page.",
+      },
+      {
+        question: "Quelles technologies maîtrises-tu ?",
+        answer:
+          "Côté frontend : React, Next.js et TypeScript. Côté backend : Node.js, NestJS et Express. Je travaille aussi sur l'IA appliquée (pipelines RAG, LLM, systèmes multi-agents avec LangChain/LangGraph) et les architectures temps réel (WebSocket, SSE, Redis).",
+      },
+      {
+        question: "As-tu de l'expérience en IA et LLM ?",
+        answer:
+          "Oui. J'ai conçu des pipelines RAG complets (parsing, chunking, embeddings, reranking), des systèmes multi-agents et du streaming IA token-par-token en production, notamment sur des plateformes SaaS B2B.",
+      },
+      {
+        question: "Travailles-tu en freelance ?",
+        answer:
+          "Oui, je réalise des missions freelance. J'ai par exemple développé from scratch un système d'affiliation complet pour Hercules Thrustmaster, en production depuis 2023.",
+      },
+      {
+        question: "Où es-tu basé ?",
+        answer:
+          "Je suis basé à Paris, en France. Je travaille en français et en anglais, sur site comme à distance.",
+      },
+    ],
+  },
+
+  // --------------------------------------------------------------------------
   // TECHNICAL SKILLS
   // --------------------------------------------------------------------------
   technical: {
@@ -322,6 +357,80 @@ const work = {
 };
 
 // ============================================================================
+// USES (stack & outils)
+// ============================================================================
+
+const uses = {
+  label: "Uses",
+  title: "Stack & outils",
+  description: `Les technologies, langages et outils qu'utilise ${person.name} au quotidien : frontend, backend, IA, bases de données et DevOps.`,
+  intro:
+    "Voici les outils et technologies que j'utilise au quotidien pour concevoir des produits web modernes, performants et maintenables — du frontend à l'IA en passant par l'infrastructure.",
+  categories: [
+    {
+      title: "Langages",
+      items: [
+        { name: "TypeScript", note: "Mon langage principal, frontend comme backend." },
+        { name: "JavaScript", note: "Pour le runtime Node.js et le web." },
+        { name: "Dart", note: "Développement mobile avec Flutter." },
+        { name: "C# / .NET", note: "Backend en environnement entreprise." },
+        { name: "PHP", note: "Laravel et CodeIgniter sur des projets historiques." },
+      ],
+    },
+    {
+      title: "Frontend",
+      items: [
+        { name: "React", note: "La base de toutes mes interfaces." },
+        { name: "Next.js", note: "App Router, SSR/SSG, streaming, le framework que je préfère." },
+        { name: "Tailwind CSS", note: "Pour styliser vite et rester cohérent." },
+        { name: "React Query", note: "Cache serveur, invalidation et optimistic updates." },
+        { name: "Redux Toolkit", note: "State global quand c'est justifié." },
+        { name: "Framer Motion", note: "Animations fluides et interactions." },
+      ],
+    },
+    {
+      title: "Backend",
+      items: [
+        { name: "Node.js", note: "Runtime serveur de prédilection." },
+        { name: "NestJS", note: "Architecture modulaire et typée pour les APIs." },
+        { name: "Express", note: "Pour les services légers et le streaming SSE." },
+        { name: "Prisma", note: "ORM typé pour PostgreSQL." },
+        { name: "BullMQ", note: "Files d'attente et jobs asynchrones." },
+      ],
+    },
+    {
+      title: "IA & Données",
+      items: [
+        { name: "LangChain / LangGraph", note: "Orchestration d'agents et workflows LLM." },
+        { name: "Qdrant", note: "Vector database pour la recherche sémantique." },
+        { name: "OpenAI", note: "Embeddings et génération." },
+        { name: "Redis", note: "Cache, état temps réel et pub/sub." },
+        { name: "PostgreSQL / MongoDB", note: "Bases relationnelles et documentaires." },
+        { name: "Elasticsearch", note: "Recherche full-text à grande échelle." },
+      ],
+    },
+    {
+      title: "Temps réel",
+      items: [
+        { name: "Socket.IO", note: "WebSocket bidirectionnel pour les rooms et le live." },
+        { name: "Server-Sent Events", note: "Streaming unidirectionnel pour les réponses IA." },
+      ],
+    },
+    {
+      title: "DevOps & Outils",
+      items: [
+        { name: "Git", note: "GitHub et GitLab au quotidien." },
+        { name: "Docker", note: "Conteneurisation et environnements reproductibles." },
+        { name: "Turborepo / pnpm", note: "Monorepos performants." },
+        { name: "Vercel / Railway", note: "Déploiement frontend et backend." },
+        { name: "GitHub Actions", note: "CI/CD automatisée." },
+        { name: "Figma", note: "Design et intégration." },
+      ],
+    },
+  ],
+};
+
+// ============================================================================
 // GALLERY
 // ============================================================================
 
@@ -337,4 +446,4 @@ const gallery = {
 // EXPORTS
 // ============================================================================
 
-export { person, social, newsletter, home, about, blog, work, gallery, keywords };
+export { person, social, newsletter, home, about, blog, work, gallery, uses, keywords };
