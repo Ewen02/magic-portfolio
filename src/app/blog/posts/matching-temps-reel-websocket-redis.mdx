@@ -1,0 +1,96 @@
+---
+title: "Matching en temps réel : WebSocket et Redis pour des rooms"
+publishedAt: "2026-04-15"
+summary: "Retour d'expérience sur la synchronisation d'état entre plusieurs clients en temps réel avec WebSocket et Socket.IO. Comment j'ai construit des rooms multi-utilisateurs et un système de match instantané avec Redis et une gateway NestJS."
+tag: "Architecture"
+---
+
+## Le défi : synchroniser plusieurs clients en temps réel
+
+Choisir un film à plusieurs, c'est souvent l'enfer. C'est exactement le problème que résout **Swipe Movie** : une app web collaborative où un groupe swipe sur des films, et dès que tout le monde aime le même, un **match** apparaît instantanément sur chaque écran.
+
+Derrière cette mécanique simple se cache un vrai problème d'architecture : comment garder plusieurs clients **synchronisés en temps réel** sans qu'aucun ne soit en retard d'un train ? Voici les choix qui ont fait tenir l'app en production, autour de deux briques : **WebSocket** (via Socket.IO) et **Redis**.
+
+## Pourquoi WebSocket plutôt que du polling
+
+La première tentation est toujours le polling HTTP : interroger le serveur toutes les X secondes pour savoir si quelque chose a changé. En pratique, c'est inadapté à un usage **temps réel** : latence perceptible, charge inutile sur le serveur, et une expérience qui sent le décalage.
+
+Le **WebSocket** ouvre un canal bidirectionnel persistant entre le client et le serveur. Le serveur peut donc **pousser** un événement au moment exact où il se produit — un match, un nouveau participant, un swipe. Avec **Socket.IO**, on récupère en plus la reconnexion automatique, le fallback transport et surtout l'abstraction des **rooms**, qui colle parfaitement à mon besoin.
+
+## Les rooms : isoler chaque session
+
+Chaque session de groupe est une **room** identifiée par un code de partage court. C'est ce code qu'on envoie à ses amis pour qu'ils rejoignent — **sans avoir besoin de compte**, ce qui supprime toute friction à l'entrée.
+
+Côté Socket.IO, une room est un canal logique : tout événement émis vers une room n'atteint que les sockets qui l'ont rejointe. C'est la garantie d'**isolation** entre les groupes : deux sessions parallèles ne se voient jamais.
+
+La **NestJS gateway** orchestre tout ça via des décorateurs `@SubscribeMessage`. Voici le cœur de la logique : rejoindre une room et diffuser un match.
+
+```typescript
+@WebSocketGateway({ cors: true })
+export class RoomGateway {
+  @WebSocketServer() server: Server;
+
+  constructor(private readonly roomService: RoomService) {}
+
+  @SubscribeMessage('join-room')
+  async handleJoin(
+    @MessageBody() { code }: JoinRoomDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    await client.join(code);
+    // État de la room persisté dans Redis
+    const state = await this.roomService.addParticipant(code, client.id);
+    // On synchronise tout le monde dans la room
+    this.server.to(code).emit('room-updated', state);
+  }
+
+  @SubscribeMessage('swipe')
+  async handleSwipe(
+    @MessageBody() { code, movieId, liked }: SwipeDto,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const match = await this.roomService.registerSwipe(code, movieId, liked);
+    if (match) {
+      // Un match ! Diffusé en temps réel à toute la room
+      this.server.to(code).emit('match', { movieId });
+    }
+  }
+}
+```
+
+## Redis : la mémoire partagée des rooms
+
+Un point crucial : **l'état d'une room ne doit pas vivre dans la mémoire d'un process Node**. Si je redémarre le serveur, ou si je scale horizontalement sur plusieurs instances, cet état est soit perdu, soit incohérent entre les nœuds.
+
+C'est là qu'intervient **Redis**, qui joue deux rôles complémentaires.
+
+### 1. Le cache et l'état des rooms
+
+Pour chaque room, je stocke dans Redis l'état courant : participants connectés, films déjà vus, et les likes de chacun. C'est une mémoire partagée, rapide et accessible par n'importe quelle instance du backend. Quand un participant rejoint ou swipe, on lit et met à jour cet état atomiquement.
+
+Détecter un **match** devient alors trivial : pour un film donné, il suffit de vérifier que tous les participants de la room l'ont liké. Comme l'information vit dans Redis, ce calcul est cohérent même sous charge.
+
+### 2. La synchronisation d'état entre instances
+
+Avec plusieurs instances Node derrière un load balancer, deux clients d'une même room peuvent être connectés à des serveurs différents. Sans coordination, un `emit` sur l'instance A n'atteindrait jamais le client connecté à l'instance B.
+
+L'**adapter Redis** de Socket.IO résout ça : il utilise le pub/sub de Redis pour propager les événements entre toutes les instances. Du coup, `this.server.to(code).emit('match', ...)` touche bien **tous** les participants, peu importe le serveur qui les héberge. C'est ce qui rend la **synchronisation d'état multi-utilisateurs** fiable à l'échelle.
+
+## La stack complète
+
+L'ensemble repose sur une stack moderne et cohérente :
+
+- **NestJS 11** pour la gateway WebSocket et l'API
+- **Socket.IO** pour le transport temps réel et les rooms
+- **Redis** pour le cache, l'état des rooms et le pub/sub inter-instances
+- **PostgreSQL + Prisma** pour les données persistantes
+- **Next.js 16** côté client, qui consomme les événements en direct
+
+## Les leçons à retenir
+
+1. **Le WebSocket bat le polling** dès qu'on parle de vrai temps réel — pas de compromis sur la latence.
+2. **Ne gardez jamais l'état en mémoire process** : Redis comme source de vérité partagée, c'est ce qui rend le scaling possible.
+3. **L'adapter Redis de Socket.IO est non négociable** dès que vous dépassez une seule instance.
+4. **Les rooms sont une abstraction puissante** : isolation, ciblage des événements et codes de partage sans compte, le tout gratuitement.
+
+Vous voulez voir ce système de **matching en temps réel** en action ? Le projet complet est détaillé sur la page [Swipe Movie](/work/swipe-movie). N'hésitez pas à [me contacter](/about) pour en discuter.

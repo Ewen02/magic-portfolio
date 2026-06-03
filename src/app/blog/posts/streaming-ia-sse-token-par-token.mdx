@@ -1,0 +1,110 @@
+---
+title: "Streaming IA token-par-token : le SSE en production avec Next.js"
+publishedAt: "2026-05-20"
+summary: "Retour d'expérience sur le streaming SSE (Server-Sent Events) pour afficher les réponses IA token-par-token en temps réel. Implémentation côté serveur Express et côté client React avec Next.js, gestion des interruptions et du contexte conversationnel d'un LLM en production."
+tag: "IA"
+---
+
+## Pourquoi le streaming change tout pour une réponse IA
+
+Quand on branche un LLM sur une interface, le premier réflexe est d'attendre la réponse complète avant de l'afficher. C'est simple, mais l'expérience est mauvaise : l'utilisateur fixe un loader pendant plusieurs secondes sans savoir si quelque chose se passe. Sur Favikon, notre plateforme SaaS B2B de marketing d'influence, nos réponses IA peuvent être longues, et ce temps mort cassait totalement la sensation de conversation.
+
+La solution est le **streaming token-par-token** : on affiche chaque morceau de texte dès que le modèle le génère, ce qui crée cet effet de "live typing" devenu un standard. Pour ça, j'ai mis en place du **streaming SSE (Server-Sent Events)**. Voici comment, et surtout ce que j'ai appris en le passant en production.
+
+## SSE plutôt que WebSocket : un choix assumé
+
+On utilisait déjà Socket.io pour certaines fonctionnalités temps réel. La tentation était grande de tout faire passer par WebSocket. Mais pour du **LLM en temps réel**, le flux est unidirectionnel : le serveur pousse des tokens vers le client, sans dialogue bidirectionnel pendant la génération.
+
+Les **Server-Sent Events** sont parfaits pour ce cas :
+
+- une simple connexion HTTP, sans handshake spécifique ;
+- une reconnexion automatique gérée nativement par le navigateur ;
+- un format texte trivial à parser ;
+- une compatibilité directe avec les proxies HTTP standards.
+
+On a donc réservé Socket.io aux échanges réellement bidirectionnels, et utilisé le SSE pour le streaming des **réponses IA**.
+
+## Côté serveur : streamer les tokens avec Express
+
+Le principe est de garder la connexion ouverte et d'écrire chaque token au fil de l'eau dans la réponse, en respectant le format `text/event-stream`. Avec Node.js et Express, ça ressemble à ceci :
+
+```js
+app.post("/api/chat/stream", async (req, res) => {
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+
+  const stream = await llm.chat({
+    messages: req.body.messages, // contexte conversationnel
+    stream: true,
+  });
+
+  for await (const chunk of stream) {
+    const token = chunk.choices[0]?.delta?.content ?? "";
+    if (token) res.write(`data: ${JSON.stringify({ token })}\n\n`);
+  }
+
+  res.write("data: [DONE]\n\n");
+  res.end();
+});
+```
+
+Deux détails comptent énormément en production. D'abord, **désactiver le buffering** : certains proxys ou middlewares de compression attendent d'avoir un gros bloc avant de l'envoyer, ce qui annule complètement l'effet temps réel. Ensuite, **envoyer le contexte conversationnel** à chaque requête : le SSE est sans état côté connexion, c'est donc au payload de transporter l'historique des messages.
+
+## Côté client : afficher chaque token dans React
+
+Côté frontend Next.js, j'ai choisi le **fetch streaming** plutôt que `EventSource`. La raison est simple : `EventSource` ne gère que les requêtes `GET`, alors qu'on envoie un historique de conversation parfois volumineux en `POST`. Le `fetch` avec lecture de stream donne tout le contrôle nécessaire :
+
+```tsx
+const res = await fetch("/api/chat/stream", {
+  method: "POST",
+  body: JSON.stringify({ messages }),
+  signal: controller.signal,
+});
+
+const reader = res.body.getReader();
+const decoder = new TextDecoder();
+
+while (true) {
+  const { done, value } = await reader.read();
+  if (done) break;
+
+  const chunk = decoder.decode(value);
+  for (const line of chunk.split("\n\n")) {
+    if (!line.startsWith("data: ")) continue;
+    const data = line.slice(6);
+    if (data === "[DONE]") return;
+    const { token } = JSON.parse(data);
+    setMessage((prev) => prev + token); // affichage live
+  }
+}
+```
+
+Chaque token arrivé met à jour l'état React, et l'utilisateur voit la réponse s'écrire en direct. C'est exactement cet effet token-par-token qui donne l'impression d'une vraie conversation.
+
+## Gérer les interruptions proprement
+
+Un point souvent négligé : que se passe-t-il quand l'utilisateur change d'avis et veut arrêter la génération ? Sans gestion, le serveur continue à consommer le LLM dans le vide et à facturer des tokens inutiles.
+
+La clé est l'`AbortController`. Côté client, un bouton "Stop" appelle `controller.abort()`, ce qui coupe le `fetch`. Côté serveur, on écoute la fermeture de la connexion pour interrompre le stream du LLM :
+
+```js
+req.on("close", () => stream.controller?.abort());
+```
+
+Cette boucle propre — du clic utilisateur jusqu'à l'arrêt du modèle — est ce qui fait la différence entre un prototype et une fonctionnalité réellement utilisable en production.
+
+## Les leçons retenues
+
+Mettre du **streaming SSE** en production m'a appris quelques principes solides :
+
+- le **Next.js streaming** transforme la perception de latence : un premier token rapide vaut mieux qu'une réponse complète lente ;
+- le buffering est l'ennemi silencieux à traquer en priorité ;
+- la gestion des interruptions n'est pas optionnelle quand on paye au token ;
+- le contexte conversationnel doit voyager dans le payload, pas dans la connexion.
+
+Le résultat est une expérience de chat fluide, où la réponse IA se construit sous les yeux de l'utilisateur — exactement ce qu'on attend aujourd'hui d'un produit moderne.
+
+---
+
+Envie de voir comment ces choix techniques s'intègrent dans un vrai produit SaaS ? Découvrez le projet [Favikon](/work/favikon), ou apprenez-en plus sur mon parcours de développeur Full Stack sur ma page [À propos](/about).
