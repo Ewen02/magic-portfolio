@@ -10,6 +10,13 @@
   page-break-inside: avoid;
 }
 
+.heading {
+  // Never leave a section title alone at the bottom of a page.
+  break-after: avoid;
+  page-break-after: avoid;
+  break-inside: avoid;
+}
+
 @media print {
   .noPrint {
     display: none !important;

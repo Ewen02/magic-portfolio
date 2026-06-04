@@ -118,7 +118,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Profile / accroche */}
         {about.intro.display && (
           <Column className={styles.entry} fillWidth gap="8">
-            <Heading as="h2" variant="display-strong-xs">
+            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
               {l.profile}
             </Heading>
             <Column textVariant="body-default-s" gap="8">
@@ -132,7 +132,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Experience */}
         {about.work.display && (
           <Column fillWidth gap="m">
-            <Heading as="h2" variant="display-strong-xs">
+            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
               {l.experience}
             </Heading>
             <Column fillWidth gap="l">
@@ -165,7 +165,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Education */}
         {about.studies.display && (
           <Column fillWidth gap="m">
-            <Heading as="h2" variant="display-strong-xs">
+            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
               {l.education}
             </Heading>
             <Column fillWidth gap="m">
@@ -186,7 +186,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Skills — compact: one dense line per category */}
         {about.technical.display && (
           <Column className={styles.entry} fillWidth gap="8">
-            <Heading as="h2" variant="display-strong-xs">
+            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
               {l.skills}
             </Heading>
             <Column fillWidth gap="4">
@@ -207,7 +207,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Languages */}
         {person.languages?.length > 0 && (
           <Column className={styles.entry} fillWidth gap="8">
-            <Heading as="h2" variant="display-strong-xs">
+            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
               {l.languages}
             </Heading>
             <Text variant="body-default-s" onBackground="neutral-weak">
