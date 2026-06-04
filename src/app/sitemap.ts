@@ -31,8 +31,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // One entry per (locale, path), each carrying hreflang alternates.
   const entries: MetadataRoute.Sitemap = [];
 
-  // Static routes.
-  const activeRoutes = Object.keys(routesConfig).filter((route) => routesConfig[route]);
+  // Static routes. `/cv` is intentionally excluded (it is noindex).
+  const noindex = new Set(["/cv"]);
+  const activeRoutes = Object.keys(routesConfig).filter(
+    (route) => routesConfig[route] && !noindex.has(route),
+  );
   for (const route of activeRoutes) {
     const meta = routeMeta[route] ?? { priority: 0.5, changeFrequency: "monthly" as ChangeFreq };
     const path = route !== "/" ? route : "";

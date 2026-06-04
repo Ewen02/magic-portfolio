@@ -7,6 +7,7 @@ const routes = {
   "/blog": true,
   "/uses": true,
   "/contact": true,
+  "/cv": true,
 };
 
 const protectedRoutes = {};

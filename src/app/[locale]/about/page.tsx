@@ -301,6 +301,15 @@ export default async function About({ params: { locale } }: LocaleParam) {
                 )}
               </Flex>
             )}
+            <Flex className={styles.blockAlign} paddingTop="8" fitWidth>
+              <Button
+                href="/cv"
+                prefixIcon="clipboard"
+                label={t("viewCV")}
+                size="s"
+                variant="secondary"
+              />
+            </Flex>
           </Column>
 
           {about.intro.display && (

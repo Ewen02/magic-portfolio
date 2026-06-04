@@ -16,7 +16,8 @@
     "latestPosts": "Latest posts"
   },
   "about": {
-    "scheduleCall": "Schedule a call"
+    "scheduleCall": "Schedule a call",
+    "viewCV": "View résumé"
   },
   "work": {
     "backToProjects": "Projects",
