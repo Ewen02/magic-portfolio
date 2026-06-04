@@ -1,10 +1,17 @@
-import { Column, Flex, Heading } from "@/once-ui/components";
+import { setRequestLocale } from "next-intl/server";
+import { Column, Heading } from "@/once-ui/components";
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
 import { baseURL } from "@/app/resources";
-import { blog, person, newsletter } from "@/app/resources/content";
+import { getContent, type Locale } from "@/app/resources/getContent";
 
-export async function generateMetadata() {
+type LocaleParam = { params: { locale: Locale } };
+
+const localeUrl = (locale: Locale, path: string) =>
+  locale === "fr" ? `https://${baseURL}${path}` : `https://${baseURL}/${locale}${path}`;
+
+export async function generateMetadata({ params: { locale } }: LocaleParam) {
+  const { blog } = getContent(locale);
   const title = blog.title;
   const description = blog.description;
   const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
@@ -13,13 +20,18 @@ export async function generateMetadata() {
     title,
     description,
     alternates: {
-      canonical: `https://${baseURL}/blog`,
+      canonical: localeUrl(locale, "/blog"),
+      languages: {
+        fr: `https://${baseURL}/blog`,
+        en: `https://${baseURL}/en/blog`,
+      },
     },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `https://${baseURL}/blog`,
+      locale: locale === "en" ? "en_US" : "fr_FR",
+      url: localeUrl(locale, "/blog"),
       images: [
         {
           url: ogImage,
@@ -36,7 +48,10 @@ export async function generateMetadata() {
   };
 }
 
-export default function Blog() {
+export default async function Blog({ params: { locale } }: LocaleParam) {
+  setRequestLocale(locale);
+  const { blog, person, newsletter } = getContent(locale);
+
   return (
     <Column maxWidth="s">
       <script
@@ -48,13 +63,13 @@ export default function Blog() {
             "@type": "Blog",
             headline: blog.title,
             description: blog.description,
-            url: `https://${baseURL}/blog`,
-            inLanguage: "fr-FR",
+            url: localeUrl(locale, "/blog"),
+            inLanguage: locale === "en" ? "en-US" : "fr-FR",
             image: `https://${baseURL}/og?title=${encodeURIComponent(blog.title)}`,
             author: {
               "@type": "Person",
               name: person.name,
-              url: `https://${baseURL}/about`,
+              url: localeUrl(locale, "/about"),
               image: {
                 "@type": "ImageObject",
                 url: `https://${baseURL}${person.avatar}`,
@@ -67,8 +82,8 @@ export default function Blog() {
         {blog.title}
       </Heading>
       <Column fillWidth flex={1}>
-        <Posts range={[1, 3]} thumbnail />
-        <Posts range={[4]} columns="2" />
+        <Posts range={[1, 3]} thumbnail locale={locale} />
+        <Posts range={[4]} columns="2" locale={locale} />
       </Column>
       {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Column>

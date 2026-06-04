@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "work": "Work",
+    "blog": "Blog",
+    "uses": "Uses",
+    "contact": "Contact"
+  },
+  "locale": {
+    "switchTo": "Switch language",
+    "fr": "FR",
+    "en": "EN"
+  },
+  "home": {
+    "latestPosts": "Latest posts"
+  },
+  "about": {
+    "scheduleCall": "Schedule a call"
+  },
+  "work": {
+    "backToProjects": "Projects",
+    "readCaseStudy": "Read case study",
+    "viewProject": "View project"
+  },
+  "blog": {
+    "backToPosts": "Posts"
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "blog": "Blog",
+    "work": "Work"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist."
+  },
+  "routeGuard": {
+    "passwordProtected": "This page is password protected",
+    "passwordLabel": "Password",
+    "submit": "Submit",
+    "incorrectPassword": "Incorrect password"
+  }
+}

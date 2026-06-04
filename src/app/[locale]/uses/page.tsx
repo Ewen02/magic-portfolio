@@ -1,8 +1,15 @@
+import { setRequestLocale } from "next-intl/server";
 import { Column, Flex, Heading, Tag, Text } from "@/once-ui/components";
 import { baseURL } from "@/app/resources";
-import { person, uses } from "@/app/resources/content";
+import { getContent, type Locale } from "@/app/resources/getContent";
 
-export async function generateMetadata() {
+type LocaleParam = { params: { locale: Locale } };
+
+const localeUrl = (locale: Locale, path: string) =>
+  locale === "fr" ? `https://${baseURL}${path}` : `https://${baseURL}/${locale}${path}`;
+
+export async function generateMetadata({ params: { locale } }: LocaleParam) {
+  const { uses } = getContent(locale);
   const title = uses.title;
   const description = uses.description;
   const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
@@ -11,13 +18,18 @@ export async function generateMetadata() {
     title,
     description,
     alternates: {
-      canonical: `https://${baseURL}/uses`,
+      canonical: localeUrl(locale, "/uses"),
+      languages: {
+        fr: `https://${baseURL}/uses`,
+        en: `https://${baseURL}/en/uses`,
+      },
     },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `https://${baseURL}/uses`,
+      locale: locale === "en" ? "en_US" : "fr_FR",
+      url: localeUrl(locale, "/uses"),
       images: [
         {
           url: ogImage,
@@ -34,7 +46,10 @@ export async function generateMetadata() {
   };
 }
 
-export default function Uses() {
+export default async function Uses({ params: { locale } }: LocaleParam) {
+  setRequestLocale(locale);
+  const { person, uses } = getContent(locale);
+
   return (
     <Column maxWidth="m" gap="xl">
       <script
@@ -46,12 +61,12 @@ export default function Uses() {
             "@type": "WebPage",
             name: uses.title,
             description: uses.description,
-            url: `https://${baseURL}/uses`,
-            inLanguage: "fr-FR",
+            url: localeUrl(locale, "/uses"),
+            inLanguage: locale === "en" ? "en-US" : "fr-FR",
             author: {
               "@type": "Person",
               name: person.name,
-              url: `https://${baseURL}/about`,
+              url: localeUrl(locale, "/about"),
             },
           }),
         }}

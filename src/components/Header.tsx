@@ -1,13 +1,16 @@
 "use client";
 
-import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
+
+import { usePathname } from "@/i18n/navigation";
+import { LocaleSwitcher } from "@/components/LocaleSwitcher";
 
 import { Fade, Flex, Line, ToggleButton } from "@/once-ui/components";
 import styles from "@/components/Header.module.scss";
 
 import { routes, display } from "@/app/resources";
-import { person, home, about, blog, work, uses, contact } from "@/app/resources/content";
+import { person } from "@/app/resources/content";
 
 type TimeDisplayProps = {
   timeZone: string;
@@ -44,6 +47,7 @@ export default TimeDisplay;
 
 export const Header = () => {
   const pathname = usePathname() ?? "";
+  const t = useTranslations("nav");
 
   return (
     <>
@@ -81,7 +85,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="person"
                     href="/about"
-                    label={about.label}
+                    label={t("about")}
                     selected={pathname === "/about"}
                   />
                   <ToggleButton
@@ -98,7 +102,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="grid"
                     href="/work"
-                    label={work.label}
+                    label={t("work")}
                     selected={pathname.startsWith("/work")}
                   />
                   <ToggleButton
@@ -115,7 +119,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="book"
                     href="/blog"
-                    label={blog.label}
+                    label={t("blog")}
                     selected={pathname.startsWith("/blog")}
                   />
                   <ToggleButton
@@ -132,7 +136,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="grid"
                     href="/uses"
-                    label={uses.label}
+                    label={t("uses")}
                     selected={pathname.startsWith("/uses")}
                   />
                   <ToggleButton
@@ -149,7 +153,7 @@ export const Header = () => {
                     className="s-flex-hide"
                     prefixIcon="email"
                     href="/contact"
-                    label={contact.label}
+                    label={t("contact")}
                     selected={pathname.startsWith("/contact")}
                   />
                   <ToggleButton
@@ -171,6 +175,7 @@ export const Header = () => {
             textVariant="body-default-s"
             gap="20"
           >
+            <LocaleSwitcher />
             <Flex hide="s">{display.time && <TimeDisplay timeZone={person.location} />}</Flex>
           </Flex>
         </Flex>

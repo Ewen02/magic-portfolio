@@ -1,0 +1,45 @@
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "work": "Projets",
+    "blog": "Blog",
+    "uses": "Setup",
+    "contact": "Contact"
+  },
+  "locale": {
+    "switchTo": "Changer de langue",
+    "fr": "FR",
+    "en": "EN"
+  },
+  "home": {
+    "latestPosts": "Derniers articles"
+  },
+  "about": {
+    "scheduleCall": "Planifier un appel"
+  },
+  "work": {
+    "backToProjects": "Projets",
+    "readCaseStudy": "Lire l'étude de cas",
+    "viewProject": "Voir le projet"
+  },
+  "blog": {
+    "backToPosts": "Articles"
+  },
+  "breadcrumb": {
+    "home": "Accueil",
+    "blog": "Blog",
+    "work": "Projets"
+  },
+  "notFound": {
+    "code": "404",
+    "title": "Page introuvable",
+    "description": "La page que vous recherchez n'existe pas."
+  },
+  "routeGuard": {
+    "passwordProtected": "Cette page est protégée par un mot de passe",
+    "passwordLabel": "Mot de passe",
+    "submit": "Valider",
+    "incorrectPassword": "Mot de passe incorrect"
+  }
+}

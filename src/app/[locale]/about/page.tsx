@@ -10,12 +10,19 @@ import {
   Tag,
   Text,
 } from "@/once-ui/components";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { baseURL } from "@/app/resources";
+import { getContent, type Locale } from "@/app/resources/getContent";
 import TableOfContents from "@/components/about/TableOfContents";
 import styles from "@/components/about/about.module.scss";
-import { person, about, social } from "@/app/resources/content";
 
-export async function generateMetadata() {
+type LocaleParam = { params: { locale: Locale } };
+
+const localeUrl = (locale: Locale, path: string) =>
+  locale === "fr" ? `https://${baseURL}${path}` : `https://${baseURL}/${locale}${path}`;
+
+export async function generateMetadata({ params: { locale } }: LocaleParam) {
+  const { about } = getContent(locale);
   const title = about.title;
   const description = about.description;
   const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
@@ -24,13 +31,18 @@ export async function generateMetadata() {
     title,
     description,
     alternates: {
-      canonical: `https://${baseURL}/about`,
+      canonical: localeUrl(locale, "/about"),
+      languages: {
+        fr: `https://${baseURL}/about`,
+        en: `https://${baseURL}/en/about`,
+      },
     },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `https://${baseURL}/about`,
+      locale: locale === "en" ? "en_US" : "fr_FR",
+      url: localeUrl(locale, "/about"),
       images: [
         {
           url: ogImage,
@@ -47,7 +59,10 @@ export async function generateMetadata() {
   };
 }
 
-export default function About() {
+export default async function About({ params: { locale } }: LocaleParam) {
+  setRequestLocale(locale);
+  const t = await getTranslations("about");
+  const { person, about, social } = getContent(locale);
   const structure = [
     {
       title: about.intro.title,
@@ -94,7 +109,7 @@ export default function About() {
             familyName: person.lastName,
             jobTitle: person.role,
             description: about.description,
-            url: `https://${baseURL}/about`,
+            url: localeUrl(locale, "/about"),
             image: `https://${baseURL}${person.avatar}`,
             email: "ewen.le-quere@epitech.eu",
             knowsLanguage: person.languages,
@@ -239,7 +254,7 @@ export default function About() {
                 vertical="center"
               >
                 <Icon paddingLeft="12" name="calendar" onBackground="brand-weak" />
-                <Flex paddingX="8">Planifier un appel</Flex>
+                <Flex paddingX="8">{t("scheduleCall")}</Flex>
                 <IconButton
                   href={about.calendar.link}
                   data-border="rounded"

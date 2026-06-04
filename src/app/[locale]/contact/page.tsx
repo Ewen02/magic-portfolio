@@ -1,8 +1,15 @@
+import { setRequestLocale } from "next-intl/server";
 import { Button, Column, Flex, Heading, Icon, IconButton, Text } from "@/once-ui/components";
 import { baseURL } from "@/app/resources";
-import { person, contact, social } from "@/app/resources/content";
+import { getContent, type Locale } from "@/app/resources/getContent";
 
-export async function generateMetadata() {
+type LocaleParam = { params: { locale: Locale } };
+
+const localeUrl = (locale: Locale, path: string) =>
+  locale === "fr" ? `https://${baseURL}${path}` : `https://${baseURL}/${locale}${path}`;
+
+export async function generateMetadata({ params: { locale } }: LocaleParam) {
+  const { contact } = getContent(locale);
   const title = contact.title;
   const description = contact.description;
   const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
@@ -11,13 +18,18 @@ export async function generateMetadata() {
     title,
     description,
     alternates: {
-      canonical: `https://${baseURL}/contact`,
+      canonical: localeUrl(locale, "/contact"),
+      languages: {
+        fr: `https://${baseURL}/contact`,
+        en: `https://${baseURL}/en/contact`,
+      },
     },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `https://${baseURL}/contact`,
+      locale: locale === "en" ? "en_US" : "fr_FR",
+      url: localeUrl(locale, "/contact"),
       images: [
         {
           url: ogImage,
@@ -34,7 +46,10 @@ export async function generateMetadata() {
   };
 }
 
-export default function Contact() {
+export default async function Contact({ params: { locale } }: LocaleParam) {
+  setRequestLocale(locale);
+  const { person, contact, social } = getContent(locale);
+
   return (
     <Column maxWidth="m" gap="xl">
       <script
@@ -46,14 +61,14 @@ export default function Contact() {
             "@type": "ContactPage",
             name: contact.title,
             description: contact.description,
-            url: `https://${baseURL}/contact`,
-            inLanguage: "fr-FR",
+            url: localeUrl(locale, "/contact"),
+            inLanguage: locale === "en" ? "en-US" : "fr-FR",
             mainEntity: {
               "@type": "Person",
               name: person.name,
               jobTitle: person.role,
               email: `mailto:${person.email}`,
-              url: `https://${baseURL}/about`,
+              url: localeUrl(locale, "/about"),
               sameAs: social
                 .filter((item) => item.link && item.link.startsWith("http"))
                 .map((item) => item.link),
@@ -81,7 +96,9 @@ export default function Contact() {
           vertical="center"
         >
           <Icon paddingLeft="12" name="calendar" onBackground="brand-weak" />
-          <Flex paddingX="8">Planifier un appel de 30 min</Flex>
+          <Flex paddingX="8">
+            {locale === "en" ? "Schedule a 30-min call" : "Planifier un appel de 30 min"}
+          </Flex>
           <IconButton
             href={contact.calendar.link}
             data-border="rounded"
@@ -93,7 +110,7 @@ export default function Contact() {
 
       <Column fillWidth gap="m">
         <Heading as="h2" variant="display-strong-xs">
-          M'écrire directement
+          {locale === "en" ? "Email me directly" : "M'écrire directement"}
         </Heading>
         <Flex gap="12" wrap>
           <Button
@@ -109,7 +126,7 @@ export default function Contact() {
       {social.length > 0 && (
         <Column fillWidth gap="m">
           <Heading as="h2" variant="display-strong-xs">
-            Réseaux
+            {locale === "en" ? "Social" : "Réseaux"}
           </Heading>
           <Flex gap="12" wrap>
             {social.map(

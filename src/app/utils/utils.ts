@@ -52,21 +52,52 @@ function readMDXFile(filePath: string) {
   return { metadata, content };
 }
 
-function getMDXData(dir: string) {
-  const mdxFiles = getMDXFiles(dir);
-  return mdxFiles.map((file) => {
-    const { metadata, content } = readMDXFile(path.join(dir, file));
-    const slug = path.basename(file, path.extname(file));
+export type Locale = "fr" | "en";
 
-    return {
-      metadata,
-      slug,
-      content,
-    };
-  });
+const DEFAULT_LOCALE: Locale = "fr";
+
+// Extracts the base slug from an MDX filename, stripping an optional locale
+// suffix. e.g. "my-post.en.mdx" -> "my-post", "my-post.mdx" -> "my-post".
+function getBaseSlug(file: string): { slug: string; locale: Locale } {
+  const name = path.basename(file, ".mdx");
+  const parts = name.split(".");
+  const last = parts[parts.length - 1];
+
+  if (last === "en" || last === "fr") {
+    return { slug: parts.slice(0, -1).join("."), locale: last as Locale };
+  }
+  return { slug: name, locale: DEFAULT_LOCALE };
 }
 
-export function getPosts(customPath = ["", "", "", ""]) {
+// Returns one post per slug for the requested locale, falling back to the FR
+// (default) file when the localized `slug.<locale>.mdx` does not exist.
+function getMDXData(dir: string, locale: Locale = DEFAULT_LOCALE) {
+  const mdxFiles = getMDXFiles(dir);
+
+  // Group files by their base slug so each project/article is a single entry
+  // regardless of how many language variants exist on disk.
+  const bySlug = new Map<string, Partial<Record<Locale, string>>>();
+  for (const file of mdxFiles) {
+    const { slug, locale: fileLocale } = getBaseSlug(file);
+    const entry = bySlug.get(slug) ?? {};
+    entry[fileLocale] = file;
+    bySlug.set(slug, entry);
+  }
+
+  const posts: { metadata: Metadata; slug: string; content: string }[] = [];
+  for (const [slug, variants] of bySlug) {
+    // Prefer the requested locale, fall back to FR (default).
+    const file = variants[locale] ?? variants[DEFAULT_LOCALE];
+    if (!file) continue;
+
+    const { metadata, content } = readMDXFile(path.join(dir, file));
+    posts.push({ metadata, slug, content });
+  }
+
+  return posts;
+}
+
+export function getPosts(customPath = ["", "", "", ""], locale: Locale = DEFAULT_LOCALE) {
   const postsDir = path.join(process.cwd(), ...customPath);
-  return getMDXData(postsDir);
+  return getMDXData(postsDir, locale);
 }

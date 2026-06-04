@@ -1,29 +1,39 @@
 import React from "react";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Heading, Flex, Text, Button, Avatar, RevealFx, Arrow, Column } from "@/once-ui/components";
+import { Heading, Flex, Text, Button, Avatar, RevealFx, Column } from "@/once-ui/components";
 import { Projects } from "@/components/work/Projects";
 
 import { baseURL, routes } from "@/app/resources";
-import { home, about, person, newsletter } from "@/app/resources/content";
+import { getContent, type Locale } from "@/app/resources/getContent";
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
 
-export async function generateMetadata() {
+type LocaleParam = { params: { locale: Locale } };
+
+export async function generateMetadata({ params: { locale } }: LocaleParam) {
+  const { home } = getContent(locale);
   const title = home.title;
   const description = home.description;
   const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
+  const url = locale === "fr" ? `https://${baseURL}` : `https://${baseURL}/${locale}`;
 
   return {
     title,
     description,
     alternates: {
-      canonical: `https://${baseURL}`,
+      canonical: url,
+      languages: {
+        fr: `https://${baseURL}`,
+        en: `https://${baseURL}/en`,
+      },
     },
     openGraph: {
       title,
       description,
       type: "website",
-      url: `https://${baseURL}`,
+      locale: locale === "en" ? "en_US" : "fr_FR",
+      url,
       images: [
         {
           url: ogImage,
@@ -40,7 +50,12 @@ export async function generateMetadata() {
   };
 }
 
-export default function Home() {
+export default async function Home({ params: { locale } }: LocaleParam) {
+  setRequestLocale(locale);
+  const t = await getTranslations("home");
+  const { home, about, person, newsletter } = getContent(locale);
+  const baseUrl = locale === "fr" ? `https://${baseURL}` : `https://${baseURL}/${locale}`;
+
   return (
     <Column maxWidth="m" gap="xl" horizontal="center">
       <script
@@ -52,14 +67,14 @@ export default function Home() {
             "@type": "WebSite",
             name: home.title,
             description: home.description,
-            url: `https://${baseURL}`,
-            inLanguage: "fr-FR",
+            url: baseUrl,
+            inLanguage: locale === "en" ? "en-US" : "fr-FR",
             image: `https://${baseURL}/og?title=${encodeURIComponent(home.title)}`,
             publisher: {
               "@type": "Person",
               name: person.name,
               jobTitle: person.role,
-              url: `https://${baseURL}/about`,
+              url: `${baseUrl}/about`,
               image: {
                 "@type": "ImageObject",
                 url: `https://${baseURL}${person.avatar}`,
@@ -104,21 +119,21 @@ export default function Home() {
         </Column>
       </Column>
       <RevealFx translateY="16" delay={0.6}>
-        <Projects range={[1, 1]} />
+        <Projects range={[1, 1]} locale={locale} />
       </RevealFx>
       {routes["/blog"] && (
         <Flex fillWidth gap="24" mobileDirection="column">
           <Flex flex={1} paddingLeft="l">
             <Heading as="h2" variant="display-strong-xs" wrap="balance">
-              Derniers articles
+              {t("latestPosts")}
             </Heading>
           </Flex>
           <Flex flex={3} paddingX="20">
-            <Posts range={[1, 2]} columns="2" />
+            <Posts range={[1, 2]} columns="2" locale={locale} />
           </Flex>
         </Flex>
       )}
-      <Projects range={[2]} />
+      <Projects range={[2]} locale={locale} />
       {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Column>
   );

@@ -1,15 +1,10 @@
-import { Column, Heading, Text } from "@/once-ui/components";
+import { redirect } from "next/navigation";
 
+// Global catch-all not-found. Because the root layout no longer renders
+// <html>/<body> (that lives in [locale]/layout), an unmatched top-level path
+// (e.g. a bad locale prefix) is redirected to the default-locale home, where
+// the real localized not-found UI in [locale]/not-found.tsx takes over for
+// in-app 404s.
 export default function NotFound() {
-  return (
-    <Column as="section" fill center paddingBottom="160">
-      <Text marginBottom="s" variant="display-strong-xl">
-        404
-      </Text>
-      <Heading marginBottom="l" variant="display-default-xs">
-        Page introuvable
-      </Heading>
-      <Text onBackground="neutral-weak">La page que vous recherchez n'existe pas.</Text>
-    </Column>
-  );
+  redirect("/");
 }
