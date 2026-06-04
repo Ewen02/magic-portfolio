@@ -4,10 +4,28 @@
   margin: 0 auto;
 }
 
-.entry {
-  // Avoid breaking an experience/education block across two pages.
-  break-inside: avoid;
-  page-break-inside: avoid;
+// Header block: name + role + links, with a stronger divider underneath.
+.header {
+  padding-bottom: var(--static-space-20);
+  border-bottom: 2px solid var(--brand-alpha-medium);
+}
+
+// Section title with a colored accent bar on its left — gives the one-column
+// layout clear visual rhythm without extra markup per section.
+.section {
+  position: relative;
+  padding-left: var(--static-space-16);
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    width: 4px;
+    height: 1em;
+    border-radius: 2px;
+    background: var(--brand-background-strong);
+  }
 }
 
 .heading {
@@ -15,6 +33,34 @@
   break-after: avoid;
   page-break-after: avoid;
   break-inside: avoid;
+}
+
+.entry {
+  // Avoid breaking an experience/education block across two pages.
+  break-inside: avoid;
+  page-break-inside: avoid;
+}
+
+// Achievement bullets: custom marker in the brand color.
+.bullets {
+  list-style: none;
+  padding-left: var(--static-space-16);
+
+  li {
+    position: relative;
+    padding-left: var(--static-space-16);
+
+    &::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.5em;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--brand-background-strong);
+    }
+  }
 }
 
 @media print {
@@ -27,5 +73,11 @@
     margin: 0;
     padding: 0;
     color: #000;
+  }
+
+  // Keep accent bars visible on paper (browsers strip backgrounds otherwise;
+  // printBackground covers it, but force the colors to be safe).
+  .header {
+    border-bottom-color: #999;
   }
 }

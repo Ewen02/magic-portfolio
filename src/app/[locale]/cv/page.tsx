@@ -98,10 +98,10 @@ export default async function CV({ params: { locale } }: LocaleParam) {
 
       <Column className={styles.cv} fillWidth gap="l">
         {/* Header */}
-        <Column gap="8">
+        <Column className={styles.header} gap="12">
           <Column gap="2">
-            <Heading variant="display-strong-m">{person.name}</Heading>
-            <Text variant="heading-default-s" onBackground="brand-weak">
+            <Heading variant="display-strong-l">{person.name}</Heading>
+            <Text variant="heading-default-m" onBackground="brand-weak">
               {person.role} · Paris
             </Text>
           </Column>
@@ -118,7 +118,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Profile / accroche */}
         {about.intro.display && (
           <Column className={styles.entry} fillWidth gap="8">
-            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
+            <Heading as="h2" className={`${styles.heading} ${styles.section}`} variant="display-strong-xs">
               {l.profile}
             </Heading>
             <Column textVariant="body-default-s" gap="8">
@@ -132,7 +132,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Experience */}
         {about.work.display && (
           <Column fillWidth gap="m">
-            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
+            <Heading as="h2" className={`${styles.heading} ${styles.section}`} variant="display-strong-xs">
               {l.experience}
             </Heading>
             <Column fillWidth gap="l">
@@ -147,7 +147,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
                   <Text variant="body-default-s" onBackground="brand-weak">
                     {exp.role}
                   </Text>
-                  <Column as="ul" gap="4" paddingLeft="16">
+                  <Column as="ul" className={styles.bullets} gap="4">
                     {exp.achievements.map((a: JSX.Element, j: number) => (
                       <Text as="li" variant="body-default-s" key={`exp-${i}-${j}`}>
                         {a}
@@ -165,7 +165,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Education */}
         {about.studies.display && (
           <Column fillWidth gap="m">
-            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
+            <Heading as="h2" className={`${styles.heading} ${styles.section}`} variant="display-strong-xs">
               {l.education}
             </Heading>
             <Column fillWidth gap="m">
@@ -186,7 +186,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Skills — compact: one dense line per category */}
         {about.technical.display && (
           <Column className={styles.entry} fillWidth gap="8">
-            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
+            <Heading as="h2" className={`${styles.heading} ${styles.section}`} variant="display-strong-xs">
               {l.skills}
             </Heading>
             <Column fillWidth gap="4">
@@ -207,7 +207,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
         {/* Languages */}
         {person.languages?.length > 0 && (
           <Column className={styles.entry} fillWidth gap="8">
-            <Heading as="h2" className={styles.heading} variant="display-strong-xs">
+            <Heading as="h2" className={`${styles.heading} ${styles.section}`} variant="display-strong-xs">
               {l.languages}
             </Heading>
             <Text variant="body-default-s" onBackground="neutral-weak">

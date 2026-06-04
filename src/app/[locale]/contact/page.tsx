@@ -104,32 +104,42 @@ export default async function Contact({ params: { locale } }: LocaleParam) {
       </Column>
 
       {contact.calendar.display && (
-        <Flex
-          fitWidth
+        <Column
+          fillWidth
+          gap="16"
+          padding="l"
+          radius="l"
           border="brand-alpha-medium"
-          style={{ backdropFilter: "blur(var(--static-space-1))" }}
           background="brand-alpha-weak"
-          radius="full"
-          padding="4"
-          gap="8"
-          vertical="center"
+          style={{ backdropFilter: "blur(var(--static-space-1))" }}
         >
-          <Icon paddingLeft="12" name="calendar" onBackground="brand-weak" />
-          <Flex paddingX="8">
-            {locale === "en" ? "Schedule a 30-min call" : "Planifier un appel de 30 min"}
+          <Flex gap="12" vertical="center">
+            <Icon name="calendar" onBackground="brand-weak" />
+            <Column gap="2">
+              <Heading as="h2" variant="heading-strong-l">
+                {locale === "en" ? "Book a 30-min call" : "Réserver un appel de 30 min"}
+              </Heading>
+              <Text variant="body-default-s" onBackground="neutral-weak">
+                {locale === "en"
+                  ? "The fastest way to discuss your project. Pick a slot that suits you."
+                  : "Le plus simple pour échanger sur votre projet. Choisissez un créneau qui vous convient."}
+              </Text>
+            </Column>
           </Flex>
-          <IconButton
+          <Button
             href={contact.calendar.link}
-            data-border="rounded"
-            variant="secondary"
-            icon="chevronRight"
+            label={locale === "en" ? "See availabilities" : "Voir les disponibilités"}
+            prefixIcon="calendar"
+            variant="primary"
+            size="m"
+            arrowIcon
           />
-        </Flex>
+        </Column>
       )}
 
       <Column fillWidth gap="m">
         <Heading as="h2" variant="display-strong-xs">
-          {locale === "en" ? "Email me directly" : "M'écrire directement"}
+          {locale === "en" ? "Or email me directly" : "Ou m'écrire directement"}
         </Heading>
         <Flex gap="12" wrap>
           <Button
