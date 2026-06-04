@@ -70,6 +70,11 @@ export default function About() {
       items: about.technical.skills.map((skill) => skill.title),
     },
     {
+      title: about.testimonials?.title,
+      display: about.testimonials?.display,
+      items: [],
+    },
+    {
       title: about.faq?.title,
       display: about.faq?.display,
       items: [],
@@ -104,6 +109,8 @@ export default function About() {
               "LLM",
               "Architecture logicielle",
               "Développement Full Stack",
+              "SEO technique",
+              "Accessibilité web",
             ],
             address: {
               "@type": "PostalAddress",
@@ -138,6 +145,31 @@ export default function About() {
                 acceptedAnswer: {
                   "@type": "Answer",
                   text: item.answer,
+                },
+              })),
+            }),
+          }}
+        />
+      )}
+      {about.testimonials?.display && about.testimonials.items.length > 0 && (
+        <script
+          type="application/ld+json"
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: person.name,
+              review: about.testimonials.items.map((item) => ({
+                "@type": "Review",
+                reviewBody: item.quote,
+                author: {
+                  "@type": "Person",
+                  name: item.author,
+                },
+                itemReviewed: {
+                  "@type": "Person",
+                  name: person.name,
                 },
               })),
             }),
@@ -387,6 +419,59 @@ export default function About() {
                         ))}
                       </Flex>
                     )}
+                  </Column>
+                ))}
+              </Column>
+            </>
+          )}
+
+          {about.testimonials?.display && (
+            <>
+              <Heading
+                as="h2"
+                id={about.testimonials.title}
+                variant="display-strong-s"
+                marginTop="40"
+                marginBottom="m"
+              >
+                {about.testimonials.title}
+              </Heading>
+              <Column fillWidth gap="l" marginBottom="40">
+                {about.testimonials.items.map((item, index) => (
+                  <Column
+                    key={`testimonial-${index}`}
+                    fillWidth
+                    gap="16"
+                    padding="l"
+                    radius="m"
+                    border="neutral-medium"
+                    background="surface"
+                  >
+                    <Text
+                      as="blockquote"
+                      variant="body-default-l"
+                      onBackground="neutral-strong"
+                      style={{ fontStyle: "italic" }}
+                    >
+                      « {item.quote} »
+                    </Text>
+                    <Flex fillWidth horizontal="space-between" vertical="center" wrap gap="8">
+                      <Column gap="2">
+                        <Text variant="heading-strong-s">{item.author}</Text>
+                        <Text variant="body-default-s" onBackground="neutral-weak">
+                          {item.role}
+                        </Text>
+                      </Column>
+                      {item.link && (
+                        <IconButton
+                          href={item.link}
+                          icon="arrowUpRight"
+                          variant="tertiary"
+                          size="s"
+                          tooltip="Voir le projet"
+                        />
+                      )}
+                    </Flex>
                   </Column>
                 ))}
               </Column>

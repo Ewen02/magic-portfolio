@@ -28,8 +28,12 @@ const keywords = [
   "développeur Node.js",
   "développeur NestJS",
   "développeur TypeScript",
+  "développeur Swift",
+  "développeur iOS",
   "développeur IA",
   "ingénieur logiciel",
+  "SEO technique",
+  "création site vitrine",
   "freelance développeur",
   "Epitech",
   "RAG",
@@ -86,7 +90,7 @@ const home = {
     <>
       Je suis Ewen, développeur Full Stack diplômé d'Epitech, avec 3 ans d'expérience
       en entreprise et en side-project. Passionné par les architectures modernes, le temps réel et l'IA appliquée.
-      <br /><strong>Ouvert à toute opportunité.</strong>
+      <br />Actuellement en CDI chez Favikon, <strong>ouvert aux missions freelance.</strong>
     </>
   ),
 };
@@ -134,7 +138,7 @@ const about = {
           Je conçois également des <strong>produits SaaS complets</strong> en side-project, de l'architecture monorepo au déploiement.
         </p>
         <p>
-          <strong>Ouvert à toute opportunité</strong> — n'hésitez pas à me contacter.
+          Actuellement en <strong>CDI chez Favikon</strong> et <strong>ouvert aux missions freelance</strong> — n'hésitez pas à me contacter.
         </p>
       </>
     ),
@@ -154,7 +158,7 @@ const about = {
         achievements: [
           <>
             Développement de features sur une plateforme <strong>SaaS B2B de marketing d'influence</strong> augmentée
-            par l'IA, utilisée par des équipes marketing et agences pour gérer des créateurs de contenu à grande échelle.
+            par l'IA, à l'échelle : <strong>210K+ utilisateurs</strong>, <strong>11,5M+ créateurs</strong> et <strong>30M+ posts indexés</strong>.
           </>,
           <>
             <strong>Frontend :</strong> Architecture modulaire Next.js/React, gestion d'état (React Query, Redux),
@@ -167,6 +171,9 @@ const about = {
           <>
             <strong>IA :</strong> Systèmes multi-agents (LangChain/LangGraph), streaming IA, recherche sémantique,
             génération automatisée de messages et recommandations.
+          </>,
+          <>
+            <strong>Mobile :</strong> Développement d'une application <strong>iOS native en Swift</strong>.
           </>,
         ],
         images: [],
@@ -246,12 +253,17 @@ const about = {
       {
         question: "Es-tu disponible pour de nouvelles opportunités ?",
         answer:
-          "Oui, je suis ouvert à toute opportunité : CDI, freelance ou mission. Vous pouvez me contacter par email ou planifier un appel directement depuis cette page.",
+          "Je suis actuellement en CDI chez Favikon. Je reste ouvert aux missions freelance en parallèle. Vous pouvez me contacter par email ou planifier un appel directement depuis cette page.",
       },
       {
         question: "Quelles technologies maîtrises-tu ?",
         answer:
-          "Côté frontend : React, Next.js et TypeScript. Côté backend : Node.js, NestJS et Express. Je travaille aussi sur l'IA appliquée (pipelines RAG, LLM, systèmes multi-agents avec LangChain/LangGraph) et les architectures temps réel (WebSocket, SSE, Redis).",
+          "Côté frontend : React, Next.js et TypeScript. Côté backend : Node.js, NestJS et Express. Je développe aussi en Swift (application iOS chez Favikon). Je travaille sur l'IA appliquée (pipelines RAG, LLM, systèmes multi-agents avec LangChain/LangGraph), les architectures temps réel (WebSocket, SSE, Redis), ainsi que le SEO technique, l'accessibilité et les tests (Jest).",
+      },
+      {
+        question: "Gères-tu le SEO et la performance d'un site ?",
+        answer:
+          "Oui. Je mets en place le SEO technique de bout en bout : metadata et Open Graph par page, données structurées schema.org pour les rich snippets, sitemap et robots, suivi via la Search Console, plus l'optimisation des Core Web Vitals et de l'accessibilité. C'est notamment ce que j'ai fait sur ce portfolio et sur des sites vitrines clients.",
       },
       {
         question: "As-tu de l'expérience en IA et LLM ?",
@@ -267,6 +279,30 @@ const about = {
         question: "Où es-tu basé ?",
         answer:
           "Je suis basé à Paris, en France. Je travaille en français et en anglais, sur site comme à distance.",
+      },
+    ],
+  },
+
+  // --------------------------------------------------------------------------
+  // TESTIMONIALS (alimente aussi le schema Review pour les rich snippets Google)
+  // --------------------------------------------------------------------------
+  testimonials: {
+    display: true,
+    title: "Recommandations",
+    items: [
+      {
+        quote:
+          "Ewen a conçu et développé notre système d'affiliation de A à Z. Au-delà de sa maîtrise technique, il a su comprendre nos enjeux marketing et dialoguer avec l'ensemble des services (légal, comptabilité, esport). Le projet est en production depuis 2023 et continue d'évoluer : fiable, autonome et force de proposition.",
+        author: "Équipe Marketing",
+        role: "Hercules Thrustmaster",
+        link: "https://www.thrustmaster.com/fr-fr/affiliate/",
+      },
+      {
+        quote:
+          "Ewen a réalisé le site vitrine de notre cabinet dentaire. À l'écoute, réactif et professionnel, il a livré un site moderne, rapide et clair qui reflète parfaitement notre activité. La prise de rendez-vous en ligne fonctionne sans accroc et nos patients nous font régulièrement des retours positifs sur le site.",
+        author: "Cabinet dentaire",
+        role: "Site vitrine, Bures-sur-Yvette",
+        link: "https://cabinetdentairedesboeuf.fr/",
       },
     ],
   },
@@ -291,7 +327,7 @@ const about = {
         title: "Backend",
         description: (
           <>
-            Node.js / Express, NestJS, Prisma, BullMQ, .NET / C#
+            Node.js / Express, NestJS, Prisma, BullMQ, Stripe, .NET / C#
           </>
         ),
         images: [],
@@ -315,6 +351,15 @@ const about = {
         images: [],
       },
       {
+        title: "SEO, Tests & Qualité",
+        description: (
+          <>
+            SEO technique (metadata, sitemap, schema.org / rich snippets, Search Console), Accessibilité (a11y), Core Web Vitals, Tests unitaires & d'intégration (Jest)
+          </>
+        ),
+        images: [],
+      },
+      {
         title: "DevOps & Outils",
         description: (
           <>
@@ -327,7 +372,7 @@ const about = {
         title: "Mobile & Design",
         description: (
           <>
-            Flutter / Dart, Figma, Zeplin
+            Swift (iOS), Flutter / Dart, Figma, Zeplin
           </>
         ),
         images: [],
@@ -372,6 +417,7 @@ const uses = {
       items: [
         { name: "TypeScript", note: "Mon langage principal, frontend comme backend." },
         { name: "JavaScript", note: "Pour le runtime Node.js et le web." },
+        { name: "Swift", note: "Application iOS native chez Favikon." },
         { name: "Dart", note: "Développement mobile avec Flutter." },
         { name: "C# / .NET", note: "Backend en environnement entreprise." },
         { name: "PHP", note: "Laravel et CodeIgniter sur des projets historiques." },
@@ -414,6 +460,17 @@ const uses = {
       items: [
         { name: "Socket.IO", note: "WebSocket bidirectionnel pour les rooms et le live." },
         { name: "Server-Sent Events", note: "Streaming unidirectionnel pour les réponses IA." },
+      ],
+    },
+    {
+      title: "SEO & Qualité",
+      items: [
+        { name: "Metadata & Open Graph", note: "Balises title/description et partage social par page." },
+        { name: "Schema.org", note: "Données structurées pour les rich snippets (Person, FAQ, Review)." },
+        { name: "Sitemap & robots", note: "Indexation maîtrisée et crawl propre." },
+        { name: "Search Console", note: "Suivi de l'indexation et des performances de recherche." },
+        { name: "Accessibilité (a11y)", note: "Contrastes, hiérarchie de titres, navigation clavier." },
+        { name: "Jest", note: "Tests unitaires et d'intégration." },
       ],
     },
     {
