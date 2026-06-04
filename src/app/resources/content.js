@@ -497,6 +497,54 @@ const uses = {
 };
 
 // ============================================================================
+// SERVICES (page de prestations freelance)
+// ============================================================================
+
+const services = {
+  label: "Services",
+  title: "Prestations de développement freelance",
+  description: `Développeur full stack freelance à Paris, ${person.name} accompagne startups, PME et agences : applications web SaaS, intégration IA (RAG, LLM), sites vitrines optimisés SEO et systèmes temps réel.`,
+  intro:
+    "Je conçois et développe des produits web sur mesure, du site vitrine à la plateforme SaaS complète. Voici comment je peux vous aider — chaque projet démarre par un échange gratuit pour cadrer vos besoins.",
+  // ⚠️ Fourchettes indicatives à valider/ajuster selon tes tarifs réels.
+  items: [
+    {
+      title: "Application web & SaaS full stack",
+      description:
+        "Conception et développement d'applications web complètes : interfaces React / Next.js, back-end Node.js / NestJS, base de données, authentification, paiement (Stripe). De l'architecture au déploiement.",
+      price: "À partir de 6 000 €",
+      tags: ["React", "Next.js", "NestJS", "PostgreSQL", "Stripe"],
+    },
+    {
+      title: "Intégration IA, RAG & agents LLM",
+      description:
+        "Intégration de l'IA dans vos produits : pipelines RAG (parsing, chunking, embeddings, reranking), assistants conversationnels, systèmes multi-agents (LangChain / LangGraph), recherche sémantique et streaming token-par-token.",
+      price: "À partir de 5 000 €",
+      tags: ["RAG", "LLM", "LangGraph", "Qdrant", "OpenAI"],
+    },
+    {
+      title: "Site vitrine performant & SEO",
+      description:
+        "Sites vitrines modernes, rapides et optimisés pour le référencement local : design responsive, intégration de prise de rendez-vous, données structurées schema.org et bonnes pratiques SEO techniques.",
+      price: "À partir de 1 500 €",
+      tags: ["Next.js", "SEO", "Responsive", "Performance"],
+    },
+    {
+      title: "Temps réel & architecture",
+      description:
+        "Systèmes temps réel (WebSocket, SSE, Redis), architectures monorepo (Turborepo), refonte technique et conseil. Pour fiabiliser et faire passer à l'échelle vos applications existantes.",
+      price: "Sur devis",
+      tags: ["WebSocket", "SSE", "Redis", "Turborepo"],
+    },
+  ],
+  cta: {
+    title: "Un projet en tête ?",
+    description:
+      "Discutons-en. Le premier échange est gratuit et sans engagement : je vous aide à cadrer votre besoin et à estimer le projet.",
+  },
+};
+
+// ============================================================================
 // CONTACT
 // ============================================================================
 
@@ -516,4 +564,4 @@ const contact = {
 // EXPORTS
 // ============================================================================
 
-export { person, social, newsletter, home, about, blog, work, uses, contact, keywords };
+export { person, social, newsletter, home, about, blog, work, uses, services, contact, keywords };

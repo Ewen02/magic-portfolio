@@ -497,6 +497,54 @@ const uses = {
 };
 
 // ============================================================================
+// SERVICES (freelance services page)
+// ============================================================================
+
+const services = {
+  label: "Services",
+  title: "Freelance development services",
+  description: `Freelance full stack developer in Paris, ${person.name} helps startups, SMEs and agencies: SaaS web apps, AI integration (RAG, LLM), SEO-optimized marketing websites and real-time systems.`,
+  intro:
+    "I design and build custom web products, from marketing websites to complete SaaS platforms. Here's how I can help — every project starts with a free call to scope your needs.",
+  // ⚠️ Indicative ranges — validate/adjust against your real rates.
+  items: [
+    {
+      title: "Web app & full stack SaaS",
+      description:
+        "Design and development of complete web applications: React / Next.js interfaces, Node.js / NestJS back-end, database, authentication, payments (Stripe). From architecture to deployment.",
+      price: "From €6,000",
+      tags: ["React", "Next.js", "NestJS", "PostgreSQL", "Stripe"],
+    },
+    {
+      title: "AI integration, RAG & LLM agents",
+      description:
+        "Bringing AI into your products: RAG pipelines (parsing, chunking, embeddings, reranking), conversational assistants, multi-agent systems (LangChain / LangGraph), semantic search and token-by-token streaming.",
+      price: "From €5,000",
+      tags: ["RAG", "LLM", "LangGraph", "Qdrant", "OpenAI"],
+    },
+    {
+      title: "Fast, SEO-friendly marketing website",
+      description:
+        "Modern, fast websites optimized for local search: responsive design, booking integration, schema.org structured data and technical SEO best practices.",
+      price: "From €1,500",
+      tags: ["Next.js", "SEO", "Responsive", "Performance"],
+    },
+    {
+      title: "Real-time & architecture",
+      description:
+        "Real-time systems (WebSocket, SSE, Redis), monorepo architectures (Turborepo), technical overhaul and consulting. To harden and scale your existing applications.",
+      price: "On request",
+      tags: ["WebSocket", "SSE", "Redis", "Turborepo"],
+    },
+  ],
+  cta: {
+    title: "Got a project in mind?",
+    description:
+      "Let's talk. The first call is free and no-strings: I'll help you scope your needs and estimate the project.",
+  },
+};
+
+// ============================================================================
 // CONTACT
 // ============================================================================
 
@@ -516,4 +564,4 @@ const contact = {
 // EXPORTS
 // ============================================================================
 
-export { person, social, newsletter, home, about, blog, work, uses, contact, keywords };
+export { person, social, newsletter, home, about, blog, work, uses, services, contact, keywords };

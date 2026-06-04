@@ -22,6 +22,7 @@ export function getContent(locale: Locale) {
     blog: pick("blog"),
     work: pick("work"),
     uses: pick("uses"),
+    services: pick("services"),
     contact: pick("contact"),
     keywords: pick("keywords"),
   } as ReturnType<typeof frBundle>;
@@ -38,6 +39,7 @@ function frBundle() {
     blog: fr.blog,
     work: fr.work,
     uses: fr.uses,
+    services: fr.services,
     contact: fr.contact,
     keywords: fr.keywords,
   };

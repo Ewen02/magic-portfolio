@@ -17,6 +17,7 @@ export {
   blog,
   work,
   uses,
+  services,
   contact,
   keywords,
 } from "@/app/resources/content";
