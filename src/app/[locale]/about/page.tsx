@@ -248,7 +248,7 @@ export default async function About({ params: { locale } }: LocaleParam) {
                 />
               </Flex>
             )}
-            <Heading className={styles.textAlign} variant="display-strong-xl">
+            <Heading as="h1" className={styles.textAlign} variant="display-strong-xl">
               {person.name}
             </Heading>
             <Text

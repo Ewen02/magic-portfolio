@@ -85,7 +85,11 @@ export default async function Work({ params: { locale } }: LocaleParam) {
         }}
       />
       <Column maxWidth="s" gap="m" marginBottom="xl" paddingX="l">
-        <Heading variant="display-strong-s">Projets de développement Full Stack</Heading>
+        <Heading as="h1" variant="display-strong-s">
+          {locale === "en"
+            ? "Full Stack Development Projects (SaaS, AI, real-time)"
+            : "Projets de développement Full Stack (SaaS, IA, temps réel)"}
+        </Heading>
         <Text variant="body-default-l" onBackground="neutral-weak" wrap="balance">
           {work.description}
         </Text>

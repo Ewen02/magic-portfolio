@@ -72,7 +72,7 @@ export default async function Uses({ params: { locale } }: LocaleParam) {
         }}
       />
       <Column maxWidth="s" gap="m">
-        <Heading variant="display-strong-s">{uses.title}</Heading>
+        <Heading as="h1" variant="display-strong-s">{uses.title}</Heading>
         <Text variant="body-default-l" onBackground="neutral-weak" wrap="balance">
           {uses.intro}
         </Text>

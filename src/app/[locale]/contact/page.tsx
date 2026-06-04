@@ -98,7 +98,7 @@ export default async function Contact({ params: { locale } }: LocaleParam) {
       />
 
       <Column maxWidth="s" gap="m">
-        <Heading variant="display-strong-s">{contact.title}</Heading>
+        <Heading as="h1" variant="display-strong-s">{contact.title}</Heading>
         <Text variant="body-default-l" onBackground="neutral-weak" wrap="balance">
           {contact.intro}
         </Text>

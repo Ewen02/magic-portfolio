@@ -53,7 +53,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
 export default async function Home({ params: { locale } }: LocaleParam) {
   setRequestLocale(locale);
   const t = await getTranslations("home");
-  const { home, about, person, newsletter } = getContent(locale);
+  const { home, about, person, newsletter, social } = getContent(locale);
   const baseUrl = locale === "fr" ? `https://${baseURL}` : `https://${baseURL}/${locale}`;
 
   return (
@@ -79,6 +79,9 @@ export default async function Home({ params: { locale } }: LocaleParam) {
                 "@type": "ImageObject",
                 url: `https://${baseURL}${person.avatar}`,
               },
+              sameAs: social
+                .filter((s) => s.link && s.link.startsWith("http"))
+                .map((s) => s.link),
             },
           }),
         }}

@@ -20,9 +20,16 @@ const person = {
 // ============================================================================
 
 const keywords = [
-  "Ewen Le Quéré",
-  "développeur full stack",
+  // Mot-clé principal et variantes commerciales (freelance + Paris)
+  "développeur full stack freelance Paris",
+  "développeur full stack freelance",
+  "développeur freelance Paris",
+  "développeur web freelance Paris",
   "développeur full stack Paris",
+  "développeur full stack",
+  "freelance développeur",
+  "Ewen Le Quéré",
+  // Technos
   "développeur React",
   "développeur Next.js",
   "développeur Node.js",
@@ -30,18 +37,20 @@ const keywords = [
   "développeur TypeScript",
   "développeur Swift",
   "développeur iOS",
-  "développeur IA",
-  "ingénieur logiciel",
-  "SEO technique",
-  "création site vitrine",
-  "freelance développeur",
-  "Epitech",
+  // Spécialité IA (différenciation)
+  "développeur IA freelance",
+  "développeur IA Paris",
   "RAG",
   "LLM",
   "pipeline RAG",
   "recherche sémantique",
+  // Services & expertise
+  "création site vitrine",
+  "SEO technique",
   "SaaS",
   "temps réel",
+  "ingénieur logiciel",
+  "Epitech",
   "portfolio développeur",
 ];
 
@@ -83,9 +92,9 @@ const newsletter = {
 
 const home = {
   label: "Home",
-  title: `Portfolio de ${person.name}`,
-  description: `${person.name}, ${person.role} diplômé d'Epitech. Spécialisé en React, Next.js, Node.js, NestJS et IA appliquée (RAG, LLM, agents).`,
-  headline: <>Ewen Le Quéré, Développeur Full Stack</>,
+  title: `${person.name} — Développeur Full Stack Freelance à Paris`,
+  description: `Développeur full stack freelance à Paris, diplômé d'Epitech. Disponible pour vos projets web : React, Next.js, Node.js, NestJS et IA appliquée (RAG, LLM, agents). Échangeons sur votre projet.`,
+  headline: <>Ewen Le Quéré, Développeur Full Stack Freelance</>,
   subline: (
     <>
       Je suis Ewen, développeur Full Stack diplômé d'Epitech, avec 3 ans d'expérience
@@ -387,8 +396,8 @@ const about = {
 
 const blog = {
   label: "Blog",
-  title: "Articles",
-  description: `Articles et réflexions de ${person.name} sur le développement et la tech.`,
+  title: "Articles tech : IA, temps réel & architecture",
+  description: `Articles techniques de ${person.name}, développeur full stack freelance à Paris : pipelines RAG, LLM, systèmes temps réel (WebSocket, SSE) et architectures modernes.`,
 };
 
 // ============================================================================

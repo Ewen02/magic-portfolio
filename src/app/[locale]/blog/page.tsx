@@ -78,7 +78,7 @@ export default async function Blog({ params: { locale } }: LocaleParam) {
           }),
         }}
       />
-      <Heading marginBottom="l" variant="display-strong-s">
+      <Heading as="h1" marginBottom="l" variant="display-strong-s">
         {blog.title}
       </Heading>
       <Column fillWidth flex={1}>
