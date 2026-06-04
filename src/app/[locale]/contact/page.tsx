@@ -2,6 +2,7 @@ import { setRequestLocale } from "next-intl/server";
 import { Button, Column, Flex, Heading, Icon, IconButton, Text } from "@/once-ui/components";
 import { baseURL } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
+import { ContactForm } from "./ContactForm";
 
 type LocaleParam = { params: { locale: Locale } };
 
@@ -139,17 +140,14 @@ export default async function Contact({ params: { locale } }: LocaleParam) {
 
       <Column fillWidth gap="m">
         <Heading as="h2" variant="display-strong-xs">
-          {locale === "en" ? "Or email me directly" : "Ou m'écrire directement"}
+          {locale === "en" ? "Or send me a message" : "Ou m'envoyer un message"}
         </Heading>
-        <Flex gap="12" wrap>
-          <Button
-            href={`mailto:${person.email}`}
-            prefixIcon="email"
-            label={person.email}
-            variant="secondary"
-            size="m"
-          />
-        </Flex>
+        <Text variant="body-default-s" onBackground="neutral-weak">
+          {locale === "en"
+            ? "Fill in the form — it opens your email client, pre-filled and ready to send."
+            : "Remplissez le formulaire — il ouvre votre messagerie, pré-rempli et prêt à envoyer."}
+        </Text>
+        <ContactForm to={person.email} locale={locale} />
       </Column>
 
       {social.length > 0 && (
