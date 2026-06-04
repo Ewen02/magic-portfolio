@@ -1,0 +1,94 @@
+---
+title: "Monorepo architecture with Turborepo: Next.js and NestJS"
+publishedAt: "2026-04-28"
+summary: "A field report on a monorepo architecture built with Turborepo and pnpm: Next.js and NestJS in a single repo, shared packages, a mutualized design system, and an optimized CI/CD pipeline for Swipe Movie."
+tag: "Architecture"
+---
+
+## Why a monorepo for Swipe Movie
+
+When I launched [Swipe Movie](/work/swipe-movie), a collaborative web app for picking a movie as a group by swiping, I had a Next.js frontend and a NestJS backend that needed to share an enormous amount of things: types, subscription logic, a design system. Maintaining two separate repos meant duplicating those pieces, or publishing internal npm packages on every change. Unacceptable for a project where I wanted to iterate fast.
+
+The answer was a **monorepo** orchestrated by **Turborepo** and **pnpm workspaces**. A single repo, a single dependency install, an intelligent build cache, and above all frictionless shared code between the frontend and the backend.
+
+## The tree: apps and packages
+
+The classic split of a Turborepo monorepo rests on two folders: `apps/` for deployable applications, and `packages/` for shared code.
+
+```
+swipe-movie/
+├── apps/
+│   ├── web/                 # Next.js 16 (App Router, Turbopack)
+│   └── api/                 # NestJS 11
+├── packages/
+│   ├── database/            # Prisma schema + PostgreSQL client
+│   ├── ui/                  # Design system (Atomic Design)
+│   ├── types/               # Shared TypeScript types
+│   ├── email/               # Resend templates
+│   └── subscription/        # FREE / PRO plan logic
+├── turbo.json               # Task pipeline
+├── pnpm-workspace.yaml      # Workspace declaration
+└── package.json
+```
+
+Each package exposes its API via its `package.json` and is consumed by the others using the `workspace:*` syntax. Concretely, `apps/web` and `apps/api` import `@swipe-movie/types` or `@swipe-movie/database` like any other dependency, but pnpm resolves them locally through symlinks. No publishing, no manual synchronization.
+
+## Shared packages: the real win
+
+This is where the monorepo truly pays off. Here is how I divide responsibilities.
+
+### The `types` package
+
+Shared types are the backbone of the project. When I change the shape of a `Room` or `Swipe` object, the change propagates instantly to the frontend and the backend. TypeScript immediately flags the slightest mismatch at compile time, on both sides. No more silent integration bugs between the API and the client.
+
+### The `database` package
+
+The Prisma schema and the generated client live in a single place. NestJS uses it to query PostgreSQL, and the Prisma types indirectly feed the rest of the monorepo. A single source of truth for the data model.
+
+### The shared design system: `ui`
+
+The `ui` package follows an **Atomic Design** approach. Components are built once and consumed by `apps/web`. Having a **shared design system** in a dedicated package guarantees total visual consistency and saves me from rewriting buttons, modals, and swipe screens.
+
+### `email` and `subscription`
+
+Cross-cutting business logic — Resend templates for emails, FREE/PRO plan management with Stripe — is isolated in its own packages. The backend uses it for billing, and the frontend can rely on the same plan logic to display the right limits.
+
+## turbo.json: orchestrating tasks
+
+The heart of Turborepo is its **task pipeline**. It understands the dependency graph between packages and runs tasks in the right order, in parallel where possible, with caching baked in.
+
+```json
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": [".next/**", "dist/**"]
+    },
+    "lint": {},
+    "type-check": {
+      "dependsOn": ["^build"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    }
+  }
+}
+```
+
+The `^build` notation means "build this package's dependencies first." When I build `apps/web`, Turborepo makes sure `packages/ui` and `packages/types` are built first. And thanks to the cache, if nothing has changed in a package, its task is served from the cache instead of being re-run. On a growing project, the time savings are considerable.
+
+## Monorepo CI/CD and deployment
+
+The **monorepo CI/CD** runs on **GitHub Actions**. Turborepo's cache is invaluable there: only the apps actually impacted by a commit are rebuilt and tested, which drastically shortens the pipelines.
+
+On the deployment side, the `apps/web` / `apps/api` split makes things natural: **Vercel** deploys the Next.js frontend, **Railway** hosts the NestJS backend. Two distinct targets, a single repo, a single source of truth. The rest of the stack — Tailwind CSS 4, PostgreSQL + Prisma, Redis, Stripe, Socket.IO — fits into this structure without friction.
+
+## What I take away
+
+Putting **Next.js and NestJS in a single repo** with Turborepo and **pnpm workspaces** transformed the way I work on Swipe Movie. Sharing types and components is immediate, builds are fast thanks to the cache, and project consistency is guaranteed by construction. For any full stack project where the frontend and backend share code, this is the architecture I recommend today.
+
+---
+
+Want to see the result? Discover the [Swipe Movie](/work/swipe-movie) project in detail, or learn more [about my journey](/about) as a Full Stack developer.

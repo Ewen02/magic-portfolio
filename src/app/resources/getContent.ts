@@ -1,35 +1,45 @@
-import {
-  person,
-  social,
-  newsletter,
-  home,
-  about,
-  blog,
-  work,
-  uses,
-  contact,
-  keywords,
-} from "@/app/resources/content";
+import * as fr from "@/app/resources/content";
+import * as en from "@/app/resources/content.en";
 
 export type Locale = "fr" | "en";
 
 // Bundles all structured content objects for a given locale.
 //
-// Phase 1: EN reuses the exact same FR objects as a placeholder. The signature
-// is locale-aware so Phase 2 only has to branch on `locale` (e.g. import from
-// `content.en` files) without touching any consumer.
-export function getContent(_locale: Locale) {
+// FR is the source of truth (`content.js`); EN lives in `content.en.js` and
+// mirrors the exact same shape with translated text. Per-key fallback to FR
+// guards against any field that might be missing from the EN file.
+export function getContent(locale: Locale) {
+  const base = fr as Record<string, unknown>;
+  const localized = (locale === "en" ? en : fr) as Record<string, unknown>;
+  const pick = (key: string) => localized[key] ?? base[key];
+
   return {
-    person,
-    social,
-    newsletter,
-    home,
-    about,
-    blog,
-    work,
-    uses,
-    contact,
-    keywords,
+    person: pick("person"),
+    social: pick("social"),
+    newsletter: pick("newsletter"),
+    home: pick("home"),
+    about: pick("about"),
+    blog: pick("blog"),
+    work: pick("work"),
+    uses: pick("uses"),
+    contact: pick("contact"),
+    keywords: pick("keywords"),
+  } as ReturnType<typeof frBundle>;
+}
+
+// Type anchor: the FR bundle defines the canonical shape consumers rely on.
+function frBundle() {
+  return {
+    person: fr.person,
+    social: fr.social,
+    newsletter: fr.newsletter,
+    home: fr.home,
+    about: fr.about,
+    blog: fr.blog,
+    work: fr.work,
+    uses: fr.uses,
+    contact: fr.contact,
+    keywords: fr.keywords,
   };
 }
 

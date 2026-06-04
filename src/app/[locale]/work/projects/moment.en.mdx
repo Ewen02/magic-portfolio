@@ -1,0 +1,109 @@
+---
+title: "Moment – Onboard Entertainment Platform"
+publishedAt: "2025-09-12"
+summary: "Final-year internship at Moment: full stack development on the Mood platform (in-train entertainment) and integration of the Universal Music France API."
+images:
+  - "/images/projects/moment/cover-01.png"
+link: "https://www.moment.tech/"
+---
+
+## Overview
+
+A **5th-year Epitech** internship (April – October 2025) at **Moment**, a company specialized in **onboard entertainment** solutions for transportation.
+
+I worked as a **full stack developer** on two major projects:
+- **Mood**: an entertainment platform used on trains (Ouigo, TGV Lyria)
+- **Colombo**: an internal tool for integrating music content
+
+This internship allowed me to grow within a real product context, where the interfaces are used by passengers directly on board trains, with the constraints specific to **onboard entertainment**: variable connectivity, a diversity of devices, and strong requirements for visual consistency.
+
+## Mood project
+
+An entertainment platform offered to passengers on Ouigo and TGV Lyria trains.
+
+### Contributions
+- **Frontend** development with Next.js and TypeScript
+- Implementation of specific client requests (per-operator customization)
+- Contribution to the **Design System** to improve interface consistency
+- Creation of reusable modular components
+- Collaboration with the design team through Zeplin
+
+### The Design System in practice
+A **Design System** is a structured set of shared components, styles, and rules that ensure a consistent experience across an entire application. For a platform offered in per-operator variants (Ouigo, TGV Lyria), this approach is essential: it makes it possible to adapt the look and content for each client while keeping a common **generic base**.
+
+Concretely, I contributed to creating **reusable modular components** in React and TypeScript. The benefits of this modularity are multiple:
+- **Reusability**: the same component is used across several screens and contexts, which avoids code duplication.
+- **Maintainability**: a fix or an evolution applied to the component propagates everywhere it is used.
+- **Consistency**: interfaces automatically follow the same visual rules, which strengthens the quality perceived by passengers.
+
+Collaboration with the design team relied on **Zeplin**, which acts as a bridge between the mockups and the implementation: retrieving the specifications (spacing, colors, typography) and faithfully translating them into Next.js components.
+
+### Result
+New features deployed to production, improving the passenger experience.
+
+## Colombo / Universal Music France project
+
+An internal tool to automate the integration of music content into the platform.
+
+### Contributions
+- Development of a robust **API client** with **TypeSpec** (strongly-typed SDK)
+- Integration into the existing **NestJS** backend
+- Implementation of a complete flow: ZIP retrieval → playlist extraction → CMS integration
+- Resolution of the challenges tied to the complexity of the Universal Music API
+
+### TypeSpec and the typed API client
+**TypeSpec** is a language for describing API contracts concisely, then automatically generating artifacts (schemas, models, and clients). From this description, I generated a **strongly-typed API client** consumable directly from the backend.
+
+The value of a **typed API client** is central in an integration project:
+- **Type safety**: the data structures exchanged with the Universal Music API are checked at compile time, not at runtime.
+- **Fewer integration errors**: field or format inconsistencies are detected early, which limits production bugs.
+- **Maintainability**: a change in the contract is automatically reflected in the generated code, which reduces technical debt.
+
+### Music content integration pipeline
+The heart of Colombo is an automated integration **pipeline**. The flow follows several steps:
+1. **Retrieval** of the ZIP archives containing the music content provided by Universal Music France.
+2. **Extraction and parsing** of the data: opening the archives, reading the playlists and the associated metadata.
+3. **Mapping** of the extracted information to the model expected by the **CMS**.
+4. **Integration** into the platform so that the content is usable on the Mood side.
+
+This automation replaces a tedious manual integration and limits the risk of errors when processing playlists.
+
+### Result
+Automation of the playlist import process, reducing manual errors and processing time for the content team.
+
+## Architecture & monorepo
+
+Moment's projects live within an **Nx monorepo**, which groups several applications and libraries within a single repository. This organization offers several advantages that I leveraged daily:
+- **Library sharing**: the Design System components and the common utilities are shared across applications, which avoids duplication.
+- **Codebase consistency**: a single set of conventions and tools applies to the entire project.
+- **Centralized tooling**: Nx makes it easier to manage internal dependencies and run tasks selectively.
+
+In return, this architecture requires a particular discipline: understanding the boundaries between shared libraries and applications, and assessing the impact of a change on the other modules of the monorepo.
+
+## Tech stack
+
+- **Frontend**: Next.js, React, TypeScript, Design System, Zeplin
+- **Backend**: NestJS, TypeSpec
+- **Tools**: Nx (monorepo), GitHub, Docker, Jira, Confluence
+
+## Challenges and lessons learned
+
+- Adapting a platform to very specific client needs while keeping a generic base
+- Quickly integrating a **complex API** (UMF) into an existing project
+- Working in a **monorepo environment** with library sharing
+- Improving my technical communication (Jira tickets, documentation)
+
+The collaboration took place in an **agile** framework, structured around **Jira** for ticket tracking and task prioritization, and **Confluence** for shared documentation. This organization taught me to break work down into clear units, to make my contributions traceable, and to communicate effectively with a multidisciplinary team (developers, designers, content team).
+
+## Impact
+
+- Mood features in production on Ouigo and TGV Lyria trains
+- Automation of the Universal Music France integration
+- Modular components contributing to the longevity of the Design System
+
+## What this internship gave me
+
+- Consolidation of skills in **full stack development** (Next.js, NestJS)
+- Experience in **API design** and the generation of typed clients
+- Collaborative work in a multidisciplinary **agile** environment
+- Autonomy, adaptability, and effective communication

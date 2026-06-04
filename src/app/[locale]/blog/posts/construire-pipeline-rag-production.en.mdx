@@ -1,0 +1,71 @@
+---
+title: "Building a RAG pipeline in production: from parsing to reranking"
+publishedAt: "2026-06-02"
+summary: "A field report on designing a complete, high-performance RAG (Retrieval-Augmented Generation) pipeline: multi-format parsing, parent-child chunking, embeddings, hybrid reranking, and caching. The architecture choices that make the difference in production with Next.js, NestJS, and Qdrant."
+tag: "IA"
+---
+
+## Why RAG has become essential
+
+**RAG (Retrieval-Augmented Generation)** is today the go-to approach for plugging an LLM into private data without retraining the model. Rather than stuffing everything into the context — costly and limited — you retrieve only the relevant passages and inject them at generation time.
+
+In theory it's simple. In production, the quality of a RAG pipeline comes down to the details: how you split documents, how you rank results, and how you avoid paying twice for the same computation. Here are the choices that made the difference on [CorpusAI](/work/corpusai).
+
+## 1. Parsing: it all starts with the data
+
+A RAG pipeline is only as good as its ingestion. Before even thinking about embeddings, you need to cleanly extract text from heterogeneous formats:
+
+- **PDF**: the classic trap, between columns, tables, and scanned PDFs
+- **DOCX, Markdown, TXT, CSV, HTML**: each with its own structural quirks
+
+The goal isn't merely to extract raw text, but to **preserve the structure** (headings, lists, sections) that will serve as a signal at chunking time.
+
+## 2. Parent-child chunking: the key to relevance
+
+This is the most underestimated step. Chunk too fine, and you lose context. Too large, and you dilute relevance and inflate costs.
+
+The **parent-child** strategy resolves this dilemma:
+
+- You index short **child chunks** (~150 tokens) for precise search
+- You return the larger **parent chunk** (~512 tokens) surrounding the child to the LLM
+
+You win on both fronts: retrieval precision *and* the richness of the context provided to the model. Token counting is done with `tiktoken` to stay aligned with the model's tokenizer.
+
+## 3. Embeddings and vector store
+
+For vectorization, OpenAI's `text-embedding-3-small` offers an excellent quality/price ratio (1536 dimensions). Cost tip: the **Matryoshka** property of these embeddings lets you truncate to 512 dimensions with minimal quality loss — less storage, faster search.
+
+On the storage side, **Qdrant** stands out: HNSW index, cosine similarity, native metadata filtering, and simple cloud deployment.
+
+## 4. Hybrid reranking: semantic + lexical
+
+Vector search alone sometimes misses exact matches (proper nouns, references, codes). The solution: a **hybrid reranking** that combines two signals.
+
+- **60% semantic** (vector similarity) for meaning
+- **40% lexical** (BM25) for exact keyword matches
+
+This blend captures both intent and literal precision. It's often what separates a "demo" RAG from a RAG that holds up in production.
+
+## 5. Caching: performance and cost
+
+Recomputing the same embeddings over and over is pure waste. A **Redis cache** on embeddings (7-day TTL) drastically reduces latency and the API bill on repeated requests.
+
+## Overall architecture
+
+The whole thing fits in a **Turborepo monorepo**:
+
+- **Frontend**: Next.js 15 with token-by-token streaming (SSE)
+- **Backend**: NestJS 11 for the API and orchestration
+- **Asynchronous jobs**: BullMQ for heavy ingestion (parsing, embeddings) in the background
+- **Storage**: Qdrant (vectors) + Redis (cache) + PostgreSQL (metadata)
+
+Ingesting a document must never block the user: you acknowledge receipt, process it in a queue, and notify when it's ready.
+
+## Key takeaways
+
+1. **Chunking is the most profitable investment** — before optimizing the model, optimize the splitting.
+2. **Hybrid retrieval beats pure semantic** in most real-world cases.
+3. **Cite your sources with a confidence score**: transparency is what makes an AI assistant trustworthy.
+4. **Handle ingestion asynchronously**: the user experience should never wait on a pipeline.
+
+Want to see the result in action? The full project is detailed on the [CorpusAI](/work/corpusai) page. Feel free to [reach out](/about) to discuss it.

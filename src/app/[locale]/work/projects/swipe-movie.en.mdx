@@ -1,0 +1,112 @@
+---
+title: "Swipe Movie – Find Your Movie as a Group"
+publishedAt: "2025-12-25"
+summary: "A collaborative web app to find a movie to watch as a group through a swipe system. When everyone likes the same movie, it's a match! Turborepo architecture with Next.js and NestJS."
+images:
+  - "/images/projects/swipe-movie/cover-01.png"
+  - "/images/projects/swipe-movie/cover-02.png"
+  - "/images/projects/swipe-movie/cover-03.png"
+link: "https://swipe-movie.com/"
+---
+
+## Overview
+
+**Swipe Movie** solves a universal problem: spending hours deciding what to watch together.
+
+Each participant swipes (like/dislike) on movies, and when everyone likes the same movie, it's a **match**! Thanks to rooms with shareable codes, users can join a session even without an account.
+
+## Key features
+
+### Core
+- **Swipe** system with smooth animations
+- **Rooms** with shareable codes (join without an account)
+- **Real-time matching** via WebSocket
+- Support for **Movies & TV Series**
+- Installable **PWA** on mobile
+
+### Advanced filters
+- Genres (20+)
+- Minimum rating, release year, runtime
+- **Streaming platforms** (50+ providers)
+- Original language, availability region
+
+### Integrations
+- **TMDB**: catalog of 10,000+ movies/series
+- **Trakt.tv**: watch history sync (OAuth)
+- **AniList**: anime library sync (OAuth)
+- **Stripe**: payments and subscriptions
+
+### Plans
+| | FREE | PRO |
+|---|---|---|
+| Active rooms | 2 | Unlimited |
+| Participants/room | 5 | 20 |
+| Swipes/month | 100 | Unlimited |
+| Advanced filters | Limited | All |
+
+## Monorepo Architecture
+
+```
+swipe-movie/
+├── apps/
+│   ├── web/          # Next.js 16 (App Router)
+│   └── api/          # NestJS 11
+├── packages/
+│   ├── database/     # Prisma schema + client
+│   ├── ui/           # Design system (Atomic Design)
+│   ├── types/        # Shared types
+│   ├── email/        # Email service (Resend)
+│   └── subscription/ # FREE/PRO plans logic
+└── turbo.json
+```
+
+## Tech stack
+
+### Frontend
+- **Framework**: Next.js 16, App Router, Turbopack
+- **UI**: Tailwind CSS 4, Radix UI, Framer Motion
+- **State**: SWR
+- **Auth**: Better Auth (Google OAuth)
+- **Real-time**: Socket.IO
+- **i18n**: next-intl (FR/EN)
+- **PWA**: Serwist
+- **Monitoring**: Sentry, Vercel Analytics
+
+### Backend
+- **Framework**: NestJS 11
+- **Database**: PostgreSQL + Prisma
+- **Cache**: Redis
+- **Real-time**: Socket.IO (WebSocket)
+- **Auth**: JWT + Passport
+- **Payments**: Stripe webhooks
+- **Docs**: Swagger
+
+### DevOps
+- **Monorepo**: Turborepo + pnpm
+- **CI/CD**: GitHub Actions
+- **Deploy**: Vercel (frontend), Railway (backend)
+
+## Challenges and lessons learned
+
+- Designing a **scalable monorepo architecture** with Turborepo
+- Implementing performant **real-time matching** with WebSocket and Redis
+- Managing **state synchronization** across multiple clients in a room
+- Integrating third-party **OAuth APIs** (Trakt.tv, AniList)
+- Setting up a flexible **plans system** with Stripe
+- Optimizing **swipe performance** (animations, prefetching)
+
+## Impact
+
+- Application **in production** at [swipe-movie.com](https://swipe-movie.com/) with **240+ users**
+- Smooth UX thanks to **real-time** and **Framer Motion animations**
+- **Modular** architecture that makes adding features easier
+- Complete **monetization** system with Stripe
+
+## Current status
+
+The project is **in production** and continues to evolve:
+- Adding new integrations (streaming platforms)
+- Improving the recommendation algorithm
+- Mobile performance optimizations
+
+This project demonstrates a command of **modern full stack development**, **monorepo architectures**, and **DevOps best practices**.

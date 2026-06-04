@@ -1,0 +1,92 @@
+---
+title: "Designing multi-agent systems with LangGraph in production"
+publishedAt: "2026-05-12"
+summary: "A field report on designing multi-agent systems with LangGraph: LLM agent orchestration, conversational memory, conditional edges, and observability for reliable AI workflows in production."
+tag: "IA"
+---
+
+## From a single prompt to a multi-agent system
+
+For a long time, we believed that a single well-crafted prompt would be enough to solve everything. In production, that illusion doesn't hold. As soon as an AI assistant has to choose a channel, understand a business context, and generate a personalized message, a monolithic prompt becomes unmanageable: impossible to debug, fragile at the slightest change, and opaque when it comes to tracking.
+
+The answer that transformed our approach at [Favikon](/work/favikon): **multi-agent systems**. Rather than an omniscient agent, we break the problem down into **specialized LLM agents**, each responsible for a specific decision, all coordinated by an **agent orchestration** layer. And to build this orchestration, **LangGraph** stood out as the go-to tool.
+
+## Why LangGraph rather than a simple chain
+
+LangChain excels at chaining linear steps. But real **AI workflows** aren't linear: they loop, branch, and backtrack depending on an agent's result. LangGraph models exactly this by representing the system as a **state graph**: nodes (the agents) connected by edges, some of which are **conditional**.
+
+This abstraction brings three concrete benefits:
+
+- **An explicit shared state** that flows between agents, instead of an implicit context that's hard to trace.
+- **Conditional edges** that make routing readable: you can see, in the code, why the system moves from one agent to another.
+- **Resumption and control**: you can interrupt, inspect, and restart a workflow without re-running everything.
+
+## Anatomy of our specialized agents
+
+Each agent has a single role and a clear responsibility. On our platform, three families of agents structure the system:
+
+### The channel selection agent
+
+It decides which channel to engage through: it analyzes the available signals and steers the rest of the workflow. This is exactly the kind of decision that deserves its own agent, isolated and testable.
+
+### The context analysis agent
+
+It enriches the state with the business context: understanding the situation before acting. Coupled with semantic search via **Qdrant**, it retrieves the relevant elements to feed the generation.
+
+### The conversational memory agent
+
+**Conversational memory** is what distinguishes a useful assistant from a parrot with no context. This agent maintains the relevant history and reinjects it into the shared state, so that each conversation turn stays consistent with the previous ones.
+
+## The graph in practice
+
+Here is a simplified version of the structure: we declare the nodes, the shared state, then the **conditional edges** that orchestrate the transition from one agent to another.
+
+```typescript
+import { StateGraph, END } from "@langchain/langgraph";
+
+const workflow = new StateGraph({ channels: agentState })
+  .addNode("selectionCanal", selectChannelAgent)
+  .addNode("analyseContexte", contextAnalysisAgent)
+  .addNode("memoire", memoryAgent)
+  .addNode("generation", outreachAgent);
+
+// Entry point
+workflow.setEntryPoint("selectionCanal");
+
+// Conditional routing: depending on the chosen channel, we enrich or we generate
+workflow.addConditionalEdges("selectionCanal", routeByChannel, {
+  enrichir: "analyseContexte",
+  direct: "generation",
+});
+
+workflow.addEdge("analyseContexte", "memoire");
+workflow.addEdge("memoire", "generation");
+workflow.addEdge("generation", END);
+
+const app = workflow.compile();
+```
+
+The `routeByChannel` function inspects the state and returns the key of the edge to follow. This is where the **agent orchestration** logic lives: an explicit, versioned, testable decision, rather than buried in a prompt.
+
+## Generating without losing control
+
+Once the graph is in place, the agents produce concrete output: **personalized outreach messages** and **creator recommendations**. The advantage of the multi-agent approach is that generation arrives at the end of the chain, already fed by a structured context and a clean memory. The quality of the result depends less on the magic wording of the final prompt than on the rigor of the upstream steps.
+
+## Observability: the prerequisite for going to production
+
+A multi-agent system without observability is a black box impossible to operate seriously. Three pillars made the system maintainable for us:
+
+- **Request tracing**: following the exact path taken through the graph, agent by agent, to understand each decision.
+- **Quality metrics**: measuring the relevance of outputs instead of relying on a gut feeling.
+- **The feedback loop**: reinjecting feedback to evolve agents and prompts in the right direction.
+
+It's this instrumentation that turns an impressive demo prototype into an **AI workflow** you can actually rely on.
+
+## Key takeaways
+
+1. **Decompose before optimizing**: one agent per decision beats a giant prompt, every time.
+2. **Make routing explicit** with conditional edges — readability is a production asset.
+3. **Treat conversational memory as a full-fledged agent**, not as a detail.
+4. **No observability, no production**: tracing, metrics, and a feedback loop are not optional.
+
+Working on **LLM agents** or **agent orchestration**? The full project is detailed on the [Favikon](/work/favikon) page. Feel free to [reach out](/about) to discuss the design of multi-agent systems.

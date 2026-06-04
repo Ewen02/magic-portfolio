@@ -1,0 +1,128 @@
+---
+title: "CorpusAI – Document-Based Conversational AI SaaS Platform"
+publishedAt: "2026-04-09"
+summary: "A SaaS platform that lets creators turn their documents into conversational AI assistants. Complete RAG pipeline (parsing, chunking, embeddings, reranking), real-time streaming, embeddable widget, Stripe billing, and a public API. Turborepo monorepo architecture with Next.js 15, NestJS 11, BullMQ, and Qdrant."
+images:
+  - "/images/projects/corpusai/cover-01.png"
+  - "/images/projects/corpusai/cover-02.png"
+  - "/images/projects/corpusai/cover-03.png"
+link: "https://corpus-ai-web.vercel.app/fr"
+---
+
+## Overview
+
+**CorpusAI** allows any expert (trainer, consultant, coach, content creator) to turn their documents into an intelligent, shareable, and embeddable **conversational AI assistant**.
+
+The user imports their files (PDF, Word, Markdown, TXT), the platform automatically indexes them through a **complete RAG pipeline**, then generates a chatbot capable of answering questions while citing its sources with a **confidence score**.
+
+## Key features
+
+### RAG pipeline
+
+- Multi-format **parsing**: PDF, DOCX, TXT, Markdown, CSV, HTML
+- Parent-child **chunking** (150-token children, 512-token parents, tiktoken)
+- **Embeddings**: OpenAI `text-embedding-3-small` (1536d, optimized with Matryoshka 512d)
+- **Vector Store**: Qdrant Cloud (HNSW, cosine similarity)
+- Hybrid **reranking**: 60% semantic + 40% BM25 lexical
+- Redis embedding **cache** with a 7-day TTL
+
+### Real-time AI chat
+
+- Token-by-token **SSE streaming** via Server-Sent Events
+- Multi-turn conversations with history (last 6 messages)
+- Source citations with a **confidence score** (HIGH / MEDIUM / LOW)
+- User feedback (thumbs up/down)
+- Configurable LLM (OpenAI `gpt-4o-mini` by default)
+
+### Embeddable widget
+
+- Chat embeddable via **iframe or script**
+- Customizable: theme (light/dark), colors, header/footer, dimensions
+- **4 access modes**: public, secret token, access code, invitation
+- End-user portal with **magic link** authentication and persistent history
+
+### Extras
+
+- **Stripe billing**: 4 plans (FREE → ENTERPRISE), webhooks, customer portal
+- Public **REST API** + official TypeScript SDK (zero dependencies)
+- Full FR/EN **i18n** (400+ keys, next-intl)
+- Guided **onboarding** in 7 steps with 7 AI templates
+- **Analytics**: global dashboard + per-AI (conversations, questions, tokens)
+- **381 tests**: 127 corpus, 140 API, 50 frontend, 24 E2E (Playwright)
+
+## Monorepo architecture
+
+```
+corpusai/
+├── apps/
+│   ├── web/          # Next.js 15 — dashboard + widget + landing
+│   ├── api/          # NestJS 11 — REST API (15+ modules)
+│   └── ai-worker/    # BullMQ — async document processing
+├── packages/
+│   ├── corpus/       # Complete RAG pipeline (127 tests)
+│   ├── database/     # Prisma 6 + PostgreSQL (14 models)
+│   ├── ui/           # 40+ components (Atomic Design)
+│   ├── types/        # Shared types & enums
+│   ├── subscription/ # Plans & limits logic
+│   ├── ai-rules/     # System prompts & rules
+│   ├── queue/        # BullMQ config & job types
+│   └── sdk/          # Public TypeScript SDK
+└── tooling/
+    └── typescript-config/
+```
+
+## Tech stack
+
+### Frontend
+- **Framework**: Next.js 15, React 19, TypeScript strict
+- **State**: React Query (TanStack v5)
+- **UI**: Tailwind CSS, Radix UI, custom components (Atomic Design)
+- **Auth**: Better Auth (OAuth Google/GitHub, 2FA)
+- **Real-time**: SSE (streaming chat + document progress)
+- **i18n**: next-intl (FR/EN)
+- **Monitoring**: Sentry, PostHog, Vercel Analytics
+
+### Backend
+- **Framework**: NestJS 11 (15+ modules)
+- **Database**: PostgreSQL (Neon) + Prisma 6
+- **Cache/Queue**: Redis + BullMQ (concurrency 3)
+- **Vector DB**: Qdrant Cloud
+- **Email**: Resend (magic links, invitations)
+- **Payments**: Stripe (checkout, webhooks, customer portal)
+- **Security**: Helmet, CORS, rate limiting, SSRF protection
+- **API Docs**: Swagger/OpenAPI
+
+### AI / RAG
+- **Embeddings**: OpenAI `text-embedding-3-small`
+- **LLM**: OpenAI `gpt-4o-mini` (configurable)
+- **Vector Store**: Qdrant (HNSW, cosine)
+- **Reranking**: Hybrid semantic + BM25
+- **Chunking**: Parent-child with tiktoken
+- **Streaming**: token-by-token SSE
+
+### DevOps
+- **Monorepo**: Turborepo + pnpm
+- **Containers**: Docker multi-stage (3 services)
+- **Deploy**: Railway (API + Worker + DB + Redis) + Qdrant Cloud
+
+## Challenges and lessons learned
+
+- Designing a **production-ready RAG pipeline** (parsing → chunking → embedding → reranking → generation) with confidence scoring
+- Implementing **end-to-end SSE streaming** (worker → API → frontend) for chat and document progress
+- Architecting a flexible **controlled-access system** (4 modes) with magic link authentication for end-users
+- Handling **asynchronous document processing** with BullMQ, real-time progress, and automatic retries
+- Building a **scalable monorepo** with 8 shared packages and 3 applications
+- Integrating a **complete Stripe billing** setup (4 plans, usage limits, webhooks, customer portal)
+
+## Impact
+
+- **Complete and tested** RAG pipeline: 127 unit tests, hybrid reranking, confidence scoring
+- **End-to-end streaming**: smooth "live typing"-style UX on AI responses
+- Monorepo architecture of **8 packages + 3 apps**, reusable and maintainable
+- **Feature-complete** product with billing, public API, embeddable widget, and analytics
+
+## Current status
+
+The project is **feature-complete** (V1-V4 roadmap finished) and in the polish phase. The RAG pipeline is tested in production, Stripe billing is operational, and the application includes 15+ dashboard pages, a landing page, and an embeddable widget with a dark-theme design system.
+
+This project illustrates the design of a **complete, end-to-end SaaS product**, combining a **production RAG/AI pipeline**, **large-scale monorepo architecture**, and the **integration of complex systems** (streaming, billing, vector search, multi-level auth).

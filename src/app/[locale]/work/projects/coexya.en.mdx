@@ -1,0 +1,96 @@
+---
+title: "Coexya – Intellectual Property SaaS (Internship)"
+publishedAt: "2024-09-01"
+summary: "6-month internship at Coexya: development of a SaaS software for comparing trademarks and industrial designs in the field of intellectual property."
+images:
+  - "/images/projects/coexya/cover-01.png"
+link: "https://www.coexya.eu/notre-offre/search/"
+---
+
+## Overview
+
+A **6-month** internship (2024 - 2025) at **Coexya**, an IT services company specialized in software solutions for the legal and intellectual property sectors.
+
+I contributed to the development of a **SaaS software for comparing trademarks** and industrial designs, used by intellectual property firms and corporate legal departments. This project belongs to the **LegalTech** field, at the intersection of law and software engineering.
+
+## Business context
+
+Before filing a trademark or an industrial design, a company must make sure that an identical or similar sign does not already exist. This step, called a **prior art search**, is crucial: a filing that conflicts with an existing trademark can be rejected by the offices (INPI, EUIPO) or challenged in court by the earlier rights holder.
+
+The central issue is assessing the **likelihood of confusion**. Two trademarks can resemble each other on several levels:
+- **Phonetic and verbal**: similar sounds, common roots, deliberate misspellings.
+- **Visual**: logos, shapes, color palettes, or industrial designs showing graphical similarities.
+- **Conceptual**: evoking the same idea or the same semantic universe.
+
+The **visual comparison of logos and industrial designs** is particularly difficult to tool: candidate signs that are potentially close must be quickly presented to a lawyer, drawing on **trademark** databases containing millions of international registrations. The software's role is to assist this analysis by automating the search, ranking the results, and making it easier to produce prior art reports that experts can use.
+
+Concretely, the tool allows professionals to:
+- **Search** for existing trademarks before filing, across large volumes of data.
+- **Compare** logos and industrial designs visually.
+- **Analyze** the likelihood of confusion between trademarks.
+- **Generate** prior art search reports.
+
+## Architecture
+
+The application follows a classic SPA + API architecture, cleanly decoupling presentation, business logic, and persistence:
+
+- **Client (Angular SPA)**: a single-page application in TypeScript that consumes the API through HTTP calls and handles display, pagination, and visual comparison.
+- **API (.NET / C#)**: a service layer exposing REST endpoints, encapsulating the business logic for search and comparison, and orchestrating data access.
+- **Database (MySQL)**: storage of trademarks and designs, with indexes and full-text search suited to the data volume.
+
+The nominal flow is as follows: `Angular SPA` → `.NET API (REST)` → `MySQL`, with results then flowing back paginated and sorted to the interface.
+
+## Contributions
+
+### Frontend (Angular)
+- Development of new features on the user interface.
+- Creation of **reusable Angular components**, notably for the visual comparison of trademarks and designs.
+- Implementation of client-side **pagination** to browse long lists of results without degrading the display.
+- Integration of the backend APIs through dedicated Angular services.
+- Improvement of the user experience and the readability of search results.
+
+### Backend (.NET / C#)
+- Development of **business services in C#** exposed through REST endpoints.
+- Integration with the trademark and design databases.
+- Optimization of search queries and server-side pagination.
+- Writing **unit and integration tests** to make the delivered features more reliable.
+
+### Database
+- Writing **optimized SQL queries** for full-text search over large volumes.
+- Work on indexing to reduce response times on international trademark databases.
+- Handling large datasets while respecting performance constraints.
+
+## Methodology and working in an IT services company
+
+Development took place within an **IT services company** context, with structured team practices:
+- Task management and backlog tracking on **Azure DevOps**.
+- Systematic **code reviews** before integration, and adherence to the existing codebase's conventions.
+- Regular collaboration with **domain experts** (lawyers and intellectual property consultants) to translate legal needs into technical specifications.
+- Progressive integration of my contributions into a product already in production.
+
+## Tech stack
+
+- **Frontend**: Angular, TypeScript
+- **Backend**: .NET, C#
+- **Database**: MySQL
+- **Tools**: Git, Azure DevOps
+
+## Challenges and lessons learned
+
+- Understanding a **complex business domain** (intellectual property, prior art search).
+- Working on an **existing codebase** with its conventions and its history.
+- Collaborating with domain experts (lawyers, IP consultants).
+- Handling **large datasets** (millions of trademarks) under performance constraints.
+
+## Impact
+
+- New features deployed to production.
+- Improved efficiency of prior art searches.
+- Contribution to a product used by legal professionals.
+
+## What this internship gave me
+
+- Discovery of the **LegalTech / PropTech** sector.
+- Experience with a **.NET / Angular** stack in an enterprise environment.
+- Understanding of the issues around **intellectual property** and **trademarks**.
+- Teamwork in an **IT services company** context.
