@@ -488,19 +488,23 @@ const uses = {
 };
 
 // ============================================================================
-// GALLERY
+// CONTACT
 // ============================================================================
 
-const gallery = {
-  label: "Gallery",
-  title: "My photo gallery",
-  description: `A photo collection by ${person.name}`,
-  /** @type {{ src: string, alt: string, orientation: string }[]} */
-  images: [],
+const contact = {
+  label: "Contact",
+  title: "Me contacter",
+  description: `Contactez ${person.name}, ${person.role} basé à Paris, pour une mission freelance, une collaboration ou toute question.`,
+  intro:
+    "Une mission freelance, un projet web ou une simple question ? Le plus simple est de planifier un appel ou de m'écrire directement — je réponds rapidement.",
+  calendar: {
+    display: true,
+    link: "https://cal.com/ewenlq/30min",
+  },
 };
 
 // ============================================================================
 // EXPORTS
 // ============================================================================
 
-export { person, social, newsletter, home, about, blog, work, gallery, uses, keywords };
+export { person, social, newsletter, home, about, blog, work, uses, contact, keywords };
