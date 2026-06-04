@@ -1,5 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { Column, Flex, Heading, Line, Tag, Text } from "@/once-ui/components";
+import { Column, Flex, Heading, Line, SmartLink, Text } from "@/once-ui/components";
 import { baseURL } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
 import { PrintButton } from "./PrintButton";
@@ -16,18 +16,22 @@ const t = (locale: Locale) =>
         title: "Résumé",
         description: "Printable résumé",
         print: "Print / Save as PDF",
+        profile: "Profile",
         experience: "Experience",
         education: "Education",
         skills: "Skills",
+        languages: "Languages",
         hint: "Tip: in the print dialog, choose “Save as PDF”.",
       }
     : {
         title: "CV",
         description: "CV imprimable",
         print: "Imprimer / Enregistrer en PDF",
+        profile: "Profil",
         experience: "Expériences",
         education: "Formation",
         skills: "Compétences",
+        languages: "Langues",
         hint: "Astuce : dans la fenêtre d’impression, choisissez « Enregistrer en PDF ».",
       };
 
@@ -61,14 +65,17 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
 
 export default async function CV({ params: { locale } }: LocaleParam) {
   setRequestLocale(locale);
-  const { person, about, social, contact } = getContent(locale);
+  const { person, about, social } = getContent(locale);
   const l = t(locale);
 
-  const contactLine = [
-    person.role,
-    locale === "en" ? "Paris" : "Paris",
-    person.email,
-    ...social.filter((s) => s.link && s.link.startsWith("http")).map((s) => s.name),
+  const portfolioUrl = localeUrl(locale, "/");
+  // Clickable contact items for the header (useful in the exported PDF).
+  const links = [
+    { label: person.email, href: `mailto:${person.email}` },
+    { label: "Portfolio", href: portfolioUrl },
+    ...social
+      .filter((s) => s.link && s.link.startsWith("http"))
+      .map((s) => ({ label: s.name, href: s.link })),
   ];
 
   return (
@@ -91,12 +98,34 @@ export default async function CV({ params: { locale } }: LocaleParam) {
 
       <Column className={styles.cv} fillWidth gap="l">
         {/* Header */}
-        <Column gap="4">
-          <Heading variant="display-strong-m">{person.name}</Heading>
-          <Text variant="body-default-m" onBackground="neutral-weak">
-            {contactLine.join("  ·  ")}
-          </Text>
+        <Column gap="8">
+          <Column gap="2">
+            <Heading variant="display-strong-m">{person.name}</Heading>
+            <Text variant="heading-default-s" onBackground="brand-weak">
+              {person.role} · Paris
+            </Text>
+          </Column>
+          <Flex gap="8" wrap vertical="center" textVariant="body-default-s">
+            {links.map((item, i) => (
+              <Flex key={`lnk-${i}`} gap="8" vertical="center">
+                {i > 0 && <Text onBackground="neutral-weak">·</Text>}
+                <SmartLink href={item.href}>{item.label}</SmartLink>
+              </Flex>
+            ))}
+          </Flex>
         </Column>
+
+        {/* Profile / accroche */}
+        {about.intro.display && (
+          <Column className={styles.entry} fillWidth gap="8">
+            <Heading as="h2" variant="display-strong-xs">
+              {l.profile}
+            </Heading>
+            <Column textVariant="body-default-s" gap="8">
+              {about.intro.description}
+            </Column>
+          </Column>
+        )}
 
         <Line />
 
@@ -154,22 +183,36 @@ export default async function CV({ params: { locale } }: LocaleParam) {
 
         <Line />
 
-        {/* Skills */}
+        {/* Skills — compact: one dense line per category */}
         {about.technical.display && (
-          <Column fillWidth gap="m">
+          <Column className={styles.entry} fillWidth gap="8">
             <Heading as="h2" variant="display-strong-xs">
               {l.skills}
             </Heading>
-            <Column fillWidth gap="m">
+            <Column fillWidth gap="4">
               {about.technical.skills.map((skill, i) => (
-                <Column key={`skill-${i}`} className={styles.entry} fillWidth gap="2">
-                  <Text variant="heading-strong-s">{skill.title}</Text>
-                  <Text variant="body-default-s" onBackground="neutral-weak">
+                <Text key={`skill-${i}`} variant="body-default-s">
+                  <strong>{skill.title} :</strong>{" "}
+                  <Text as="span" onBackground="neutral-weak">
                     {skill.description}
                   </Text>
-                </Column>
+                </Text>
               ))}
             </Column>
+          </Column>
+        )}
+
+        <Line />
+
+        {/* Languages */}
+        {person.languages?.length > 0 && (
+          <Column className={styles.entry} fillWidth gap="8">
+            <Heading as="h2" variant="display-strong-xs">
+              {l.languages}
+            </Heading>
+            <Text variant="body-default-s" onBackground="neutral-weak">
+              {person.languages.join("  ·  ")}
+            </Text>
           </Column>
         )}
 

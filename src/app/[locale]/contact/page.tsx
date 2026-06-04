@@ -48,7 +48,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
 
 export default async function Contact({ params: { locale } }: LocaleParam) {
   setRequestLocale(locale);
-  const { person, contact, social } = getContent(locale);
+  const { person, contact, social, about } = getContent(locale);
 
   return (
     <Column maxWidth="m" gap="xl">
@@ -58,21 +58,40 @@ export default async function Contact({ params: { locale } }: LocaleParam) {
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "ContactPage",
-            name: contact.title,
-            description: contact.description,
-            url: localeUrl(locale, "/contact"),
-            inLanguage: locale === "en" ? "en-US" : "fr-FR",
-            mainEntity: {
-              "@type": "Person",
-              name: person.name,
-              jobTitle: person.role,
-              email: `mailto:${person.email}`,
-              url: localeUrl(locale, "/about"),
-              sameAs: social
-                .filter((item) => item.link && item.link.startsWith("http"))
-                .map((item) => item.link),
-            },
+            "@graph": [
+              {
+                "@type": "ContactPage",
+                name: contact.title,
+                description: contact.description,
+                url: localeUrl(locale, "/contact"),
+                inLanguage: locale === "en" ? "en-US" : "fr-FR",
+                mainEntity: {
+                  "@type": "Person",
+                  name: person.name,
+                  jobTitle: person.role,
+                  email: `mailto:${person.email}`,
+                  url: localeUrl(locale, "/about"),
+                  sameAs: social
+                    .filter((item) => item.link && item.link.startsWith("http"))
+                    .map((item) => item.link),
+                },
+              },
+              ...(about.faq?.display
+                ? [
+                    {
+                      "@type": "FAQPage",
+                      mainEntity: about.faq.items.map((item) => ({
+                        "@type": "Question",
+                        name: item.question,
+                        acceptedAnswer: {
+                          "@type": "Answer",
+                          text: item.answer,
+                        },
+                      })),
+                    },
+                  ]
+                : []),
+            ],
           }),
         }}
       />
@@ -142,7 +161,34 @@ export default async function Contact({ params: { locale } }: LocaleParam) {
                   />
                 ),
             )}
+            <Button
+              href="/cv"
+              prefixIcon="clipboard"
+              label={locale === "en" ? "View résumé" : "Voir le CV"}
+              variant="secondary"
+              size="m"
+            />
           </Flex>
+        </Column>
+      )}
+
+      {about.faq?.display && (
+        <Column fillWidth gap="m" paddingTop="l">
+          <Heading as="h2" id={about.faq.title} variant="display-strong-s">
+            {about.faq.title}
+          </Heading>
+          <Column fillWidth gap="l">
+            {about.faq.items.map((item, index) => (
+              <Column key={`faq-${index}`} fillWidth gap="8">
+                <Text as="h3" variant="heading-strong-m">
+                  {item.question}
+                </Text>
+                <Text variant="body-default-m" onBackground="neutral-weak">
+                  {item.answer}
+                </Text>
+              </Column>
+            ))}
+          </Column>
         </Column>
       )}
     </Column>

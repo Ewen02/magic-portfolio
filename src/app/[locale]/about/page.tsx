@@ -89,11 +89,6 @@ export default async function About({ params: { locale } }: LocaleParam) {
       display: about.testimonials?.display,
       items: [],
     },
-    {
-      title: about.faq?.title,
-      display: about.faq?.display,
-      items: [],
-    },
   ];
   return (
     <Column maxWidth="m">
@@ -146,26 +141,6 @@ export default async function About({ params: { locale } }: LocaleParam) {
           }),
         }}
       />
-      {about.faq?.display && (
-        <script
-          type="application/ld+json"
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "FAQPage",
-              mainEntity: about.faq.items.map((item) => ({
-                "@type": "Question",
-                name: item.question,
-                acceptedAnswer: {
-                  "@type": "Answer",
-                  text: item.answer,
-                },
-              })),
-            }),
-          }}
-        />
-      )}
       {about.testimonials?.display && about.testimonials.items.length > 0 && (
         <script
           type="application/ld+json"
@@ -496,32 +471,6 @@ export default async function About({ params: { locale } }: LocaleParam) {
                         />
                       )}
                     </Flex>
-                  </Column>
-                ))}
-              </Column>
-            </>
-          )}
-
-          {about.faq?.display && (
-            <>
-              <Heading
-                as="h2"
-                id={about.faq.title}
-                variant="display-strong-s"
-                marginTop="40"
-                marginBottom="m"
-              >
-                {about.faq.title}
-              </Heading>
-              <Column fillWidth gap="l">
-                {about.faq.items.map((item, index) => (
-                  <Column key={`faq-${index}`} fillWidth gap="8">
-                    <Text as="h3" variant="heading-strong-m">
-                      {item.question}
-                    </Text>
-                    <Text variant="body-default-m" onBackground="neutral-weak">
-                      {item.answer}
-                    </Text>
                   </Column>
                 ))}
               </Column>
