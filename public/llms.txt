@@ -1,0 +1,50 @@
+# Ewen Le Quéré — Développeur Full Stack Freelance
+
+> Ewen Le Quéré est un développeur web full stack freelance basé à Paris (Île-de-France, France), diplômé d'Epitech (Bac+5, RNCP 7). Il est spécialisé dans le développement d'applications web et SaaS, l'intégration d'intelligence artificielle (RAG, LLM, agents) et les systèmes temps réel. Il est disponible pour des missions freelance.
+
+## Profil
+
+- **Nom** : Ewen Le Quéré
+- **Métier** : Développeur Full Stack Freelance
+- **Localisation** : Paris, Île-de-France, France
+- **Formation** : Epitech Paris — Expert en Technologies de l'Information (RNCP 7, Bac+5), promotion 2025
+- **Langues** : Français (natif), Anglais (professionnel)
+- **Disponibilité** : ouvert aux missions freelance (actuellement développeur full stack chez Favikon)
+
+## Compétences
+
+- **Frontend** : React, Next.js, TypeScript, Tailwind CSS, React Query, Redux Toolkit
+- **Backend** : Node.js, NestJS, Express, Prisma, PostgreSQL, MongoDB, Redis, Stripe
+- **IA appliquée** : pipelines RAG (chunking, embeddings, reranking), agents LLM (LangChain / LangGraph), recherche sémantique (Qdrant), streaming IA
+- **Temps réel** : WebSocket, Socket.io, Server-Sent Events (SSE)
+- **Mobile** : Swift (iOS)
+- **Autres** : SEO technique, accessibilité, Docker, Turborepo, CI/CD
+
+## Services freelance
+
+1. **Application web & SaaS full stack** — conception et développement d'applications complètes (React/Next.js + Node/NestJS), à partir de 6 000 €.
+2. **Intégration IA, RAG & agents LLM** — assistants conversationnels, pipelines RAG, systèmes multi-agents, à partir de 5 000 €.
+3. **Site vitrine performant & SEO** — sites modernes optimisés pour le référencement local, à partir de 1 500 €.
+4. **Temps réel & architecture** — systèmes temps réel, monorepo, conseil technique, sur devis.
+
+## Projets notables
+
+- **Favikon** — plateforme SaaS B2B de marketing d'influence augmentée par l'IA (210K+ utilisateurs, 11,5M+ créateurs, 30M+ posts indexés).
+- **CorpusAI** — plateforme SaaS d'IA conversationnelle par documents (pipeline RAG complet).
+- **Système d'affiliation Hercules Thrustmaster** — mission freelance, en production depuis 2023.
+- **Cabinet Dentaire Desboeuf** — site vitrine freelance optimisé SEO local.
+
+## Liens
+
+- Site : https://ewenlq.fr
+- Services : https://ewenlq.fr/services
+- Projets : https://ewenlq.fr/work
+- Blog technique : https://ewenlq.fr/blog
+- Contact : https://ewenlq.fr/contact
+- GitHub : https://github.com/Ewen02
+- LinkedIn : https://www.linkedin.com/in/ewen-le-quéré/
+- Malt : https://www.malt.fr/profile/ewenlequere
+
+## Contact
+
+Pour une mission freelance ou un projet web, réserver un appel : https://cal.com/ewenlq/30min — ou écrire à ewen.le-quere@epitech.eu.

@@ -70,6 +70,11 @@ const social = [
     link: "https://www.linkedin.com/in/ewen-le-qu%C3%A9r%C3%A9/",
   },
   {
+    name: "Malt",
+    icon: "openLink",
+    link: "https://www.malt.fr/profile/ewenlequere",
+  },
+  {
     name: "Email",
     icon: "email",
     link: "mailto:ewen.le-quere@epitech.eu",

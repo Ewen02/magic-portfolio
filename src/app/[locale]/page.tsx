@@ -86,6 +86,53 @@ export default async function Home({ params: { locale } }: LocaleParam) {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        suppressHydrationWarning
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfessionalService",
+            name: `${person.name} — ${person.role} Freelance`,
+            description: home.description,
+            url: baseUrl,
+            image: `https://${baseURL}${person.avatar}`,
+            priceRange: "€€",
+            inLanguage: locale === "en" ? "en-US" : "fr-FR",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Paris",
+              addressRegion: "Île-de-France",
+              addressCountry: "FR",
+            },
+            areaServed: [
+              { "@type": "City", name: "Paris" },
+              { "@type": "AdministrativeArea", name: "Île-de-France" },
+              { "@type": "Country", name: "France" },
+            ],
+            knowsAbout: [
+              "Développement Full Stack",
+              "React",
+              "Next.js",
+              "Node.js",
+              "NestJS",
+              "Intelligence artificielle",
+              "RAG",
+              "LLM",
+              "SaaS",
+            ],
+            provider: {
+              "@type": "Person",
+              name: person.name,
+              jobTitle: person.role,
+              url: `${baseUrl}/about`,
+              sameAs: social
+                .filter((s) => s.link && s.link.startsWith("http"))
+                .map((s) => s.link),
+            },
+          }),
+        }}
+      />
       <Column fillWidth paddingY="l" gap="m">
         <Column maxWidth="s">
           <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="m">
