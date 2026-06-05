@@ -47,11 +47,14 @@ export default async function Legal({ params: { locale } }: LocaleParam) {
         <Text variant="body-default-m" onBackground="neutral-weak">
           {person.name} — {en ? "Freelance developer (sole proprietorship / micro-entreprise)" : "Développeur indépendant (micro-entreprise)"}
           <br />
-          {en ? "Address: " : "Adresse : "}[À compléter]
+          SIRET : 931 055 966 00010
           <br />
-          SIRET : [À compléter]
+          {en ? "Business activity code (APE): " : "Code APE : "}6201Z —{" "}
+          {en ? "Computer programming" : "Programmation informatique"}
           <br />
           {en ? "VAT: not applicable (art. 293 B of the French tax code)" : "TVA : non applicable, art. 293 B du CGI"}
+          <br />
+          {en ? "Phone: " : "Téléphone : "}06 75 91 33 41
           <br />
           Email : {person.email}
         </Text>
