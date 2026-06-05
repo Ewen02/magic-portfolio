@@ -542,6 +542,33 @@ const services = {
       tags: ["WebSocket", "SSE", "Redis", "Turborepo"],
     },
   ],
+  availability:
+    "Available for one-off and fixed-price projects, alongside a salaried position. Ideal for a well-scoped project, a feature to build or an AI integration — with a single, reliable and responsive point of contact.",
+  process: {
+    title: "How I work",
+    steps: [
+      {
+        title: "Discovery & scoping",
+        description:
+          "A free first call to understand your need, context and constraints. I'll point you in the right direction even if it's not a fit for me.",
+      },
+      {
+        title: "Quote & timeline",
+        description:
+          "A clear proposal: scope, timeline and budget. No surprises — you approve before we start.",
+      },
+      {
+        title: "Development",
+        description:
+          "I build in iterations with regular check-ins. You follow progress and adjust along the way.",
+      },
+      {
+        title: "Delivery & support",
+        description:
+          "Deployment, documentation and handover. I stay available for future iterations and support.",
+      },
+    ],
+  },
   cta: {
     title: "Got a project in mind?",
     description:

@@ -1,5 +1,5 @@
 import { setRequestLocale } from "next-intl/server";
-import { Button, Column, Flex, Heading, Tag, Text } from "@/once-ui/components";
+import { Button, Column, Flex, Heading, Icon, Tag, Text } from "@/once-ui/components";
 import { baseURL } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
 
@@ -90,6 +90,23 @@ export default async function Services({ params: { locale } }: LocaleParam) {
         </Text>
       </Column>
 
+      {services.availability && (
+        <Flex
+          fillWidth
+          gap="12"
+          padding="m"
+          radius="l"
+          border="brand-alpha-medium"
+          background="brand-alpha-weak"
+          vertical="center"
+        >
+          <Icon name="check" onBackground="brand-weak" />
+          <Text variant="body-default-m" onBackground="neutral-strong">
+            {services.availability}
+          </Text>
+        </Flex>
+      )}
+
       <Column fillWidth gap="l">
         {services.items.map((item, index) => (
           <Column
@@ -120,6 +137,40 @@ export default async function Services({ params: { locale } }: LocaleParam) {
           </Column>
         ))}
       </Column>
+
+      {/* Process */}
+      {services.process && (
+        <Column fillWidth gap="l">
+          <Heading as="h2" variant="display-strong-xs">
+            {services.process.title}
+          </Heading>
+          <Column fillWidth gap="m">
+            {services.process.steps.map((step, index) => (
+              <Flex key={`step-${index}`} gap="16" vertical="start">
+                <Flex
+                  minWidth="32"
+                  height="32"
+                  radius="full"
+                  background="brand-alpha-weak"
+                  border="brand-alpha-medium"
+                  horizontal="center"
+                  vertical="center"
+                >
+                  <Text variant="body-strong-m" onBackground="brand-weak">
+                    {index + 1}
+                  </Text>
+                </Flex>
+                <Column gap="2">
+                  <Text variant="heading-strong-s">{step.title}</Text>
+                  <Text variant="body-default-s" onBackground="neutral-weak">
+                    {step.description}
+                  </Text>
+                </Column>
+              </Flex>
+            ))}
+          </Column>
+        </Column>
+      )}
 
       {/* CTA */}
       <Column

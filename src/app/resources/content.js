@@ -542,6 +542,33 @@ const services = {
       tags: ["WebSocket", "SSE", "Redis", "Turborepo"],
     },
   ],
+  availability:
+    "Disponible pour des missions ponctuelles et au forfait, en parallèle d'une activité salariée. Idéal pour un projet cadré, une fonctionnalité à développer ou une intégration IA — avec un interlocuteur unique, fiable et réactif.",
+  process: {
+    title: "Comment je travaille",
+    steps: [
+      {
+        title: "Échange & cadrage",
+        description:
+          "Un premier appel gratuit pour comprendre votre besoin, votre contexte et vos contraintes. Je vous oriente même si ce n'est pas pour moi.",
+      },
+      {
+        title: "Devis & planning",
+        description:
+          "Une proposition claire : périmètre, délais et budget. Pas de surprise, vous validez avant qu'on démarre.",
+      },
+      {
+        title: "Développement",
+        description:
+          "Je développe par itérations avec des points réguliers. Vous suivez l'avancement et ajustez en cours de route.",
+      },
+      {
+        title: "Livraison & suivi",
+        description:
+          "Mise en production, documentation et passation. Je reste disponible pour les évolutions et le support.",
+      },
+    ],
+  },
   cta: {
     title: "Un projet en tête ?",
     description:
