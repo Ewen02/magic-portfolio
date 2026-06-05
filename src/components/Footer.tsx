@@ -37,7 +37,17 @@ export const Footer = () => {
             </SmartLink>
           </Text>
         </Text>
-        <Flex gap="16">
+        <Flex gap="16" vertical="center" wrap>
+          <SmartLink href="/legal">
+            <Text variant="body-default-s" onBackground="neutral-weak">
+              Mentions légales
+            </Text>
+          </SmartLink>
+          <SmartLink href="/privacy">
+            <Text variant="body-default-s" onBackground="neutral-weak">
+              Confidentialité
+            </Text>
+          </SmartLink>
           {social.map(
             (item) =>
               item.link && (

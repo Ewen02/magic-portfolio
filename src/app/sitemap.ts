@@ -24,6 +24,8 @@ const routeMeta: Record<string, { priority: number; changeFrequency: ChangeFreq 
   "/uses": { priority: 0.6, changeFrequency: "monthly" },
   "/services": { priority: 0.9, changeFrequency: "monthly" },
   "/contact": { priority: 0.8, changeFrequency: "yearly" },
+  "/legal": { priority: 0.2, changeFrequency: "yearly" },
+  "/privacy": { priority: 0.2, changeFrequency: "yearly" },
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

@@ -7,6 +7,7 @@ import { baseURL } from "@/app/resources";
 import { getContent } from "@/app/resources/getContent";
 import { formatDate } from "@/app/utils/formatDate";
 import ScrollToHash from "@/components/ScrollToHash";
+import { ShareButtons } from "@/components/blog/ShareButtons";
 import { routing } from "@/i18n/routing";
 
 interface BlogParams {
@@ -90,6 +91,10 @@ export default async function Blog({ params: { locale, slug } }: BlogParams) {
       src: person.avatar,
     })) || [];
 
+  // Reading time estimate: ~200 words per minute.
+  const wordCount = post.content.trim().split(/\s+/).length;
+  const readingTime = Math.max(1, Math.round(wordCount / 200));
+
   return (
     <Column as="section" maxWidth="xs" gap="l">
       <script
@@ -159,10 +164,21 @@ export default async function Blog({ params: { locale, slug } }: BlogParams) {
         <Text variant="body-default-s" onBackground="neutral-weak">
           {formatDate(post.metadata.publishedAt)}
         </Text>
+        <Text variant="body-default-s" onBackground="neutral-weak">
+          ·
+        </Text>
+        <Text variant="body-default-s" onBackground="neutral-weak">
+          {readingTime} {locale === "en" ? "min read" : "min de lecture"}
+        </Text>
       </Row>
       <Column as="article" fillWidth>
         <CustomMDX source={post.content} />
       </Column>
+      <ShareButtons
+        url={localeUrl(locale, `/blog/${post.slug}`)}
+        title={post.metadata.title}
+        locale={locale}
+      />
       <ScrollToHash />
     </Column>
   );

@@ -14,6 +14,7 @@ import { getContent } from "@/app/resources/getContent";
 import { Background, Column, Flex, ToastProvider } from "@/once-ui/components";
 
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { routing } from "@/i18n/routing";
 
@@ -208,6 +209,7 @@ export default async function LocaleLayout({ children, params: { locale } }: Loc
         </ToastProvider>
       </NextIntlClientProvider>
       <Analytics />
+      <SpeedInsights />
     </Flex>
   );
 }

@@ -25,6 +25,9 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
         fr: `https://${baseURL}/blog`,
         en: `https://${baseURL}/en/blog`,
       },
+      types: {
+        "application/rss+xml": `https://${baseURL}/blog/feed.xml`,
+      },
     },
     openGraph: {
       title,

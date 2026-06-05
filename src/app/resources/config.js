@@ -9,6 +9,8 @@ const routes = {
   "/services": true,
   "/contact": true,
   "/cv": true,
+  "/legal": true,
+  "/privacy": true,
 };
 
 const protectedRoutes = {};
