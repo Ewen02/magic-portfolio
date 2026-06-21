@@ -1,4 +1,4 @@
-const baseURL = "ewenlq.fr";
+const baseURL = "www.ewenlq.fr";
 
 const routes = {
   "/": true,
