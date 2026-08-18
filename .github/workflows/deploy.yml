@@ -160,7 +160,7 @@ jobs:
               -o UserKnownHostsFile=~/.ssh/known_hosts \
               -o ConnectTimeout=15 \
               "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
-              "deploy ${{ github.sha }}"
+              "deploy magic-portfolio ${{ github.sha }}"
           # deploy.sh sort en 1 si les conteneurs ne deviennent pas healthy,
           # après avoir tenté un rollback. ssh propage ce code, l'étape
           # échoue, et le workflow n'affiche pas un succès mensonger.
