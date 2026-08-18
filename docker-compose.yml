@@ -1,0 +1,183 @@
+# ---------------------------------------------------------------------------
+# docker-compose.yml — déploiement d'un projet sur le VPS
+#
+# Emplacement sur le serveur : ~/apps/magic-portfolio/docker-compose.yml
+# Ce fichier est commité dans le repo applicatif ET copié sur le serveur.
+# Le .env qui l'accompagne, lui, n'est jamais commité.
+#
+# AVANT DE DÉPLOYER, remplacer partout :
+#   magic-portfolio   → le nom en kebab-case (repo, dossier, réseau, conteneur, image)
+#
+# Contrôle qu'aucun port n'est publié, tous projets confondus :
+#   ssh vps 'grep -rn "^[[:space:]]*ports:" ~/apps/*/docker-compose.yml'
+#
+# L'ancrage "^[[:space:]]*" n'est pas cosmétique : sans lui, le grep remonte
+# les commentaires de ce fichier et renvoie 4 faux positifs par projet dès le
+# premier déploiement. Un contrôle qui échoue toujours cesse d'être lu — puis
+# d'être lancé — et le jour où un vrai port publié apparaît, il est noyé.
+# ---------------------------------------------------------------------------
+
+name: magic-portfolio
+
+# ---------------------------------------------------------------------------
+# Durcissement commun à TOUS les services applicatifs (CLAUDE.md § 3.8).
+#
+# Écrit une seule fois et fusionné par ancre YAML : la version précédente le
+# recopiait dans chaque service, et le worker avait DÉJÀ divergé de l'app
+# avant le premier commit. Ajouter une clé ici la propage partout.
+# ---------------------------------------------------------------------------
+x-durcissement: &durcissement
+  # Correspond à l'utilisateur créé dans le Dockerfile. Redondant avec le
+  # USER de l'image, et c'est voulu : le compose reste protecteur même si
+  # quelqu'un pousse une image qui tourne en root.
+  user: "1001:1001"
+
+  # Système de fichiers en lecture seule : un attaquant qui obtient une
+  # exécution de code ne peut rien déposer de persistant.
+  read_only: true
+
+  security_opt:
+    - no-new-privileges:true
+
+  # Une application Node écoutant sur un port non privilégié n'a besoin
+  # d'aucune capacité Linux.
+  cap_drop:
+    - ALL
+
+  # Lance un init minimal en PID 1 : il récolte les processus zombies et
+  # relaie proprement SIGTERM au serveur Node lors d'un redéploiement.
+  init: true
+
+  # Redémarre après un crash, une OOM ou un reboot du VPS.
+  # "unless-stopped" et non "always" : un service arrêté volontairement pour
+  # intervenir doit le rester après un redémarrage de la machine.
+  restart: unless-stopped
+
+services:
+  app:
+    <<: *durcissement
+
+    # Image construite par GitHub Actions, jamais sur le serveur (CLAUDE.md § 3.5).
+    #
+    # Le tag est variable : scripts/deploy.sh exporte IMAGE_TAG=<sha> avant
+    # d'appeler docker compose. C'est ce qui rend le rollback possible et
+    # auditable — on redéploie un SHA précis, pas un "latest" qui a bougé.
+    # En l'absence de la variable (lancement manuel), on retombe sur latest.
+    image: ghcr.io/ewen02/magic-portfolio:${IMAGE_TAG:-latest}
+
+    # Nom fixe : c'est par ce nom que Caddy joint le conteneur sur le réseau
+    # ("reverse_proxy magic-portfolio:3000" dans le Caddyfile) et c'est ce qui rend
+    # "docker logs magic-portfolio" utilisable depuis n'importe où (CLAUDE.md § 4).
+    container_name: magic-portfolio
+
+    # Secrets de production. Fichier en chmod 600, hors git (CLAUDE.md § 3.9).
+    # Ce projet n'attend aucune variable d'environnement (.env.example est vide).
+    # env_file est donc omis : le declarer sans fichier ferait echouer `up -d`.
+    environment:
+      # Plafonne le tas V8 SOUS la limite du conteneur (512 Mo). Sans cela Node
+      # vise ~1,5 Go par defaut, depasse la limite, et se fait tuer par l'OOM
+      # killer au lieu de declencher son propre ramasse-miettes.
+      NODE_OPTIONS: "--max-old-space-size=384"
+
+    # =======================================================================
+    # AUCUNE PUBLICATION DE PORT ICI — ET IL NE FAUT PAS EN AJOUTER
+    #
+    # Docker écrit ses propres règles iptables en amont de ufw : publier
+    # 3000 vers l'hôte rendrait le service joignable depuis Internet malgré
+    # "ufw default deny incoming". Le pare-feu ne le voit même pas passer.
+    #
+    # Seul ~/infra/caddy/docker-compose.yml publie des ports (80/443).
+    # Si un service doit être joignable en local pour du débogage, préférer
+    # un tunnel :  ssh -L 3000:magic-portfolio:3000 vps
+    # =======================================================================
+
+    # --- Limites de ressources (CLAUDE.md § 3.3) ---------------------------
+    # Profil PERSONNEL. Pour un projet CLIENT, passer à :
+    #     mem_limit: 1g / memswap_limit: 1g / cpus: 2.0
+    mem_limit: 512m
+    # OBLIGATOIRE et toujours égal à mem_limit. Sans cette ligne, Docker
+    # autorise autant de swap que de RAM : la limite effective devient le
+    # double de celle annoncée. La machine A 2 Go de swap, donc cette ligne
+    # est porteuse aujourd'hui, pas une précaution pour plus tard.
+    memswap_limit: 512m
+    # Borne le CPU, que mem_limit ne couvre pas. Sans cela un projet parti en
+    # boucle prend les 6 vCore et dégrade le temps de réponse des sites voisins.
+    cpus: 1.0
+
+    # Les seuls emplacements inscriptibles, en mémoire, perdus au redémarrage.
+    # Hors de l'ancre : les chemins diffèrent d'un service à l'autre.
+    tmpfs:
+      - /tmp:size=64m,mode=1777
+      # Cache ISR et optimisation d'images de Next.js. Sans ce montage, une
+      # page en revalidation échoue avec EROFS sur un système en lecture seule.
+      - /app/.next/cache:size=256m,uid=1001,gid=1001,mode=0755
+
+    # --- Santé (CLAUDE.md § 3.7) -------------------------------------------
+    # Sans healthcheck, "docker compose up -d" considère qu'un conteneur qui
+    # n'a pas encore planté fonctionne : une image cassée passe en "running",
+    # l'ancienne est détruite, Caddy sert des 502 et le workflow affiche un ✅.
+    #
+    # Le projet doit exposer app/api/health/route.ts :
+    #
+    #     export const dynamic = 'force-dynamic'
+    #     export async function GET() {
+    #       return Response.json({ status: 'ok' })
+    #     }
+    #
+    # wget vient de busybox, présent dans l'image node:alpine.
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      # Laisse à Next.js le temps de démarrer avant de compter les échecs.
+      start_period: 20s
+      # Sonde rapprochée PENDANT le start_period. Sans cette ligne, la
+      # première sonde n'a lieu qu'à t+30s (on retombe sur "interval") : tout
+      # déploiement paie 30 s de plancher même quand l'app est prête en 3 s.
+      # Requiert Docker Engine >= 25.
+      start_interval: 5s
+
+    # Laisse le temps aux requêtes en cours de se terminer avant SIGKILL.
+    stop_grace_period: 30s
+
+    # Rotation des logs héritée de /etc/docker/daemon.json (10 Mo x 3).
+    # Ne rien redéfinir ici : la politique est globale à la machine.
+
+    networks:
+      - web-magic-portfolio
+
+  # =========================================================================
+  # Exemple : worker de tâches de fond, sans interface HTTP.
+  # Il n'est déclaré dans AUCUN bloc du Caddyfile, donc injoignable depuis
+  # Internet — c'est exactement le but.
+  #
+  # Il hérite du même durcissement par l'ancre, et du même IMAGE_TAG : un
+  # rollback doit ramener l'app ET son worker sur la même version.
+  # =========================================================================
+  # worker:
+  #   <<: *durcissement
+  #   image: ghcr.io/ewen02/magic-portfolio:${IMAGE_TAG:-latest}
+  #   container_name: magic-portfolio-worker
+  #   env_file: [.env]
+  #   command: ["node", "worker.js"]
+  #   mem_limit: 256m
+  #   memswap_limit: 256m
+  #   cpus: 0.5
+  #   tmpfs: ["/tmp:size=64m,mode=1777"]
+  #   networks: [web-magic-portfolio]
+
+# ---------------------------------------------------------------------------
+# Réseau dédié au projet (CLAUDE.md § 3.2). Un réseau par projet : un projet
+# perso compromis ne peut pas joindre l'API d'un client.
+#
+# "external: true" : le réseau est créé une fois, à la main, et n'est pas
+# détruit par un "docker compose down".
+#     docker network create web-magic-portfolio
+#
+# Si le réseau n'existe pas, "up -d" échoue clairement au lieu de démarrer un
+# conteneur que Caddy ne pourra jamais joindre.
+# ---------------------------------------------------------------------------
+networks:
+  web-magic-portfolio:
+    external: true

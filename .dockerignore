@@ -1,0 +1,77 @@
+# ---------------------------------------------------------------------------
+# .dockerignore — ce qui n'entre PAS dans le contexte de build
+#
+# Deux enjeux :
+#   1. Sécurité — tout fichier du contexte peut se retrouver dans une couche
+#      de l'image. Une image poussée sur ghcr.io avec un .env dedans, c'est
+#      un secret publié : les couches restent lisibles même si un COPY
+#      ultérieur écrase le fichier.
+#   2. Vitesse — node_modules et .next pèsent des centaines de Mo qui seraient
+#      transférés au démon Docker à chaque build pour rien.
+# ---------------------------------------------------------------------------
+
+# --- Secrets ---------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+id_rsa*
+id_ed25519*
+.npmrc
+.netrc
+
+# --- Dépendances et artefacts (reconstruits dans l'image) ------------------
+node_modules
+.pnpm-store
+.yarn
+.next
+out
+build
+dist
+coverage
+.turbo
+*.tsbuildinfo
+
+# --- Git et CI -------------------------------------------------------------
+.git
+.gitignore
+.github
+.gitlab-ci.yml
+
+# --- Docker ----------------------------------------------------------------
+Dockerfile*
+.dockerignore
+docker-compose*.yml
+compose*.yml
+
+# --- Outils et éditeurs ----------------------------------------------------
+.vscode
+.idea
+.DS_Store
+Thumbs.db
+*.swp
+
+# --- Tests et documentation (inutiles à l'exécution) -----------------------
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+__tests__
+__mocks__
+e2e
+playwright-report
+test-results
+cypress
+*.md
+!README.md
+
+# --- Divers ----------------------------------------------------------------
+.cache
+tmp
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-error.log*

@@ -11,6 +11,12 @@ const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   pageExtensions: ["ts", "tsx", "md", "mdx"],
+
+  // Produit un serveur autonome dans .next/standalone, avec les seules
+  // dependances reellement importees au lieu de tout node_modules.
+  // C'est ce qui rend l'image Docker publiable : sans cette ligne, il
+  // faudrait embarquer 400 Mo de dependances a l'execution.
+  output: "standalone",
   async headers() {
     return [
       {

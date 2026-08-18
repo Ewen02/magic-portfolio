@@ -1,0 +1,183 @@
+# ---------------------------------------------------------------------------
+# .github/workflows/deploy.yml — build et déploiement continu
+#
+# Construit l'image, la pousse sur ghcr.io, puis demande au serveur de la
+# tirer. Le VPS ne compile jamais rien (~/infra/CLAUDE.md § 3.5).
+#
+# ═══════════════════════════════════════════════════════════════════════════
+# SECRETS À CRÉER — Settings > Secrets and variables > Actions > New secret
+# ═══════════════════════════════════════════════════════════════════════════
+#
+#   SSH_HOST         137.74.175.232
+#
+#   SSH_USER         ubuntu
+#
+#   SSH_KEY          La clé PRIVÉE de déploiement de CE projet, en entier,
+#                    en-têtes comprises. Une clé par projet, jamais la clé
+#                    personnelle (CLAUDE.md § 3.6). Génération :
+#
+#                      ssh-keygen -t ed25519 -f ~/.ssh/deploy-<projet> \
+#                                 -C "deploy-<projet>" -N ""
+#                      pbcopy < ~/.ssh/deploy-<projet>       # -> coller ici
+#
+#                    Puis déclarer la clé PUBLIQUE sur le serveur, contrainte
+#                    au seul script de déploiement de ce projet :
+#
+#                      KEY=$(cat ~/.ssh/deploy-<projet>.pub)
+#                      ssh vps "echo 'command=\"/home/ubuntu/infra/scripts/deploy.sh <projet>\",\
+#                      no-agent-forwarding,no-port-forwarding,no-pty,no-X11-forwarding $KEY' \
+#                      >> ~/.ssh/authorized_keys"
+#
+#   SSH_KNOWN_HOSTS  Empreinte du serveur, pour que le runner refuse de se
+#                    connecter à un imposteur. Génération :
+#
+#                      ssh-keyscan -t ed25519 137.74.175.232
+#
+# GITHUB_TOKEN est fourni automatiquement : aucun PAT à créer pour POUSSER
+# l'image. En revanche le SERVEUR a besoin, une fois pour toute la machine,
+# d'un PAT en lecture pour la TIRER :
+#      ssh vps 'echo <PAT> | docker login ghcr.io -u Ewen02 --password-stdin'
+# (PAT classique, scope read:packages uniquement)
+# ---------------------------------------------------------------------------
+
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# La concurrence est réglée PAR JOB, pas au niveau du workflow, parce que les
+# deux étapes n'ont pas la même règle :
+#   - annuler un build est sans danger, rien n'est encore déployé ;
+#   - annuler un déploiement laisserait le serveur entre deux images.
+# Un réglage global à cancel-in-progress: false faisait tourner trois builds
+# complets pour trois pushes rapprochés alors que seul le dernier compte.
+jobs:
+  build:
+    name: Build et publication de l'image
+    runs-on: ubuntu-latest
+    concurrency:
+      group: build-${{ github.ref }}
+      cancel-in-progress: true
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image: ${{ steps.name.outputs.image }}
+
+    steps:
+      - name: Récupération du code
+        uses: actions/checkout@v4
+
+      # ghcr.io exige un nom d'image entièrement en minuscules, alors que
+      # github.repository conserve la casse du compte ("Ewen02/..."). On
+      # normalise explicitement plutôt que de dépendre du comportement de
+      # metadata-action sur ce point.
+      - name: Nom d'image en minuscules
+        id: name
+        run: echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+
+      - name: Mise en place de Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Authentification sur ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Calcul des tags
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ steps.name.outputs.image }}
+          tags: |
+            type=raw,value=latest
+            type=sha,format=long,prefix=
+
+      - name: Build et push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+          # OBLIGATOIRE. Le runner GitHub est en amd64 aujourd'hui, mais rien
+          # ne le garantit : sans cette ligne, une image arm64 finirait sur un
+          # serveur amd64 et refuserait de démarrer ("exec format error").
+          platforms: linux/amd64
+
+          # Cache de couches porté par GitHub Actions. mode=max met aussi en
+          # cache les couches intermédiaires : les étapes deps et builder du
+          # Dockerfile sont réutilisées tant que le lockfile ne bouge pas.
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+          # Sans cela, buildx publie un index multi-plateforme contenant des
+          # manifestes d'attestation. Résultat : une entrée fantôme
+          # "unknown/unknown" dans l'interface de GHCR, pour aucun bénéfice
+          # sur une image mono-plateforme.
+          provenance: false
+
+  deploy:
+    name: Déploiement sur le VPS
+    needs: build
+    runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-${{ github.ref }}
+      cancel-in-progress: false
+    # Un environnement nommé permet, si besoin un jour, d'exiger une
+    # approbation manuelle avant déploiement (Settings > Environments).
+    # C'est aussi la seule raison de garder ce job séparé : l'approbation
+    # s'applique au niveau job. Sans ce besoin, fusionner avec "build"
+    # économiserait l'allocation d'un second runner (15-30 s par déploiement).
+    environment: production
+
+    steps:
+      - name: Préparation de la clé de déploiement
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Déploiement
+        run: |
+          # La clé est contrainte par un command= côté serveur : quoi qu'on
+          # envoie, c'est deploy.sh qui s'exécute. Le texte ci-dessous lui
+          # parvient dans SSH_ORIGINAL_COMMAND, où il est validé contre une
+          # expression rationnelle stricte avant tout usage.
+          #
+          # On déploie le SHA du commit, pas "latest" : le serveur enregistre
+          # ce tag et pourra y revenir en cas de rollback.
+          ssh -i ~/.ssh/deploy_key \
+              -o BatchMode=yes \
+              -o StrictHostKeyChecking=yes \
+              -o UserKnownHostsFile=~/.ssh/known_hosts \
+              -o ConnectTimeout=15 \
+              "${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}" \
+              "deploy ${{ github.sha }}"
+          # deploy.sh sort en 1 si les conteneurs ne deviennent pas healthy,
+          # après avoir tenté un rollback. ssh propage ce code, l'étape
+          # échoue, et le workflow n'affiche pas un succès mensonger.
+
+      - name: Effacement de la clé
+        if: always()
+        run: rm -f ~/.ssh/deploy_key
+
+      - name: Résumé
+        if: always()
+        run: |
+          {
+            echo "### Déploiement"
+            echo ""
+            echo "| | |"
+            echo "|---|---|"
+            echo "| Image | \`${{ needs.build.outputs.image }}\` |"
+            echo "| Tag | \`${{ github.sha }}\` |"
+            echo "| Résultat | ${{ job.status }} |"
+          } >> "$GITHUB_STEP_SUMMARY"
