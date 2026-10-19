@@ -1,109 +1,10 @@
 "use client";
 
 import { useCallback, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
-import type { IconType } from "react-icons";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import {
-  SiAnthropic,
-  SiApple,
-  SiAppstore,
-  SiBiome,
-  SiCaddy,
-  SiDart,
-  SiDocker,
-  SiDotnet,
-  SiDrizzle,
-  SiElasticsearch,
-  SiExpress,
-  SiFigma,
-  SiFlutter,
-  SiGit,
-  SiGithubactions,
-  SiGooglesearchconsole,
-  SiJest,
-  SiLangchain,
-  SiMongodb,
-  SiNestjs,
-  SiNextdotjs,
-  SiNodedotjs,
-  SiOpenai,
-  SiPhp,
-  SiPostgresql,
-  SiPosthog,
-  SiPrisma,
-  SiPython,
-  SiRailway,
-  SiReact,
-  SiReactquery,
-  SiRedis,
-  SiRedux,
-  SiSocketdotio,
-  SiStripe,
-  SiSwift,
-  SiTailwindcss,
-  SiThreedotjs,
-  SiTurborepo,
-  SiTypescript,
-  SiVitest,
-} from "react-icons/si";
-import { LuAccessibility, LuBookOpen, LuCamera, LuDrama, LuListOrdered, LuPlug, LuSparkles } from "react-icons/lu";
-import { TbBroadcast, TbVectorTriangle } from "react-icons/tb";
+import { ICONS, SLOTS } from "./skillMap";
 import styles from "./SkillTree.module.scss";
-
-// Brand logos where Simple Icons has one, a plain glyph otherwise.
-const ICONS: Record<string, IconType> = {
-  a11y: LuAccessibility,
-  anthropic: SiAnthropic,
-  apple: SiApple,
-  appstore: SiAppstore,
-  biome: SiBiome,
-  caddy: SiCaddy,
-  dart: SiDart,
-  docker: SiDocker,
-  dotnet: SiDotnet,
-  drizzle: SiDrizzle,
-  elasticsearch: SiElasticsearch,
-  evals: LuSparkles,
-  express: SiExpress,
-  figma: SiFigma,
-  flutter: SiFlutter,
-  git: SiGit,
-  githubactions: SiGithubactions,
-  googlesearchconsole: SiGooglesearchconsole,
-  jest: SiJest,
-  langchain: SiLangchain,
-  mcp: LuPlug,
-  mongodb: SiMongodb,
-  nestjs: SiNestjs,
-  nextdotjs: SiNextdotjs,
-  nodedotjs: SiNodedotjs,
-  openai: SiOpenai,
-  php: SiPhp,
-  playwright: LuDrama,
-  postgresql: SiPostgresql,
-  posthog: SiPosthog,
-  prisma: SiPrisma,
-  python: SiPython,
-  queue: LuListOrdered,
-  rag: LuBookOpen,
-  railway: SiRailway,
-  react: SiReact,
-  reactquery: SiReactquery,
-  redis: SiRedis,
-  redux: SiRedux,
-  snapshot: LuCamera,
-  socketdotio: SiSocketdotio,
-  sse: TbBroadcast,
-  stripe: SiStripe,
-  swift: SiSwift,
-  tailwindcss: SiTailwindcss,
-  threedotjs: SiThreedotjs,
-  turborepo: SiTurborepo,
-  typescript: SiTypescript,
-  vector: TbVectorTriangle,
-  vitest: SiVitest,
-};
 
 export type UsesItem = { name: string; icon: string; note: string; projects: string[] };
 export type UsesCategory = { id: string; title: string; blurb: string; items: UsesItem[] };
@@ -115,21 +16,6 @@ export type UsesLabels = {
   tools: string;
   projectsLabel: string;
   detailsTitle: string;
-};
-
-type Side = "left" | "right" | "top" | "bottom";
-
-// Where each branch lands around the profile: client side on the left,
-// server side on the right, AI on top, quality at the bottom.
-const SLOTS: Record<string, { col: number; row: number; side: Side }> = {
-  frontend: { col: 1, row: 1, side: "left" },
-  ai: { col: 2, row: 1, side: "top" },
-  backend: { col: 3, row: 1, side: "right" },
-  mobile: { col: 1, row: 2, side: "left" },
-  data: { col: 3, row: 2, side: "right" },
-  languages: { col: 1, row: 3, side: "left" },
-  quality: { col: 2, row: 3, side: "bottom" },
-  devops: { col: 3, row: 3, side: "right" },
 };
 
 // Vertical offset of the branch anchor on side cards, to land on the title.

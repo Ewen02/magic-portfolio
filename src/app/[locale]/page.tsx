@@ -8,6 +8,7 @@ import { baseURL, routes } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
 import { Mailchimp } from "@/components";
 import { Posts } from "@/components/blog/Posts";
+import { UsesTeaser } from "@/components/uses/UsesTeaser";
 
 type LocaleParam = { params: { locale: Locale } };
 
@@ -53,7 +54,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
 export default async function Home({ params: { locale } }: LocaleParam) {
   setRequestLocale(locale);
   const t = await getTranslations("home");
-  const { home, about, person, newsletter, social } = getContent(locale);
+  const { home, about, person, newsletter, social, uses } = getContent(locale);
   const baseUrl = locale === "fr" ? `https://${baseURL}` : `https://${baseURL}/${locale}`;
 
   return (
@@ -171,6 +172,22 @@ export default async function Home({ params: { locale } }: LocaleParam) {
       <RevealFx translateY="16" delay={0.6}>
         <Projects range={[1, 1]} locale={locale} />
       </RevealFx>
+      {routes["/uses"] && (
+        <Flex fillWidth paddingX="l">
+          <UsesTeaser
+            avatar={person.avatar}
+            name={person.name}
+            categories={uses.categories}
+            labels={{
+              eyebrow: uses.labels.teaserEyebrow,
+              title: uses.labels.teaserTitle,
+              text: uses.labels.teaserText,
+              cta: uses.labels.teaserCta,
+              tools: uses.labels.tools,
+            }}
+          />
+        </Flex>
+      )}
       {routes["/blog"] && (
         <Flex fillWidth gap="24" mobileDirection="column">
           <Flex flex={1} paddingLeft="l">

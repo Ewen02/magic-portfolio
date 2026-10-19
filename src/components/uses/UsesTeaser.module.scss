@@ -1,0 +1,203 @@
+// Home page preview of the /uses skill map.
+
+$wide: 900px;
+
+.card {
+  display: grid;
+  gap: 2rem;
+  width: 100%;
+  padding: 1.75rem;
+  border: 1px solid var(--neutral-alpha-medium);
+  border-radius: 1.5rem;
+  background: var(--neutral-alpha-weak);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+
+  // The global `a:not(.button):hover` colors and underlines links; the
+  // doubled class outranks it.
+  &#{&},
+  &#{&}:hover {
+    color: inherit;
+    text-decoration-line: none;
+  }
+
+  &:hover {
+    border-color: var(--brand-border-strong);
+    box-shadow: 0 18px 48px -28px var(--brand-alpha-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--brand-solid-strong);
+    outline-offset: 3px;
+  }
+
+  @media (min-width: $wide) {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    align-items: center;
+    gap: 3rem;
+    padding: 2.25rem 2.5rem;
+  }
+}
+
+.copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.eyebrow {
+  font-family: var(--font-code);
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-on-background-medium);
+}
+
+.title {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--neutral-on-background-strong);
+}
+
+.text {
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--neutral-on-background-weak);
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: fit-content;
+  margin-top: 0.5rem;
+  padding: 0.55rem 1rem;
+  border: 1px solid var(--neutral-alpha-strong);
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--neutral-on-background-strong);
+  transition: border-color 0.25s ease, background 0.25s ease;
+
+  span {
+    transition: transform 0.25s ease;
+  }
+
+  .card:hover & {
+    border-color: var(--brand-border-strong);
+    background: var(--brand-alpha-weak);
+
+    span {
+      transform: translateX(3px);
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Miniature map
+// ---------------------------------------------------------------------------
+
+.map {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(3, auto);
+  gap: 0.75rem 1rem;
+}
+
+.spokes {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+
+  line {
+    stroke: var(--brand-border-medium);
+    stroke-width: 1.25;
+    stroke-dasharray: 3 4;
+  }
+}
+
+.hub {
+  position: relative;
+  z-index: 1;
+  grid-column: 2;
+  grid-row: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.photo {
+  position: relative;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px var(--brand-border-strong),
+    0 0 0 6px var(--neutral-background-weak),
+    0 0 36px var(--brand-alpha-medium);
+
+  img {
+    object-fit: cover;
+  }
+
+  @media (min-width: $wide) {
+    width: 72px;
+    height: 72px;
+  }
+}
+
+.cell {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.65rem 0.7rem;
+  border: 1px solid var(--neutral-alpha-medium);
+  border-radius: 0.75rem;
+  // Opaque so the spokes stop at the cell edge.
+  background: var(--neutral-background-weak);
+  transition: border-color 0.25s ease;
+
+  .card:hover & {
+    border-color: var(--brand-border-medium);
+  }
+}
+
+.cellTitle {
+  font-family: var(--font-code);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  line-height: 1.3;
+  text-transform: uppercase;
+  color: var(--neutral-on-background-medium);
+
+  @media (max-width: 560px) {
+    display: none;
+  }
+}
+
+.logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+
+  svg {
+    width: 0.95rem;
+    height: 0.95rem;
+    color: var(--neutral-on-background-medium);
+    transition: color 0.25s ease;
+
+    .card:hover & {
+      color: var(--brand-on-background-strong);
+    }
+  }
+}

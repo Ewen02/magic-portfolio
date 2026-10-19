@@ -492,6 +492,10 @@ const uses = {
     notUsed: "Hors des projets présentés ici.",
     tools: "outils",
     projectsLabel: "Survolez un projet",
+    teaserEyebrow: "Setup",
+    teaserTitle: "Ma stack, en carte",
+    teaserText: "Les outils que j'utilise en production, en branches autour de moi, chacun relié aux projets qui le prouvent.",
+    teaserCta: "Explorer la carte",
     detailsTitle: "Le détail, outil par outil",
   },
   // Projets qui prouvent les outils (slugs des pages /work).
