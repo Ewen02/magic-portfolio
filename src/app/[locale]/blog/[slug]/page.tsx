@@ -28,6 +28,10 @@ const POSTS_PATH = ["src", "app", "[locale]", "blog", "posts"];
 const localeUrl = (locale: Locale, path: string) =>
   locale === "fr" ? `https://${baseURL}${path}` : `https://${baseURL}/${locale}${path}`;
 
+// Only the slugs built below exist: any other one is a real 404, not a page
+// rendered with a 200 status.
+export const dynamicParams = false;
+
 export async function generateStaticParams(): Promise<{ locale: string; slug: string }[]> {
   // One slug per article (language-agnostic), generated for every locale.
   return routing.locales.flatMap((locale) =>

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 
-import { Footer, Header, RouteGuard } from "@/components";
+import { Footer, Header } from "@/components";
 import { baseURL, effects, style } from "@/app/resources";
 
 import { Inter } from "next/font/google";
@@ -13,8 +13,6 @@ import { Source_Code_Pro } from "next/font/google";
 import { getContent } from "@/app/resources/getContent";
 import { Background, Column, Flex, ToastProvider } from "@/once-ui/components";
 
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 import { routing } from "@/i18n/routing";
 
@@ -200,16 +198,16 @@ export default async function LocaleLayout({ children, params: { locale } }: Loc
               horizontal="center"
               flex={1}
             >
+              {/* Rendered on the server: no client-side route guard, so crawlers
+                  that do not run JavaScript get the full page. */}
               <Flex horizontal="center" fillWidth minHeight="0">
-                <RouteGuard>{children}</RouteGuard>
+                {children}
               </Flex>
             </Flex>
             <Footer />
           </Column>
         </ToastProvider>
       </NextIntlClientProvider>
-      <Analytics />
-      <SpeedInsights />
     </Flex>
   );
 }

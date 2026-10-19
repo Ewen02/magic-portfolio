@@ -52,8 +52,8 @@ export default async function Privacy({ params: { locale } }: LocaleParam) {
         </Heading>
         <Text variant="body-default-m" onBackground="neutral-weak">
           {en
-            ? "This site does not use any tracking cookies and does not collect personal data directly. Anonymous audience measurement is performed via Vercel Analytics and Vercel Speed Insights (no personal identifiers, no cross-site tracking). If you contact me by email or via the contact form, the information you provide is used solely to reply to you."
-            : "Ce site n'utilise aucun cookie de suivi publicitaire et ne collecte pas directement de données personnelles. Une mesure d'audience anonyme est réalisée via Vercel Analytics et Vercel Speed Insights (aucun identifiant personnel, pas de suivi inter-sites). Si vous me contactez par email ou via le formulaire de contact, les informations transmises servent uniquement à vous répondre."}
+            ? "This site does not use any tracking cookies and does not collect personal data directly. If you contact me by email or via the contact form, the information you provide is used solely to reply to you."
+            : "Ce site n'utilise aucun cookie de suivi publicitaire et ne collecte pas directement de données personnelles. Si vous me contactez par email ou via le formulaire de contact, les informations transmises servent uniquement à vous répondre."}
         </Text>
       </Column>
 
