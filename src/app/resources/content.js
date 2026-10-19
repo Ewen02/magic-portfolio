@@ -106,7 +106,7 @@ const newsletter = {
 
 const home = {
   label: "Home",
-  title: `${person.name} | Lead Développeur Full Stack & IA, freelance à Paris`,
+  title: `${person.name} | Lead développeur full stack & IA freelance`,
   description: "Lead développeur full stack & IA freelance à Paris : produits SaaS, IA en production et apps iOS, de l'architecture à la mise en ligne.",
   headline: <>Ewen Le Quéré, Lead Développeur Full Stack & IA</>,
   subline: (

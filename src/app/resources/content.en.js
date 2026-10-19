@@ -105,7 +105,7 @@ const newsletter = {
 
 const home = {
   label: "Home",
-  title: `${person.name} | Lead Full Stack & AI Developer, freelance in Paris`,
+  title: `${person.name} | Lead full stack & AI developer, freelance`,
   description: "Lead full stack & AI developer, freelance in Paris: SaaS products, AI in production and iOS apps, from architecture to launch.",
   headline: <>Ewen Le Quéré, Lead Full Stack & AI Developer</>,
   subline: (
