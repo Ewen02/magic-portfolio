@@ -3,6 +3,7 @@ title: "Architecture monorepo avec Turborepo : Next.js et NestJS"
 publishedAt: "2026-04-28"
 summary: "Retour d'expérience sur une architecture monorepo avec Turborepo et pnpm : Next.js et NestJS dans un seul repo, packages partagés, design system mutualisé et CI/CD optimisée pour Swipe Movie."
 tag: "Architecture"
+project: "swipe-movie"
 ---
 
 ## Pourquoi un monorepo pour Swipe Movie
@@ -51,7 +52,7 @@ Le package `ui` suit une approche **Atomic Design**. Les composants y sont const
 
 ### `email` et `subscription`
 
-La logique métier transversale — templates Resend pour les emails, gestion des plans FREE/PRO avec Stripe — est isolée dans ses propres packages. Le back l'utilise pour la facturation, et le front peut s'appuyer sur la même logique de plans pour afficher les bonnes limites.
+La logique métier transversale (templates Resend pour les emails, gestion des plans FREE/PRO avec Stripe) est isolée dans ses propres packages. Le back l'utilise pour la facturation, et le front peut s'appuyer sur la même logique de plans pour afficher les bonnes limites.
 
 ## turbo.json : orchestrer les tâches
 
@@ -83,7 +84,7 @@ La notation `^build` signifie « construis d'abord les dépendances de ce packag
 
 Le **CI/CD monorepo** tourne sur **GitHub Actions**. Le cache de Turborepo y est précieux : seules les apps réellement impactées par un commit sont rebuildées et testées, ce qui raccourcit drastiquement les pipelines.
 
-Côté déploiement, la séparation `apps/web` / `apps/api` rend les choses naturelles : **Vercel** déploie le frontend Next.js, **Railway** héberge le backend NestJS. Deux cibles distinctes, un seul repo, une seule source de vérité. Le reste de la stack — Tailwind CSS 4, PostgreSQL + Prisma, Redis, Stripe, Socket.IO — s'intègre dans cette structure sans heurt.
+Côté déploiement, la séparation `apps/web` / `apps/api` rend les choses naturelles : **Vercel** déploie le frontend Next.js, **Railway** héberge le backend NestJS. Deux cibles distinctes, un seul repo, une seule source de vérité. Le reste de la stack (Tailwind CSS 4, PostgreSQL + Prisma, Redis, Stripe, Socket.IO) s'intègre dans cette structure sans heurt.
 
 ## Ce que je retiens
 

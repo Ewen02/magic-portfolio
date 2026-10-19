@@ -1,0 +1,126 @@
+---
+title: "Architecture hexagonale avec NestJS : tester ses use-cases sans base de données"
+publishedAt: "2026-10-19T10:00:00"
+summary: "Retour d'expérience sur une API NestJS en architecture hexagonale, posée dès le premier commit de Krown, l'app iOS B2C de Favikon : domaine sans framework, ports et adapters, 227 des 234 fichiers de tests de use-cases sur des fakes en mémoire, et un serveur MCP branché comme second adapter d'entrée."
+tag: "Architecture"
+project: "krown"
+image: "/images/projects/krown/architecture.jpg"
+---
+
+## Pourquoi l'hexagonal dès le premier commit
+
+Quand j'ai démarré l'API de [Krown](/work/krown), l'app iOS B2C de Favikon, le repo était vide et la liste des dépendances externes déjà longue : une base MongoDB partagée avec la plateforme Favikon, un moteur de recherche, les serveurs d'Apple pour les abonnements, des fournisseurs OAuth, des notifications push et, plus tard, un modèle de langage.
+
+Un service qui parle directement à tout ça devient vite intestable : chaque test démarre une base, mocke un SDK ou attend le réseau. J'ai donc posé une **architecture hexagonale** (ports et adapters) avant d'écrire la première fonctionnalité. Six mois plus tard, l'API compte 34 modules, et c'est cette décision qui a le plus rapporté.
+
+## Un module, quatre couches
+
+Chaque module suit exactement le même découpage :
+
+```
+modules/<module>/
+├── domain/          # entités et value objects, sans framework
+├── application/
+│   ├── ports/       # interfaces vers l'extérieur
+│   └── use-cases/   # logique applicative, ne connaît que les ports
+├── infrastructure/  # adapters : données, recherche, paiement, LLM
+└── presentation/    # controllers REST et DTO
+```
+
+La règle tient en une phrase : **les dépendances pointent vers le domaine**. Le domaine n'importe rien d'extérieur. Les use-cases ne connaissent que le domaine et des interfaces (les ports). L'infrastructure implémente ces interfaces, et la présentation appelle les use-cases.
+
+## Le port est une interface, l'adapter un détail
+
+Un exemple simplifié. Le use-case a besoin de lire un score et de prévenir l'analytics ; il ne sait ni où vit le score, ni quel outil d'analytics on utilise :
+
+```ts
+// application/ports/score.repository.port.ts
+export interface ScoreRepository {
+  findLatest(creatorId: string): Promise<DailyScore | null>;
+}
+export const SCORE_REPOSITORY = Symbol("ScoreRepository");
+
+// application/use-cases/get-daily-score.usecase.ts
+@Injectable()
+export class GetDailyScore {
+  constructor(
+    @Inject(SCORE_REPOSITORY) private readonly scores: ScoreRepository,
+    @Inject(ANALYTICS) private readonly analytics: Analytics,
+  ) {}
+
+  async execute(creatorId: string): Promise<DailyScore> {
+    const score = await this.scores.findLatest(creatorId);
+    if (!score) throw new ScoreNotFound(creatorId);
+    this.analytics.track("score_viewed", { creatorId });
+    return score;
+  }
+}
+```
+
+L'adapter Mongo vit dans `infrastructure/`, et le module NestJS fait le branchement :
+
+```ts
+providers: [
+  GetDailyScore,
+  { provide: SCORE_REPOSITORY, useClass: MongoScoreRepository },
+  { provide: ANALYTICS, useClass: AmplitudeAnalytics },
+],
+```
+
+Changer de base ou de fournisseur revient à écrire un nouvel adapter et à modifier une ligne de branchement. Le use-case ne bouge pas.
+
+## Le compromis assumé : NestJS dans les use-cases
+
+Un hexagonal « pur » voudrait que les use-cases n'importent aucun framework. Ici, ils utilisent `@Injectable` et `@Inject` de NestJS. C'est un choix : l'injection de dépendances est exactement ce dont l'hexagonal a besoin pour brancher les adapters, et la réécrire à la main n'apporte rien.
+
+La ligne que je tiens est ailleurs : **le domaine, lui, n'importe ni NestJS, ni l'ORM, ni le moteur de recherche**. Ses 199 fichiers ne dépendent de rien. Et aucun use-case n'importe directement Mongoose ou le client du moteur de recherche : tout passe par un port.
+
+## Le vrai bénéfice : des tests sans infrastructure
+
+Puisque les use-cases ne connaissent que des interfaces, on les teste avec des **fakes en mémoire** au lieu de vraies bases :
+
+```ts
+class FakeScoreRepository implements ScoreRepository {
+  private rows = new Map<string, DailyScore>();
+  seed(score: DailyScore) { this.rows.set(score.creatorId, score); }
+  async findLatest(id: string) { return this.rows.get(id) ?? null; }
+}
+
+it("throws when the creator has no score yet", async () => {
+  const useCase = new GetDailyScore(new FakeScoreRepository(), new FakeAnalytics());
+  await expect(useCase.execute("c1")).rejects.toThrow(ScoreNotFound);
+});
+```
+
+Sur l'API de Krown, **227 des 234 fichiers de tests de use-cases** tournent ainsi, sur 188 fakes, sans base de données ni réseau. Les tests sont rapides, déterministes, et ils testent la logique métier, pas la configuration d'un conteneur. Les adapters sont testés à part, sur la traduction entre le domaine et la technologie.
+
+Les fakes deviennent aussi une documentation : pour comprendre ce qu'un use-case attend du monde extérieur, il suffit de lire les ports qu'il reçoit.
+
+## Deux adapters d'entrée, une seule logique
+
+L'hexagonal ne concerne pas que la sortie. Côté entrée, les controllers REST sont un adapter parmi d'autres. Quand j'ai construit Koach, l'agent IA de l'app, ses outils sont passés par un **serveur MCP** (Model Context Protocol) : un second adapter d'entrée, qui appelle **les mêmes use-cases** que les controllers.
+
+```
+App iOS ──REST──▶ Controllers ──┐
+                                ├──▶ Use-cases ──▶ Ports ──▶ Adapters
+Agent IA ──MCP──▶ Outils MCP  ──┘
+```
+
+L'agent n'a donc pas sa propre copie de la logique métier : quand une règle de calcul change, l'app et l'agent changent ensemble. Ajouter une interface (une commande, une file de messages, un autre agent) suit le même chemin.
+
+## Ce qu'il faut pour que ça tienne dans une équipe
+
+Une architecture ne survit pas à quatre développeurs si elle ne vit que dans la tête de celui qui l'a posée. Trois choses ont aidé :
+
+- **Un découpage identique dans les 34 modules** : on sait où chercher sans demander.
+- **Un guide d'architecture écrit** dès le premier commit, avec la règle des couches et des exemples, pour l'équipe comme pour ses agents de code.
+- **Des règles vérifiées par les outils** plutôt que par la relecture : un hook pre-commit refuse par exemple un enum métier qui aurait dérivé des schémas partagés avec les apps.
+
+## À retenir
+
+- Posez l'hexagonal **avant** la première fonctionnalité : le migrer plus tard coûte cher.
+- Gardez le **domaine pur** ; un peu de framework dans les use-cases pour l'injection est un compromis raisonnable.
+- Le gain se mesure dans les tests : **des use-cases testés sur des fakes en mémoire**.
+- Les adapters d'entrée comptent autant que ceux de sortie : un agent IA peut réutiliser vos use-cases au lieu de les dupliquer.
+
+C'est d'ailleurs le sujet de la première machine de [Nightprint](/work/nightprint), qui montre en 3D ce qui casse quand on importe Postgres dans le cœur.

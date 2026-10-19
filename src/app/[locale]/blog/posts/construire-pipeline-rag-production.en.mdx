@@ -2,12 +2,13 @@
 title: "Building a RAG pipeline in production: from parsing to reranking"
 publishedAt: "2026-06-02"
 summary: "A field report on designing a complete, high-performance RAG (Retrieval-Augmented Generation) pipeline: multi-format parsing, parent-child chunking, embeddings, hybrid reranking, and caching. The architecture choices that make the difference in production with Next.js, NestJS, and Qdrant."
-tag: "IA"
+tag: "AI"
+project: "corpusai"
 ---
 
 ## Why RAG has become essential
 
-**RAG (Retrieval-Augmented Generation)** is today the go-to approach for plugging an LLM into private data without retraining the model. Rather than stuffing everything into the context — costly and limited — you retrieve only the relevant passages and inject them at generation time.
+**RAG (Retrieval-Augmented Generation)** is today the go-to approach for plugging an LLM into private data without retraining the model. Rather than stuffing everything into the context (costly and limited), you retrieve only the relevant passages and inject them at generation time.
 
 In theory it's simple. In production, the quality of a RAG pipeline comes down to the details: how you split documents, how you rank results, and how you avoid paying twice for the same computation. Here are the choices that made the difference on [CorpusAI](/work/corpusai).
 
@@ -33,7 +34,7 @@ You win on both fronts: retrieval precision *and* the richness of the context pr
 
 ## 3. Embeddings and vector store
 
-For vectorization, OpenAI's `text-embedding-3-small` offers an excellent quality/price ratio (1536 dimensions). Cost tip: the **Matryoshka** property of these embeddings lets you truncate to 512 dimensions with minimal quality loss — less storage, faster search.
+For vectorization, OpenAI's `text-embedding-3-small` offers an excellent quality/price ratio (1536 dimensions). Cost tip: the **Matryoshka** property of these embeddings lets you truncate to 512 dimensions with minimal quality loss: less storage, faster search.
 
 On the storage side, **Qdrant** stands out: HNSW index, cosine similarity, native metadata filtering, and simple cloud deployment.
 
@@ -63,7 +64,7 @@ Ingesting a document must never block the user: you acknowledge receipt, process
 
 ## Key takeaways
 
-1. **Chunking is the most profitable investment** — before optimizing the model, optimize the splitting.
+1. **Chunking is the most profitable investment**: before optimizing the model, optimize the splitting.
 2. **Hybrid retrieval beats pure semantic** in most real-world cases.
 3. **Cite your sources with a confidence score**: transparency is what makes an AI assistant trustworthy.
 4. **Handle ingestion asynchronously**: the user experience should never wait on a pipeline.

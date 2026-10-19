@@ -129,7 +129,7 @@ design/           # Tokens, specs, 54 mockups
 ## Challenges and learnings
 
 - **Node in 512 MB**: Node 24 sizes its heap from the container limit. The young generation shrank to 2 MB and rendering spent its time in garbage collection (3.4× slower). `--max-semi-space-size=16` took a render loop from 1,330 ms to 364 ms, and `--v8-pool-size=1` the gallery from 1.1 s to 0.73 s.
-- **An erratic gallery** caused by Neon cold starts: `unstable_cache` and tag invalidation brought the TTFB from 1.5–2.7 s down to **9–24 ms**, and CPU per request from ~700 ms to ~10 ms.
+- **An erratic gallery** caused by Neon cold starts: `unstable_cache` and tag invalidation brought the time to first byte (up to 2.7 s) down to **9–24 ms**, and CPU per request from ~700 ms to ~10 ms. Details in the article [Next.js in a 512 MB container](/blog/nodejs-conteneur-512-mo).
 - **An SVG sent twice**, in the HTML and in the RSC payload: the gallery document went from 2.53 MB to 1.22 MB, and the RSC payload from 1.39 MB to 78 KB.
 - **A security bug caught by a test**: a raw SQL query unlocked Mars for every city. It was rewritten with Drizzle's query builder, and the test now includes another user's purchase.
 - **A refund tested in production**: ISR kept Mars on screen for 3 minutes after the refund. The webhook now revalidates the city.
@@ -142,7 +142,7 @@ design/           # Tokens, specs, 54 mockups
 - **~23,500 lines** of TypeScript and ~1,900 lines of procedural Python
 - **~500 tests** across 76 files
 - **64 documented** architecture decisions
-- Timelapse: **15.5 ms per frame** in Chromium for a 24-project city
+- Timelapse: **15.5 ms per frame** in Chromium for a 12-project city
 - Lighthouse mobile: **95 to 98**
 
 ## Current status
@@ -150,3 +150,7 @@ design/           # Tokens, specs, 54 mockups
 Sidetown is live at [sidetown.dev](https://sidetown.dev), with real Stripe payments: the first purchase and the first refund were validated end to end. My own city is at [sidetown.dev/ewen02](https://sidetown.dev/ewen02).
 
 ![My city on Sidetown](/images/projects/sidetown/city-ewen02.jpg)
+
+## Related articles
+
+- [Next.js in a 512 MB container: four measured optimizations](/blog/nodejs-conteneur-512-mo)

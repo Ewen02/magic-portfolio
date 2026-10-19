@@ -3,13 +3,15 @@ title: "React Query vs Redux : quel gestionnaire d'état en 2026"
 publishedAt: "2026-03-18"
 summary: "Guide comparatif React Query vs Redux pour la gestion d'état en React : la distinction état serveur vs état client, un tableau comparatif, et la vraie réponse pour bien choisir en 2026."
 tag: "Guide"
+project: "favikon"
+image: "none"
 ---
 
 ## React Query vs Redux : une fausse opposition
 
 Si vous cherchez à savoir s'il faut choisir **React Query** ou **Redux** pour votre application React, vous posez probablement la mauvaise question. Ces deux outils sont souvent présentés comme des concurrents, mais ils ne résolvent pas le même problème. Les opposer, c'est comparer un cache HTTP à un store applicatif.
 
-La clé pour bien décider en 2026, c'est de comprendre une distinction fondamentale en **gestion d'état** : l'état serveur et l'état client. Une fois cette frontière claire, le choix devient évident — et il consiste rarement à prendre l'un *contre* l'autre.
+La clé pour bien décider en 2026, c'est de comprendre une distinction fondamentale en **gestion d'état** : l'état serveur et l'état client. Une fois cette frontière claire, le choix devient évident, et il consiste rarement à prendre l'un *contre* l'autre.
 
 ## La distinction fondamentale : état serveur vs état client
 
@@ -23,7 +25,7 @@ La plupart des bugs et de la complexité viennent de la confusion entre ces deux
 
 ## React Query : l'outil de l'état serveur
 
-**React Query** (désormais **TanStack Query**) est une bibliothèque conçue exclusivement pour l'état serveur. Elle gère le **cache**, la déduplication des requêtes, le *refetch* automatique en arrière-plan, l'invalidation ciblée, les *optimistic updates* et les états `loading` / `error` — le tout avec très peu de code.
+**React Query** (désormais **TanStack Query**) est une bibliothèque conçue exclusivement pour l'état serveur. Elle gère le **cache**, la déduplication des requêtes, le *refetch* automatique en arrière-plan, l'invalidation ciblée, les *optimistic updates* et les états `loading` / `error`, le tout avec très peu de code.
 
 ```tsx
 import { useQuery } from "@tanstack/react-query";
@@ -40,7 +42,7 @@ function UserProfile({ id }: { id: string }) {
 }
 ```
 
-En quelques lignes, vous obtenez du cache, du *refetch* et la gestion des erreurs. Important : **React Query n'est pas un remplaçant de Redux** pour l'état UI. Il ne sait pas gérer un thème ou l'ouverture d'une modale — ce n'est tout simplement pas son rôle.
+En quelques lignes, vous obtenez du cache, du *refetch* et la gestion des erreurs. Important : **React Query n'est pas un remplaçant de Redux** pour l'état UI. Il ne sait pas gérer un thème ou l'ouverture d'une modale : ce n'est tout simplement pas son rôle.
 
 ## Redux Toolkit : l'outil de l'état client global
 
@@ -63,7 +65,7 @@ const uiSlice = createSlice({
 });
 ```
 
-RTK reste plus verbeux que React Query — slices, actions, store, *selectors* — mais cette structure apporte une vraie prévisibilité et des **devtools** redoutables pour le *time-travel debugging*. Le prix de la rigueur.
+RTK reste plus verbeux que React Query (slices, actions, store, *selectors*), mais cette structure apporte une vraie prévisibilité et des **devtools** redoutables pour le *time-travel debugging*. Le prix de la rigueur.
 
 ## Tableau comparatif
 
@@ -83,13 +85,13 @@ Dans une application réelle, vous avez les deux types d'état. La solution opti
 
 C'est exactement l'approche que j'utilise en production sur [Favikon](/work/favikon), une plateforme SaaS B2B. **React Query** gère le cache des données serveur avec invalidation intelligente et *optimistic updates*, pendant que **Redux Toolkit** porte l'état global persistant partagé entre fonctionnalités. Chaque outil reste sur son terrain, et la base de code respire.
 
-À noter : pour l'état client global, **Zustand** est une alternative de plus en plus populaire à Redux — bien plus légère, sans *boilerplate*, parfaite quand vous n'avez pas besoin de toute la machinerie de Redux.
+À noter : pour l'état client global, **Zustand** est une alternative de plus en plus populaire à Redux : bien plus légère, sans *boilerplate*, parfaite quand vous n'avez pas besoin de toute la machinerie de Redux.
 
 ## Quand choisir quoi
 
 - **React Query seul suffit** quand votre application est essentiellement un client d'API : beaucoup de lectures/écritures serveur, et très peu d'état UI partagé (que `useState` et le Context API couvrent largement).
 - **Redux (ou Zustand) seul suffit** quand l'essentiel de votre complexité est de l'état client : éditeurs, configurateurs, applications très interactives avec peu d'appels réseau.
-- **Combiner les deux** dès que vous avez à la fois des données serveur non triviales *et* un état UI global partagé — le cas de la majorité des SaaS modernes.
+- **Combiner les deux** dès que vous avez à la fois des données serveur non triviales *et* un état UI global partagé (le cas de la majorité des SaaS modernes).
 
 ## Ce qu'il faut retenir
 

@@ -3,6 +3,7 @@ title: "Monorepo architecture with Turborepo: Next.js and NestJS"
 publishedAt: "2026-04-28"
 summary: "A field report on a monorepo architecture built with Turborepo and pnpm: Next.js and NestJS in a single repo, shared packages, a mutualized design system, and an optimized CI/CD pipeline for Swipe Movie."
 tag: "Architecture"
+project: "swipe-movie"
 ---
 
 ## Why a monorepo for Swipe Movie
@@ -51,7 +52,7 @@ The `ui` package follows an **Atomic Design** approach. Components are built onc
 
 ### `email` and `subscription`
 
-Cross-cutting business logic — Resend templates for emails, FREE/PRO plan management with Stripe — is isolated in its own packages. The backend uses it for billing, and the frontend can rely on the same plan logic to display the right limits.
+Cross-cutting business logic (Resend templates for emails, FREE/PRO plan management with Stripe) is isolated in its own packages. The backend uses it for billing, and the frontend can rely on the same plan logic to display the right limits.
 
 ## turbo.json: orchestrating tasks
 
@@ -83,7 +84,7 @@ The `^build` notation means "build this package's dependencies first." When I bu
 
 The **monorepo CI/CD** runs on **GitHub Actions**. Turborepo's cache is invaluable there: only the apps actually impacted by a commit are rebuilt and tested, which drastically shortens the pipelines.
 
-On the deployment side, the `apps/web` / `apps/api` split makes things natural: **Vercel** deploys the Next.js frontend, **Railway** hosts the NestJS backend. Two distinct targets, a single repo, a single source of truth. The rest of the stack — Tailwind CSS 4, PostgreSQL + Prisma, Redis, Stripe, Socket.IO — fits into this structure without friction.
+On the deployment side, the `apps/web` / `apps/api` split makes things natural: **Vercel** deploys the Next.js frontend, **Railway** hosts the NestJS backend. Two distinct targets, a single repo, a single source of truth. The rest of the stack (Tailwind CSS 4, PostgreSQL + Prisma, Redis, Stripe, Socket.IO) fits into this structure without friction.
 
 ## What I take away
 

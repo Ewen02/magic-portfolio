@@ -1,0 +1,96 @@
+---
+title: "Making an LLM reliable: code first, the model second"
+publishedAt: "2026-10-18T10:00:00"
+summary: "How Nightprint's importer draws any JS/TS GitHub repo as a 3D machine without hallucinating: a deterministic survey of the code, a model that only groups and narrates, rules that require a real import behind every route, mechanical repair of small errors, and a reasoning effort set by measurement (69 to 98 s, about one cent per repo)."
+tag: "AI"
+project: "nightprint"
+image: "/images/projects/nightprint/prj-001.jpg"
+---
+
+## The problem: an LLM that describes an architecture makes things up
+
+On [Nightprint](/work/nightprint), a visitor pastes the URL of a public GitHub repo, and the site draws it as a 3D machine: parts, zones and routes between the parts, with a story and a few "what ifs".
+
+The temptation is to give the code to the model and ask it for the diagram. The result is plausible and wrong: the model connects a frontend to a database because "that's usually how it goes", invents a cache that doesn't exist, or forgets half the folders. For a site whose whole subject is architectural accuracy, that's a deal-breaker.
+
+The rule I set: **the code provides the facts, the model only groups and narrates them.** Every route on the drawing must rest on a real import.
+
+## The pipeline: the model in the middle, deterministic code around it
+
+```
+GitHub repo ─▶ Survey ─▶ Model ─▶ Repair ─▶ Rules ─▶ Drawing
+(fixed commit)  (code)    (LLM)    (code)     (code)    (code)
+                            ▲                    │
+                            └─ errors to decide ─┘  (3 answers max)
+```
+
+1. **Reading** the repo at a specific commit: JS/TS sources, manifests and README.
+2. **Survey, no LLM**: the units (packages or folders), their imports, the libraries by category and the entry points.
+3. **Blueprint**: the model groups the units into parts and writes the zones, scenarios, "what ifs", article and glossary.
+4. **Repair** of mechanical errors, in code.
+5. **Check** against rules. Whatever is still wrong goes back to the model, three responses at most.
+6. **Drawing, no LLM**: the layout places zones, parts and right-angled routes.
+
+The model only takes up one step out of six. Everything that can be computed is computed.
+
+## The survey: facts the model can't dispute
+
+Imports are extracted with the TypeScript compiler API (`ts.preProcessFile`), without running the code. The survey produces a list of units and, for each pair, the imports that connect them in either direction.
+
+The model receives this survey, not the raw code. So it can't "guess" a dependency: either it's in the survey, or it doesn't exist.
+
+## The rules: every route must be proven
+
+`checkBlueprint` checks the model's blueprint against the survey. A few of the rules:
+
+- a route between two code parts must rest on an import, in either direction;
+- each unit is drawn once, or left out with a reason;
+- a part that names a library must match a unit that imports it;
+- a "what if" can only add a route between parts that exist.
+
+The messages are written to be sent back to the model as they are:
+
+```
+route "web-to-db": nothing in "web" imports "db", nor the other way round
+unit "packages/tokens" is neither drawn nor left out with a reason
+```
+
+The model corrects itself on precise facts, and the loop stops after three responses. Past that point, the drawing is rejected rather than published wrong.
+
+## Repair: don't pay the model for a comma
+
+The first measurements showed waste: every measured drawing needed **a second response** from the model for purely mechanical mistakes, like a title that was too long, a four-letter label, or an arrow pointing the wrong way when the imports already settle it. That second response cost a third of the price and almost a minute.
+
+So I split errors into two types:
+
+- **mechanical errors**, repaired in code (`repairBlueprint`): cut a text at the last full word, orient the arrow from the imports, attach a forgotten unit;
+- **judgment errors**, sent back to the model: a route with no import, a scenario that doesn't flow.
+
+After this change, both measured repos were drawn **in a single response**.
+
+## Setting the effort by measurement, not intuition
+
+The importer uses Claude Haiku with streaming, with adaptive reasoning whose summary is shown live to the visitor, and prompt caching on the instructions. That left the effort level to choose. Measured on two repos:
+
+| Effort | Duration | Cost per repo | Responses |
+| --- | --- | --- | --- |
+| Medium | 69 to 98 s | $0.010 to $0.014 | 1 |
+| High | 175 to 182 s | $0.030 to $0.035 | 1 |
+| Low | | | up to 3 (retries) |
+
+"High" cost three times as much and took twice as long for the same result. "Low" made mistakes that restarted the loop. "Medium" became the default. Around it, a few simple guardrails: a global budget capped at $1 per day, 5 new drawings per visitor per day, and drawings already made served from the cache, for free.
+
+## The limits, stated plainly
+
+- Only **static** imports are seen: not HTTP calls between services, message queues or dependency injection.
+- The **routes** are proven. The **texts** of the steps are still written by the model, and they are not.
+- JavaScript and TypeScript only: other languages are rejected up front rather than drawn badly.
+
+## Key takeaways
+
+- Give the model **computed facts**, not raw code: it can't invent what isn't in the survey.
+- Write **verifiable rules** whose messages work directly as feedback for the model, and put a limit on the loop.
+- **Repair in code** everything that is mechanical: only pay the model for what it alone can decide.
+- **Measure** effort, cost and duration on real cases before picking a setting.
+
+Nightprint applies the rule to itself, too: its machine [PRJ-001](https://nightprint.dev/p/nightprint) is Nightprint drawn by its own importer.

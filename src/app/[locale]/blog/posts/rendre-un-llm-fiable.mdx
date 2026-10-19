@@ -1,0 +1,96 @@
+---
+title: "Rendre un LLM fiable : du code d'abord, le modèle ensuite"
+publishedAt: "2026-10-18T10:00:00"
+summary: "Comment l'importeur de Nightprint dessine n'importe quel repo GitHub JS/TS en machine 3D sans halluciner : un relevé déterministe du code, un modèle qui ne fait que regrouper et raconter, des règles qui exigent un import réel derrière chaque route, une réparation mécanique des petites erreurs et un effort de raisonnement réglé par la mesure (69 à 98 s, environ 1 centime par repo)."
+tag: "IA"
+project: "nightprint"
+image: "/images/projects/nightprint/prj-001.jpg"
+---
+
+## Le problème : un LLM qui décrit une architecture invente
+
+Sur [Nightprint](/work/nightprint), un visiteur colle l'adresse d'un repo GitHub public, et le site le dessine en machine 3D : des pièces, des zones et des routes entre les pièces, avec une histoire et des « et si… ».
+
+La tentation est de donner le code au modèle et de lui demander le schéma. Le résultat est plausible et faux : le modèle relie un front à une base parce que « c'est souvent comme ça », invente un cache qui n'existe pas, ou oublie la moitié des dossiers. Pour un site dont le sujet est l'exactitude de l'architecture, c'est rédhibitoire.
+
+La règle que j'ai posée : **le code donne les faits, le modèle ne fait que les regrouper et les raconter.** Chaque route dessinée doit reposer sur un import réel.
+
+## La chaîne : le modèle au milieu, du déterministe autour
+
+```
+Repo GitHub ─▶ Relevé ─▶ Modèle ─▶ Réparation ─▶ Règles ─▶ Dessin
+ (commit fixe)  (code)    (LLM)    (code)        (code)    (code)
+                             ▲                      │
+                             └── erreurs à décider ─┘  (3 réponses max)
+```
+
+1. **Lecture** du repo à un commit précis : sources JS/TS, manifestes et README.
+2. **Relevé, sans LLM** : les unités (paquets ou dossiers), leurs imports, les bibliothèques par catégorie et les points d'entrée.
+3. **Blueprint** : le modèle regroupe les unités en pièces et écrit zones, scénarios, « et si… », article et glossaire.
+4. **Réparation** des erreurs mécaniques, dans le code.
+5. **Contrôle** par des règles ; ce qui reste faux repart au modèle, trois réponses au plus.
+6. **Dessin, sans LLM** : la mise en page place zones, pièces et routes à angle droit.
+
+Le modèle n'occupe qu'une étape sur six. Tout ce qui peut être calculé l'est.
+
+## Le relevé : des faits que le modèle ne peut pas contester
+
+Les imports sont extraits avec l'API du compilateur TypeScript (`ts.preProcessFile`), sans exécuter le code. Le relevé produit une liste d'unités et, pour chaque paire, les imports qui les relient dans un sens ou dans l'autre.
+
+Le modèle reçoit ce relevé, pas le code brut. Il ne peut donc pas « deviner » une dépendance : soit elle est dans le relevé, soit elle n'existe pas.
+
+## Les règles : chaque route doit être prouvée
+
+`checkBlueprint` vérifie le blueprint du modèle contre le relevé. Quelques règles parmi d'autres :
+
+- une route entre deux pièces du code doit reposer sur un import, dans un sens ou dans l'autre ;
+- chaque unité est dessinée une fois, ou écartée avec une raison ;
+- une pièce qui nomme une bibliothèque doit correspondre à une unité qui l'importe ;
+- un « et si » ne peut ajouter une route qu'entre des pièces qui existent.
+
+Les messages sont écrits pour être renvoyés tels quels au modèle :
+
+```
+route "web-to-db": nothing in "web" imports "db", nor the other way round
+unit "packages/tokens" is neither drawn nor left out with a reason
+```
+
+Le modèle corrige sur des faits précis, et la boucle s'arrête après trois réponses : au-delà, le dessin est refusé plutôt que publié faux.
+
+## La réparation : ne pas payer le modèle pour une virgule
+
+Les premières mesures ont montré un gaspillage : chaque dessin mesuré demandait **une deuxième réponse** du modèle pour des fautes purement mécaniques, comme un titre trop long, une étiquette de quatre lettres ou une flèche dans le mauvais sens alors que les imports tranchent déjà. Cette deuxième réponse coûtait un tiers du prix et presque une minute.
+
+J'ai donc séparé deux types d'erreurs :
+
+- **les erreurs mécaniques**, réparées dans le code (`repairBlueprint`) : couper un texte au dernier mot entier, orienter la flèche selon les imports, rattacher une unité oubliée ;
+- **les erreurs de jugement**, renvoyées au modèle : une route sans import, un scénario qui ne s'enchaîne pas.
+
+Après ce changement, les deux repos mesurés ont été dessinés **en une seule réponse**.
+
+## Régler l'effort par la mesure, pas à l'intuition
+
+L'importeur utilise Claude Haiku en streaming, avec un raisonnement adaptatif dont le résumé s'affiche en direct au visiteur, et du prompt caching sur les instructions. Restait à choisir le niveau d'effort. Mesuré sur deux repos :
+
+| Effort | Durée | Coût par repo | Réponses |
+| --- | --- | --- | --- |
+| Medium | 69 à 98 s | 0,010 à 0,014 $ | 1 |
+| High | 175 à 182 s | 0,030 à 0,035 $ | 1 |
+| Low | | | jusqu'à 3 (relances) |
+
+Le niveau « high » coûtait trois fois plus et prenait deux fois plus de temps pour le même résultat ; « low » faisait des erreurs qui relançaient la boucle. « Medium » est devenu la valeur par défaut. Autour, des garde-fous simples : un budget global plafonné à 1 $ par jour, 5 nouveaux dessins par visiteur et par jour, et les dessins déjà faits servis depuis le cache, gratuitement.
+
+## Les limites, dites franchement
+
+- Seuls les imports **statiques** sont vus : pas les appels HTTP entre services, les files de messages ni l'injection de dépendances.
+- Les **routes** sont prouvées ; les **textes** des étapes, eux, restent écrits par le modèle et ne le sont pas.
+- JavaScript et TypeScript uniquement : les autres langages sont refusés d'entrée plutôt que mal dessinés.
+
+## À retenir
+
+- Donnez au modèle **des faits calculés**, pas du code brut : il ne pourra pas inventer ce qui n'est pas dans le relevé.
+- Écrivez des **règles vérifiables** dont les messages servent directement de retour au modèle, et bornez la boucle.
+- **Réparez dans le code** tout ce qui est mécanique : ne payez le modèle que pour ce qu'il est seul à pouvoir décider.
+- **Mesurez** l'effort, le coût et la durée sur de vrais cas avant de choisir un réglage.
+
+Nightprint s'applique d'ailleurs la règle à lui-même : sa machine [PRJ-001](https://nightprint.dev/p/nightprint) est Nightprint dessiné par son propre importeur.

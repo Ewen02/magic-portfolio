@@ -1,0 +1,92 @@
+---
+title: "Next.js in a 512 MB container: four measured optimizations"
+publishedAt: "2026-10-17T10:00:00"
+summary: "On Sidetown, a page that cost 113 ms of CPU on my laptop took 1,330 ms in a 512 MB container. Node's garbage collector, V8's threads, database cold starts and an SVG sent twice: four causes, measured and fixed one by one, down to serving the gallery in 9 to 24 ms."
+tag: "Performance"
+project: "sidetown"
+image: "/images/projects/sidetown/cover-02.jpg"
+---
+
+## The symptom: fast locally, slow in production
+
+[Sidetown](/work/sidetown) draws a developer's side projects as an isometric city, with a 3D-to-SVG engine written in TypeScript that runs on the server. It's self-hosted on a VPS, in a hardened Docker container: **512 MB of memory and 1 CPU**.
+
+Locally, everything was fast. In production, the `/explore` gallery responded in 0.19 to 1.46 s, and up to 2.7 s at worst. Same code, same page: I had to measure rather than guess. Four causes showed up, each with its own fix.
+
+## 1. Node shrinks its young generation in a container
+
+The loop that builds a city's SVG took:
+
+| Environment | Duration |
+| --- | --- |
+| My laptop | 113 ms |
+| Container on the VPS, no memory limit | 301 to 396 ms |
+| Container on the VPS, limited to 512 MB | 1,330 ms |
+
+The memory limit alone multiplied the time by 3.4. The reason: **Node 24 sizes its heap from the cgroup limit**. With 512 MB, the young generation (where short-lived objects are born) dropped to **2 MB**, versus 32 MB with no limit. A render creates a huge number of small objects: the garbage collector ran nonstop, and its helper threads went over the one-CPU quota.
+
+The fix is a single option, shipped with the image in the `Dockerfile` so that no environment forgets it:
+
+```dockerfile
+ENV NODE_OPTIONS="--max-semi-space-size=16"
+```
+
+The young generation goes back to 32 MB, and the heap limit goes from 259 to 304 MB, still under the container limit. The loop drops from **1,330 ms to 364 ms**. Giving the container more memory would also have worked, but it was only using about 96 MB: I would have paid for RAM to fix a heuristic.
+
+## 2. Four threads for a single CPU
+
+The gallery was still expensive: 1.05 to 1.16 s of CPU per request. Measuring per thread, the main thread took 303 ms, and the **four V8 threads** dedicated to the parallel garbage collector took 480. Four helpers were fighting over a single-CPU quota.
+
+```dockerfile
+ENV NODE_OPTIONS="--max-semi-space-size=16 --v8-pool-size=1"
+```
+
+With a single helper thread, the gallery drops to 700 ms of CPU and responds in **0.73 s instead of 1.1 to 1.2 s**. The time spent throttled by the quota, over ten requests, falls from about 17 s to 5 s. I first tested it with an environment variable on the server, with automatic rollback, before locking it into the `Dockerfile`.
+
+## 3. The database that sleeps, and the connections that close
+
+The gallery's profile showed the rest of the gap in database reads, not in rendering:
+
+- the Neon database (free tier) goes to sleep after 5 minutes without activity: the first request waits about **0.86 s** for it to wake up;
+- `pg` closes idle pool connections after 10 s: the next visit reopens a TLS connection, about **358 ms**.
+
+Making connections live longer doesn't help: the database drops the connections of a sleeping compute anyway. The solution is to stop making the visitor wait:
+
+```ts
+export const loadExplore = unstable_cache(
+  async (page: number) => {
+    const [published, previews] = await Promise.all([
+      listExploreCities(page),
+      Promise.all(GITHUB_EXAMPLES.map(({ login }) => getPreview(login))),
+    ]);
+    return { ...published, previews };
+  },
+  ["explore"],
+  { tags: [EXPLORE_TAG], revalidate: 300 },
+);
+```
+
+Each page of the gallery is cached for 5 minutes (one entry per page, with the reads in parallel). After that, Next serves the old version and fetches the next one in the background. Any change to a city (project, import, settings, account deletion) expires the tag immediately with `updateTag("explore")`, so a hidden city disappears on the very next visit. Result: **9 to 24 ms to first byte** for a cached page, even after the connections have closed.
+
+I then served the gallery itself from the page cache (ISR, `revalidate = 300`): its CPU cost per request goes from about 700 ms to **10 ms**.
+
+## 4. An SVG sent twice
+
+One last surprise, on the network side: the gallery thumbnails traveled **twice**. Once in the HTML, and once in the RSC payload (the data React Server Components send alongside the HTML), because the card was rendered inside `Link`, a client component. Everything a client component receives as props has to be serialized.
+
+The fix: stop passing the SVG as props, pass the list of projects instead, and let a small client component redraw the thumbnail with the same engine. Since the engine is deterministic, the server render and the client render are identical, with no hydration warning.
+
+| Metric | Before | After |
+| --- | --- | --- |
+| HTML document | 2.53 MB | 1.22 MB |
+| RSC payload | 1.39 MB | 78 KB |
+
+## Key takeaways
+
+- **Measure under the same conditions as production**: same image, same memory limit, same CPU quota. My laptop was off by a factor of 10.
+- In a constrained container, **look at V8's young generation** (`--max-semi-space-size`) and the number of helper threads (`--v8-pool-size`).
+- **Ship settings with the image**, not in an environment file you can't see from the repo.
+- A serverless database that sleeps is not a problem if **the visitor never waits for it**: cache, stale-while-revalidate and tag-based invalidation.
+- In the App Router, **everything that crosses a client component is serialized**: keep an eye on the RSC payload size.
+
+Each of these decisions is recorded in the project's architecture log, with what was chosen, what was rejected and why.

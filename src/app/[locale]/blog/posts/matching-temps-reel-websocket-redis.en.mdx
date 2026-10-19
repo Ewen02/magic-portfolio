@@ -3,6 +3,8 @@ title: "Real-time matching: WebSocket and Redis for rooms"
 publishedAt: "2026-04-15"
 summary: "A field report on synchronizing state across multiple clients in real time with WebSocket and Socket.IO. How I built multi-user rooms and an instant match system with Redis and a NestJS gateway."
 tag: "Architecture"
+project: "swipe-movie"
+image: "/images/projects/swipe-movie/cover-02.png"
 ---
 
 ## The challenge: synchronizing multiple clients in real time
@@ -15,11 +17,11 @@ Behind this simple mechanic hides a real architecture problem: how do you keep s
 
 The first temptation is always HTTP polling: hitting the server every X seconds to find out whether something has changed. In practice, it's a poor fit for **real-time** use: noticeable latency, needless server load, and an experience that feels laggy.
 
-**WebSocket** opens a persistent bidirectional channel between the client and the server. The server can therefore **push** an event at the exact moment it happens — a match, a new participant, a swipe. With **Socket.IO**, you also get automatic reconnection, transport fallback, and above all the **rooms** abstraction, which fits my need perfectly.
+**WebSocket** opens a persistent bidirectional channel between the client and the server. The server can therefore **push** an event at the exact moment it happens: a match, a new participant, a swipe. With **Socket.IO**, you also get automatic reconnection, transport fallback, and above all the **rooms** abstraction, which fits my need perfectly.
 
 ## Rooms: isolating each session
 
-Each group session is a **room** identified by a short share code. That's the code you send to your friends so they can join — **without needing an account**, which removes all friction at the entry point.
+Each group session is a **room** identified by a short share code. That's the code you send to your friends so they can join, **without needing an account**, which removes all friction at the entry point.
 
 On the Socket.IO side, a room is a logical channel: any event emitted to a room only reaches the sockets that joined it. That's the guarantee of **isolation** between groups: two parallel sessions never see each other.
 
@@ -88,7 +90,7 @@ The whole thing rests on a modern, coherent stack:
 
 ## Key takeaways
 
-1. **WebSocket beats polling** the moment you talk about true real-time — no compromise on latency.
+1. **WebSocket beats polling** the moment you talk about true real-time: no compromise on latency.
 2. **Never keep state in process memory**: Redis as a shared source of truth is what makes scaling possible.
 3. **Socket.IO's Redis adapter is non-negotiable** the moment you go beyond a single instance.
 4. **Rooms are a powerful abstraction**: isolation, event targeting, and account-free share codes, all for free.

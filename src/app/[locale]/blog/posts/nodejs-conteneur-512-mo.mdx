@@ -1,0 +1,92 @@
+---
+title: "Next.js dans un conteneur de 512 Mo : quatre optimisations mesurées"
+publishedAt: "2026-10-17T10:00:00"
+summary: "Sur Sidetown, une page qui coûtait 113 ms de CPU sur mon portable en prenait 1 330 dans un conteneur de 512 Mo. Le garbage collector de Node, les threads de V8, les cold starts de la base et un SVG envoyé deux fois : quatre causes, mesurées et corrigées une par une, jusqu'à servir la galerie en 9 à 24 ms."
+tag: "Performance"
+project: "sidetown"
+image: "/images/projects/sidetown/cover-02.jpg"
+---
+
+## Le symptôme : rapide en local, lent en production
+
+[Sidetown](/work/sidetown) dessine les side-projects d'un développeur en ville isométrique, avec un moteur 3D vers SVG écrit en TypeScript qui tourne côté serveur. Il est auto-hébergé sur un VPS, dans un conteneur Docker durci : **512 Mo de mémoire et 1 CPU**.
+
+En local, tout allait vite. En production, la galerie `/explore` répondait entre 0,19 et 1,46 s, jusqu'à 2,7 s au pire. Le même code, la même page : il fallait mesurer plutôt que deviner. Quatre causes sont apparues, chacune avec sa correction.
+
+## 1. Node réduit sa mémoire jeune dans un conteneur
+
+La boucle qui construit le SVG d'une ville prenait :
+
+| Environnement | Durée |
+| --- | --- |
+| Mon portable | 113 ms |
+| Conteneur sur le VPS, sans limite mémoire | 301 à 396 ms |
+| Conteneur sur le VPS, limité à 512 Mo | 1 330 ms |
+
+La limite mémoire seule multipliait le temps par 3,4. La raison : **Node 24 dimensionne son tas à partir de la limite du cgroup**. Avec 512 Mo, la jeune génération (là où naissent les objets à courte durée de vie) tombait à **2 Mo**, contre 32 Mo sans limite. Un rendu crée énormément de petits objets : le garbage collector tournait en continu, et ses threads d'aide dépassaient le quota d'un CPU.
+
+La correction tient en une option, livrée avec l'image dans le `Dockerfile` pour qu'aucun environnement ne l'oublie :
+
+```dockerfile
+ENV NODE_OPTIONS="--max-semi-space-size=16"
+```
+
+La jeune génération revient à 32 Mo, la limite du tas passe de 259 à 304 Mo, toujours sous la limite du conteneur. La boucle passe de **1 330 ms à 364 ms**. Augmenter la mémoire du conteneur aurait aussi marché, mais il n'en utilisait qu'environ 96 Mo : on aurait payé de la RAM pour corriger une heuristique.
+
+## 2. Quatre threads pour un seul CPU
+
+La galerie restait chère : 1,05 à 1,16 s de CPU par requête. En mesurant par thread, le thread principal prenait 303 ms, et les **quatre threads de V8** dédiés au garbage collector parallèle en prenaient 480. Quatre aides se disputaient un quota d'un seul CPU.
+
+```dockerfile
+ENV NODE_OPTIONS="--max-semi-space-size=16 --v8-pool-size=1"
+```
+
+Avec un seul thread d'aide, la galerie passe à 700 ms de CPU et répond en **0,73 s au lieu de 1,1 à 1,2 s**. Le temps passé bridé par le quota, sur dix requêtes, tombe d'environ 17 s à 5 s. Je l'ai d'abord testé par une variable d'environnement sur le serveur, avec retour arrière automatique, avant de le figer dans le `Dockerfile`.
+
+## 3. La base qui dort, et les connexions qui se ferment
+
+Le profil de la galerie montrait le reste de l'écart dans les lectures en base, pas dans le rendu :
+
+- la base Neon (offre gratuite) se met en veille après 5 minutes sans activité : la première requête attend environ **0,86 s** son réveil ;
+- `pg` ferme les connexions inactives du pool après 10 s : la visite suivante rouvre une connexion TLS, environ **358 ms**.
+
+Allonger la durée de vie des connexions ne sert à rien : la base coupe de toute façon les connexions d'un compute en veille. La solution est de ne plus faire attendre le visiteur :
+
+```ts
+export const loadExplore = unstable_cache(
+  async (page: number) => {
+    const [published, previews] = await Promise.all([
+      listExploreCities(page),
+      Promise.all(GITHUB_EXAMPLES.map(({ login }) => getPreview(login))),
+    ]);
+    return { ...published, previews };
+  },
+  ["explore"],
+  { tags: [EXPLORE_TAG], revalidate: 300 },
+);
+```
+
+Chaque page de la galerie est mise en cache 5 minutes (une entrée par page, les lectures en parallèle) ; passé ce délai, Next sert l'ancienne version et relit la suivante en arrière-plan. Toute modification d'une ville (projet, import, réglages, suppression de compte) expire le tag immédiatement avec `updateTag("explore")`, pour qu'une ville masquée disparaisse dès la visite suivante. Résultat : **9 à 24 ms jusqu'au premier octet** pour une page en cache, y compris après la fermeture des connexions.
+
+J'ai ensuite servi la galerie elle-même depuis le cache de pages (ISR, `revalidate = 300`) : son coût CPU par requête passe d'environ 700 ms à **10 ms**.
+
+## 4. Un SVG envoyé deux fois
+
+Dernière surprise, côté réseau : les vignettes de la galerie voyageaient **deux fois**. Une fois dans le HTML, et une fois dans le payload RSC (les données que React Server Components envoie à côté du HTML), parce que la carte était rendue à l'intérieur de `Link`, un composant client. Tout ce qu'un composant client reçoit en props doit être sérialisé.
+
+La correction : ne plus passer le SVG en props, mais la liste des projets, et laisser un petit composant client redessiner la vignette avec le même moteur. Le moteur étant déterministe, le rendu serveur et le rendu client sont identiques, sans avertissement d'hydratation.
+
+| Mesure | Avant | Après |
+| --- | --- | --- |
+| Document HTML | 2,53 Mo | 1,22 Mo |
+| Payload RSC | 1,39 Mo | 78 Ko |
+
+## À retenir
+
+- **Mesurez dans les mêmes conditions que la production** : même image, même limite mémoire, même quota CPU. Mon portable mentait d'un facteur 10.
+- Dans un conteneur limité, **regardez la jeune génération de V8** (`--max-semi-space-size`) et le nombre de threads d'aide (`--v8-pool-size`).
+- **Livrez les réglages avec l'image**, pas dans un fichier d'environnement invisible depuis le repo.
+- Une base serverless qui dort n'est pas un problème si **le visiteur ne l'attend jamais** : cache, stale-while-revalidate et invalidation par tag.
+- Dans l'App Router, **tout ce qui traverse un composant client est sérialisé** : surveillez la taille du payload RSC.
+
+Chacune de ces décisions est consignée dans le journal d'architecture du projet, avec ce qui a été choisi, ce qui a été rejeté et pourquoi.

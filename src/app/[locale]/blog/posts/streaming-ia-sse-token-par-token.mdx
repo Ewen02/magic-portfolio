@@ -3,6 +3,7 @@ title: "Streaming IA token-par-token : le SSE en production avec Next.js"
 publishedAt: "2026-05-20"
 summary: "Retour d'expérience sur le streaming SSE (Server-Sent Events) pour afficher les réponses IA token-par-token en temps réel. Implémentation côté serveur Express et côté client React avec Next.js, gestion des interruptions et du contexte conversationnel d'un LLM en production."
 tag: "IA"
+project: "favikon"
 ---
 
 ## Pourquoi le streaming change tout pour une réponse IA
@@ -92,7 +93,7 @@ La clé est l'`AbortController`. Côté client, un bouton "Stop" appelle `contro
 req.on("close", () => stream.controller?.abort());
 ```
 
-Cette boucle propre — du clic utilisateur jusqu'à l'arrêt du modèle — est ce qui fait la différence entre un prototype et une fonctionnalité réellement utilisable en production.
+Cette boucle propre, du clic utilisateur jusqu'à l'arrêt du modèle, est ce qui fait la différence entre un prototype et une fonctionnalité réellement utilisable en production.
 
 ## Les leçons retenues
 
@@ -103,7 +104,7 @@ Mettre du **streaming SSE** en production m'a appris quelques principes solides 
 - la gestion des interruptions n'est pas optionnelle quand on paye au token ;
 - le contexte conversationnel doit voyager dans le payload, pas dans la connexion.
 
-Le résultat est une expérience de chat fluide, où la réponse IA se construit sous les yeux de l'utilisateur — exactement ce qu'on attend aujourd'hui d'un produit moderne.
+Le résultat est une expérience de chat fluide, où la réponse IA se construit sous les yeux de l'utilisateur : exactement ce qu'on attend aujourd'hui d'un produit moderne.
 
 ---
 

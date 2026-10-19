@@ -3,11 +3,12 @@ title: "Construire un pipeline RAG en production : du parsing au reranking"
 publishedAt: "2026-06-02"
 summary: "Retour d'expérience sur la conception d'un pipeline RAG (Retrieval-Augmented Generation) complet et performant : parsing multi-format, chunking parent-enfant, embeddings, reranking hybride et cache. Les choix d'architecture qui font la différence en production avec Next.js, NestJS et Qdrant."
 tag: "IA"
+project: "corpusai"
 ---
 
 ## Pourquoi le RAG est devenu incontournable
 
-Le **RAG (Retrieval-Augmented Generation)** est aujourd'hui l'approche de référence pour brancher un LLM sur des données privées sans réentraîner le modèle. Plutôt que de tout mettre dans le contexte — coûteux et limité — on récupère uniquement les passages pertinents et on les injecte au moment de la génération.
+Le **RAG (Retrieval-Augmented Generation)** est aujourd'hui l'approche de référence pour brancher un LLM sur des données privées sans réentraîner le modèle. Plutôt que de tout mettre dans le contexte (coûteux et limité), on récupère uniquement les passages pertinents et on les injecte au moment de la génération.
 
 En théorie c'est simple. En production, la qualité d'un pipeline RAG se joue dans les détails : comment on découpe les documents, comment on classe les résultats, et comment on évite de payer deux fois pour le même calcul. Voici les choix qui ont fait la différence sur [CorpusAI](/work/corpusai).
 
@@ -33,7 +34,7 @@ On gagne sur les deux tableaux : la précision du retrieval *et* la richesse du 
 
 ## 3. Embeddings et vector store
 
-Pour la vectorisation, `text-embedding-3-small` d'OpenAI offre un excellent rapport qualité/prix (1536 dimensions). Astuce coût : la propriété **Matryoshka** de ces embeddings permet de tronquer à 512 dimensions avec une perte de qualité minime — moins de stockage, recherche plus rapide.
+Pour la vectorisation, `text-embedding-3-small` d'OpenAI offre un excellent rapport qualité/prix (1536 dimensions). Astuce coût : la propriété **Matryoshka** de ces embeddings permet de tronquer à 512 dimensions avec une perte de qualité minime : moins de stockage, recherche plus rapide.
 
 Côté stockage, **Qdrant** s'impose : index HNSW, similarité cosinus, filtrage par métadonnées natif et déploiement cloud simple.
 
@@ -63,7 +64,7 @@ L'ingestion d'un document ne doit jamais bloquer l'utilisateur : on accuse réce
 
 ## Les leçons à retenir
 
-1. **Le chunking est l'investissement le plus rentable** — avant d'optimiser le modèle, optimisez le découpage.
+1. **Le chunking est l'investissement le plus rentable** : avant d'optimiser le modèle, optimisez le découpage.
 2. **Le retrieval hybride bat le pur sémantique** dans la plupart des cas réels.
 3. **Citez vos sources avec un score de confiance** : la transparence est ce qui rend un assistant IA digne de confiance.
 4. **Traitez l'ingestion en asynchrone** : l'expérience utilisateur ne doit jamais attendre un pipeline.

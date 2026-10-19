@@ -129,7 +129,7 @@ design/           # Tokens, specs, 54 maquettes
 ## Défis et enseignements
 
 - **Node dans 512 Mo** : Node 24 dimensionne son heap sur la limite du conteneur. La jeune génération tombait à 2 Mo et le rendu passait son temps en garbage collection (3,4× plus lent). `--max-semi-space-size=16` a fait passer une boucle de rendu de 1 330 ms à 364 ms, et `--v8-pool-size=1` la galerie de 1,1 s à 0,73 s.
-- **Une galerie au temps de réponse erratique** à cause des cold starts de Neon : `unstable_cache` et l'invalidation par tag ont ramené le TTFB de 1,5–2,7 s à **9–24 ms**, et le CPU par requête de ~700 ms à ~10 ms.
+- **Une galerie au temps de réponse erratique** à cause des cold starts de Neon : `unstable_cache` et l'invalidation par tag ont ramené le temps jusqu'au premier octet (jusqu'à 2,7 s) à **9–24 ms**, et le CPU par requête de ~700 ms à ~10 ms. Le détail est dans l'article [Next.js dans un conteneur de 512 Mo](/blog/nodejs-conteneur-512-mo).
 - **Un SVG envoyé deux fois**, dans le HTML et dans le payload RSC : le document de la galerie est passé de 2,53 Mo à 1,22 Mo, et le payload RSC de 1,39 Mo à 78 Ko.
 - **Une faille attrapée par un test** : une requête SQL brute débloquait Mars pour toutes les villes. Elle a été réécrite avec le query builder Drizzle, et le test inclut désormais l'achat d'un autre utilisateur.
 - **Un remboursement testé en production** : l'ISR gardait Mars affiché 3 minutes après le remboursement. Le webhook revalide désormais la ville.
@@ -142,7 +142,7 @@ design/           # Tokens, specs, 54 maquettes
 - **~23 500 lignes** de TypeScript et ~1 900 lignes de Python procédural
 - **~500 tests** répartis dans 76 fichiers
 - **64 décisions** d'architecture documentées
-- Timelapse : **15,5 ms par frame** dans Chromium pour une ville de 24 projets
+- Timelapse : **15,5 ms par frame** dans Chromium pour une ville de 12 projets
 - Lighthouse mobile : **95 à 98**
 
 ## État actuel
@@ -150,3 +150,7 @@ design/           # Tokens, specs, 54 maquettes
 Sidetown est en ligne sur [sidetown.dev](https://sidetown.dev), avec des paiements Stripe réels : le premier achat et le premier remboursement ont été validés de bout en bout. Ma propre ville est visible sur [sidetown.dev/ewen02](https://sidetown.dev/ewen02).
 
 ![Ma ville sur Sidetown](/images/projects/sidetown/city-ewen02.jpg)
+
+## Articles liés
+
+- [Next.js dans un conteneur de 512 Mo : quatre optimisations mesurées](/blog/nodejs-conteneur-512-mo)

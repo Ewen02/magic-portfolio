@@ -1,0 +1,126 @@
+---
+title: "Hexagonal architecture with NestJS: testing use cases without a database"
+publishedAt: "2026-10-19T10:00:00"
+summary: "A field report on a NestJS API built on hexagonal architecture from the first commit of Krown, Favikon's B2C iOS app: a framework-free domain, ports and adapters, 227 of the 234 use-case test files running on in-memory fakes, and an MCP server plugged in as a second input adapter."
+tag: "Architecture"
+project: "krown"
+image: "/images/projects/krown/architecture-en.jpg"
+---
+
+## Why hexagonal from the first commit
+
+When I started the API for [Krown](/work/krown), Favikon's B2C iOS app, the repo was empty and the list of external dependencies was already long: a MongoDB database shared with the Favikon platform, a search engine, Apple's servers for subscriptions, OAuth providers, push notifications and, later, a language model.
+
+A service that talks directly to all of that quickly becomes untestable: every test starts a database, mocks an SDK or waits on the network. So I set up a **hexagonal architecture** (ports and adapters) before writing the first feature. Six months later, the API has 34 modules, and that decision is the one that paid off the most.
+
+## One module, four layers
+
+Every module follows exactly the same split:
+
+```
+modules/<module>/
+├── domain/          # entities and value objects, no framework
+├── application/
+│   ├── ports/       # interfaces to the outside world
+│   └── use-cases/   # application logic, knows only the ports
+├── infrastructure/  # adapters: data, search, payments, LLM
+└── presentation/    # REST controllers and DTOs
+```
+
+The rule fits in one sentence: **dependencies point toward the domain**. The domain imports nothing from the outside. Use cases only know the domain and interfaces (the ports). The infrastructure implements those interfaces, and the presentation layer calls the use cases.
+
+## The port is an interface, the adapter is a detail
+
+A simplified example. The use case needs to read a score and notify analytics. It doesn't know where the score lives, or which analytics tool we use:
+
+```ts
+// application/ports/score.repository.port.ts
+export interface ScoreRepository {
+  findLatest(creatorId: string): Promise<DailyScore | null>;
+}
+export const SCORE_REPOSITORY = Symbol("ScoreRepository");
+
+// application/use-cases/get-daily-score.usecase.ts
+@Injectable()
+export class GetDailyScore {
+  constructor(
+    @Inject(SCORE_REPOSITORY) private readonly scores: ScoreRepository,
+    @Inject(ANALYTICS) private readonly analytics: Analytics,
+  ) {}
+
+  async execute(creatorId: string): Promise<DailyScore> {
+    const score = await this.scores.findLatest(creatorId);
+    if (!score) throw new ScoreNotFound(creatorId);
+    this.analytics.track("score_viewed", { creatorId });
+    return score;
+  }
+}
+```
+
+The Mongo adapter lives in `infrastructure/`, and the NestJS module does the wiring:
+
+```ts
+providers: [
+  GetDailyScore,
+  { provide: SCORE_REPOSITORY, useClass: MongoScoreRepository },
+  { provide: ANALYTICS, useClass: AmplitudeAnalytics },
+],
+```
+
+Switching databases or providers means writing a new adapter and changing one wiring line. The use case doesn't move.
+
+## The trade-off I accept: NestJS in the use cases
+
+A "pure" hexagonal setup would have use cases import no framework at all. Here, they use NestJS's `@Injectable` and `@Inject`. That's a choice: dependency injection is exactly what hexagonal needs to plug in the adapters, and rewriting it by hand brings nothing.
+
+The line I hold is elsewhere: **the domain imports neither NestJS, nor the ORM, nor the search engine**. Its 199 files depend on nothing. And no use case imports Mongoose or the search engine client directly: everything goes through a port.
+
+## The real benefit: tests without infrastructure
+
+Since use cases only know interfaces, I test them with **in-memory fakes** instead of real databases:
+
+```ts
+class FakeScoreRepository implements ScoreRepository {
+  private rows = new Map<string, DailyScore>();
+  seed(score: DailyScore) { this.rows.set(score.creatorId, score); }
+  async findLatest(id: string) { return this.rows.get(id) ?? null; }
+}
+
+it("throws when the creator has no score yet", async () => {
+  const useCase = new GetDailyScore(new FakeScoreRepository(), new FakeAnalytics());
+  await expect(useCase.execute("c1")).rejects.toThrow(ScoreNotFound);
+});
+```
+
+On the Krown API, **227 of the 234 use-case test files** run this way, on 188 fakes, with no database and no network. The tests are fast and deterministic, and they test the business logic, not a container's configuration. Adapters are tested separately, on the translation between the domain and the technology.
+
+The fakes also become documentation: to understand what a use case expects from the outside world, you just read the ports it receives.
+
+## Two input adapters, one logic
+
+Hexagonal isn't only about the output side. On the input side, the REST controllers are one adapter among others. When I built Koach, the app's AI agent, its tools went through an **MCP server** (Model Context Protocol): a second input adapter that calls **the same use cases** as the controllers.
+
+```
+iOS app ──REST──▶ Controllers ──┐
+                                ├──▶ Use-cases ──▶ Ports ──▶ Adapters
+AI agent ──MCP──▶ MCP tools   ──┘
+```
+
+So the agent doesn't have its own copy of the business logic: when a calculation rule changes, the app and the agent change together. Adding an interface (a command, a message queue, another agent) follows the same path.
+
+## What it takes to hold up in a team
+
+An architecture doesn't survive four developers if it only lives in the head of the person who set it up. Three things helped:
+
+- **An identical split across the 34 modules**: you know where to look without asking.
+- **A written architecture guide** from the first commit, with the layer rule and examples, for the team as well as for their coding agents.
+- **Rules checked by tools** rather than by code review: for example, a pre-commit hook rejects a business enum that has drifted from the schemas shared with the apps.
+
+## Key takeaways
+
+- Set up hexagonal **before** the first feature: migrating to it later is expensive.
+- Keep the **domain pure**. A bit of framework in the use cases for injection is a reasonable trade-off.
+- The gain shows up in the tests: **use cases tested on in-memory fakes**.
+- Input adapters matter as much as output adapters: an AI agent can reuse your use cases instead of duplicating them.
+
+This is also the subject of the first machine on [Nightprint](/work/nightprint), which shows in 3D what breaks when you import Postgres into the core.
