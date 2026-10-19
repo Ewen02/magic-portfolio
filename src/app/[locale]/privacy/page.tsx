@@ -75,8 +75,8 @@ export default async function Privacy({ params: { locale } }: LocaleParam) {
         </Heading>
         <Text variant="body-default-m" onBackground="neutral-weak">
           {en
-            ? "This site is hosted by Vercel Inc. Server logs may be processed for security and performance purposes."
-            : "Ce site est hébergé par Vercel Inc. Des journaux serveur peuvent être traités à des fins de sécurité et de performance."}
+            ? "This site is hosted by OVH SAS (Roubaix, France). Server logs may be processed for security and performance purposes."
+            : "Ce site est hébergé par OVH SAS (Roubaix, France). Des journaux serveur peuvent être traités à des fins de sécurité et de performance."}
         </Text>
       </Column>
     </Column>
