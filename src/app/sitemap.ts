@@ -11,6 +11,11 @@ const origin = `https://${baseURL}`;
 const url = (locale: string, path: string) =>
   locale === routing.defaultLocale ? `${origin}${path}` : `${origin}/${locale}${path}`;
 
+// Sitemap dates must be W3C datetimes: a date alone, or a time with a time
+// zone. Articles carry a local time without one ("2026-10-19T10:00:00"),
+// which Search Console rejects, so only the day is kept.
+const lastmod = (date: string) => date.slice(0, 10);
+
 // hreflang alternates map for a given path, across all locales.
 const languagesFor = (path: string) => ({
   ...Object.fromEntries(routing.locales.map((locale) => [locale, url(locale, path)])),
@@ -64,7 +69,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const path = `/blog/${post.slug}`;
         entries.push({
           url: url(locale, path),
-          lastModified: post.metadata.publishedAt,
+          lastModified: lastmod(post.metadata.publishedAt),
           changeFrequency: "monthly",
           priority: 0.7,
           alternates: { languages: languagesFor(path) },
@@ -83,7 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         const path = `/work/${post.slug}`;
         entries.push({
           url: url(locale, path),
-          lastModified: post.metadata.publishedAt,
+          lastModified: lastmod(post.metadata.publishedAt),
           changeFrequency: "monthly",
           priority: 0.8,
           alternates: { languages: languagesFor(path) },
