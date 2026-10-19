@@ -21,6 +21,8 @@ On tape un pseudo GitHub et on obtient, sans créer de compte, une ville deviné
 
 Le produit a été conçu, développé et lancé en **11 jours** : 182 commits du 1er au 11 octobre 2026, v0.1.0 en ligne le 3 octobre, offre Pro le 9 octobre.
 
+<Video src="/images/projects/sidetown/motion.mp4" poster="/images/projects/sidetown/motion.jpg" caption="Ma ville sur Sidetown : caméra orbitale, chantiers en cours et projets livrés." />
+
 ![Avant / après : la ville devinée depuis mes repos publics, puis revendiquée et corrigée](/images/projects/sidetown/preview-vs-claimed.jpg)
 
 ## Fonctionnalités principales
@@ -41,6 +43,8 @@ Le produit a été conçu, développé et lancé en **11 jours** : 182 commits d
 - Cartes « Moment » quand un projet est livré ou meurt
 - Badge README, texte de post en 3 tons, partage X, LinkedIn et feuille de partage mobile
 - **Timelapse MP4 de 12 secondes**, encodé dans le navigateur
+
+<Video src="/images/projects/sidetown/timelapse.mp4" poster="/images/projects/sidetown/timelapse.jpg" caption="Le timelapse de ma ville, généré et encodé dans le navigateur." ratio="4 / 5" maxWidth="24rem" />
 
 ### Dashboard & offre Pro
 - Éditeur live : un curseur d'heures logarithmique (de 1 h à 3 000 h) fait grandir le bâtiment en place
@@ -64,6 +68,8 @@ Postgres (Neon)
 ```
 
 Les pages sont servies en ISR (cache de 5 minutes, invalidé par tag à chaque modification d'une ville) et le navigateur réutilise le même moteur pour l'éditeur live, la caméra et les animations, jusqu'à 15 images par seconde.
+
+<Video src="/images/projects/sidetown/architecture.mp4" poster="/images/projects/sidetown/architecture.jpg" caption="L'architecture de Sidetown, animée avec son propre moteur et son propre encodeur vidéo." ratio="4 / 5" maxWidth="24rem" />
 
 Les décors (ville et Mars) sont des **scripts Python de modélisation procédurale**, prévisualisés dans Blender via MCP puis exportés en JSON. La base martienne compte 46 modules et 1 344 faces.
 

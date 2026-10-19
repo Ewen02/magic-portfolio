@@ -17,7 +17,7 @@ Une requête traverse la machine étape par étape, avec une barre de lecture et
 
 Le projet est construit en public et open source (code MIT, contenu CC BY 4.0) : **217 commits en 7 jours**, du 12 au 18 octobre 2026.
 
-![Machine « Architecture hexagonale » : adaptateur Postgres, latences et interrupteurs « Et si… »](/images/projects/nightprint/hexagonal.jpg)
+<Video src="/images/projects/nightprint/hexagonal.mp4" poster="/images/projects/nightprint/hexagonal.jpg" caption="MCH-001 Architecture hexagonale : un « et si » importe Postgres dans le cœur, et changer d'adaptateur casse alors le cœur." />
 
 ## Fonctionnalités principales
 
@@ -31,6 +31,8 @@ Le projet est construit en public et open source (code MIT, contenu CC BY 4.0) :
 - **FMD-001 Retry storm** : « un clic devient 64 tentatives », graphique de charge de la base, les interrupteurs *réparent*
 - **PRT-001 Handshake TLS 1.3** : diagramme de timing
 
+<Video src="/images/projects/nightprint/event-loop.mp4" poster="/images/projects/nightprint/event-loop.jpg" caption="MCH-002 Event loop JavaScript : les microtâches passent avant la tâche suivante, et un « et si » enchaîne les timeouts sans bloquer la page." />
+
 ### La page machine
 
 - Scénarios guidés (lecture, pas à pas), interrupteurs « Et si… », nomenclature cliquable, journal d'événements
@@ -43,7 +45,7 @@ Le projet est construit en public et open source (code MIT, contenu CC BY 4.0) :
 
 Sur `/import`, un visiteur colle un repo GitHub public JS/TS. Environ deux minutes plus tard, il revient sous forme de machine dessinée **à partir de son propre code**, avec un lien partageable. Claude regroupe le code en pièces et écrit l'histoire, mais **chaque route entre deux pièces doit reposer sur un import réel**. Le résumé du raisonnement du modèle s'affiche en direct pendant le dessin.
 
-![PRJ-001 : Nightprint dessiné par son propre importeur](/images/projects/nightprint/prj-001.jpg)
+<Video src="/images/projects/nightprint/prj-001.mp4" poster="/images/projects/nightprint/prj-001.jpg" caption="PRJ-001 : Nightprint dessiné par son propre importeur. Importer la scène dans le moteur formerait un cycle." />
 
 ## Architecture
 

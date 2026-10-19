@@ -17,7 +17,7 @@ A request travels through the machine step by step, with a transport bar and an 
 
 The project is built in public and open source (MIT for the code, CC BY 4.0 for the content): **217 commits in 7 days**, from October 12 to 18, 2026.
 
-![The "Hexagonal architecture" machine: Postgres adapter, latencies and "What if…" switches](/images/projects/nightprint/hexagonal.jpg)
+<Video src="/images/projects/nightprint/hexagonal.mp4" poster="/images/projects/nightprint/hexagonal.jpg" caption="MCH-001 Hexagonal architecture: a what-if imports Postgres in the core, and swapping the adapter now breaks the core." />
 
 ## Key features
 
@@ -31,6 +31,8 @@ The project is built in public and open source (MIT for the code, CC BY 4.0 for 
 - **FMD-001 Retry storm**: "one click becomes 64 attempts", database load chart, the switches *repair* the machine
 - **PRT-001 TLS 1.3 handshake**: timing diagram
 
+<Video src="/images/projects/nightprint/event-loop.mp4" poster="/images/projects/nightprint/event-loop.jpg" caption="MCH-002 JavaScript event loop: microtasks run before the next task, and a what-if chains timeouts while the page stays responsive." />
+
 ### The machine page
 
 - Guided scenarios (play, step), "What if…" switches, clickable bill of parts, event log
@@ -43,7 +45,7 @@ The project is built in public and open source (MIT for the code, CC BY 4.0 for 
 
 On `/import`, a visitor pastes a public JS/TS GitHub repository. About two minutes later it comes back as a machine drawn **from its own code**, with a shareable link. Claude groups the code into parts and writes the story, but **every route between two parts must stand on a real import**. The model's reasoning summary is shown live while the machine is drawn.
 
-![PRJ-001: Nightprint drawn by its own importer](/images/projects/nightprint/prj-001.jpg)
+<Video src="/images/projects/nightprint/prj-001.mp4" poster="/images/projects/nightprint/prj-001.jpg" caption="PRJ-001: Nightprint drawn by its own importer. Importing the scene in the engine would form a cycle." />
 
 ## Architecture
 

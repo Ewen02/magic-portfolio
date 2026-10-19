@@ -21,6 +21,8 @@ Type a GitHub username and you get, without an account, a city guessed from your
 
 The product was designed, built and launched in **11 days**: 182 commits from October 1 to 11, 2026, v0.1.0 live on October 3, Pro offer on October 9.
 
+<Video src="/images/projects/sidetown/motion.mp4" poster="/images/projects/sidetown/motion.jpg" caption="My city on Sidetown: orbit camera, construction sites and shipped projects." />
+
 ![Before / after: the city guessed from my public repos, then claimed and corrected](/images/projects/sidetown/preview-vs-claimed.jpg)
 
 ## Key features
@@ -41,6 +43,8 @@ The product was designed, built and launched in **11 days**: 182 commits from Oc
 - "Moment" cards when a project ships or dies
 - README badge, post text in 3 tones, sharing to X, LinkedIn and the phone's share sheet
 - **12-second timelapse MP4**, encoded in the browser
+
+<Video src="/images/projects/sidetown/timelapse.mp4" poster="/images/projects/sidetown/timelapse.jpg" caption="My city's timelapse, generated and encoded in the browser." ratio="4 / 5" maxWidth="24rem" />
 
 ### Dashboard & Pro offer
 - Live editor: a logarithmic hours slider (from 1 h to 3,000 h) grows the building in place
@@ -64,6 +68,8 @@ Postgres (Neon)
 ```
 
 Pages are served with ISR (5-minute cache, invalidated by tag whenever a city changes), and the browser reuses the same engine for the live editor, the camera and the animations, at up to 15 frames per second.
+
+<Video src="/images/projects/sidetown/architecture.mp4" poster="/images/projects/sidetown/architecture.jpg" caption="Sidetown's architecture, animated with its own engine and video encoder." ratio="4 / 5" maxWidth="24rem" />
 
 The decors (city and Mars) are **procedural modelling scripts in Python**, previewed in Blender through MCP and exported to JSON. The Mars base has 46 modules and 1,344 faces.
 
