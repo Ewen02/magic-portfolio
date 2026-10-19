@@ -642,71 +642,70 @@ const uses = {
 const services = {
   label: "Services",
   title: "Prestations de développement freelance",
-  description: `Développeur full stack freelance à Paris, ${person.name} accompagne startups, PME et agences : applications web SaaS, intégration IA (RAG, LLM), sites vitrines optimisés SEO et systèmes temps réel.`,
+  description: `${person.name}, lead développeur full stack & IA freelance à Paris : produits SaaS de bout en bout, IA en production (agents, RAG, MCP), lead technique et architecture, sites vitrines optimisés SEO.`,
+  eyebrow: "Freelance · Paris et à distance",
   intro:
-    "Je conçois et développe des produits web sur mesure, du site vitrine à la plateforme SaaS complète. Voici comment je peux vous aider : chaque projet démarre par un échange gratuit pour cadrer vos besoins.",
+    "Je conçois et livre des produits web et IA de bout en bout, de l'architecture à la mise en production. Chaque offre ci-dessous s'appuie sur des projets que j'ai déjà livrés : vous pouvez les ouvrir.",
+  status: "Disponible pour de nouvelles missions",
+  availability:
+    "Missions au forfait, en parallèle de mon poste de lead chez Favikon : un interlocuteur unique, du cadrage à la mise en ligne.",
+  labels: {
+    from: "À partir de",
+    deliverables: "Ce que vous obtenez",
+    stack: "Stack",
+    proof: "Déjà livré",
+    book: "Réserver un appel",
+    contact: "Me contacter",
+    testimonials: "Ce qu'en disent mes clients",
+  },
   // ⚠️ Fourchettes indicatives à valider/ajuster selon tes tarifs réels.
+  // `price` without a number is shown as-is (no « À partir de »); `proof` lists /work slugs.
   items: [
     {
-      title: "Application web & SaaS full stack",
-      description:
-        "Conception et développement d'applications web complètes : interfaces React / Next.js, back-end Node.js / NestJS, base de données, authentification, paiement (Stripe). De l'architecture au déploiement.",
-      price: "À partir de 6 000 €",
-      tags: ["React", "Next.js", "NestJS", "PostgreSQL", "Stripe"],
+      title: "Produit SaaS full stack",
+      description: "Une application web complète, de l'architecture au déploiement : interface Next.js, API typée, base de données, authentification et paiement. Pensée pour évoluer, pas seulement pour la démo.",
+      price: "6 000 €",
+      deliverables: ["Architecture et choix techniques documentés", "Front Next.js et API Node.js / NestJS", "Auth, paiement Stripe et emails", "Tests, CI et mise en production"],
+      stack: ["nextdotjs", "react", "nestjs", "postgresql", "stripe", "docker"],
+      proof: ["sidetown", "corpusai"],
     },
     {
-      title: "Intégration IA, RAG & agents LLM",
-      description:
-        "Intégration de l'IA dans vos produits : pipelines RAG (parsing, chunking, embeddings, reranking), assistants conversationnels, systèmes multi-agents (LangChain / LangGraph), recherche sémantique et streaming token-par-token.",
-      price: "À partir de 5 000 €",
-      tags: ["RAG", "LLM", "LangGraph", "Qdrant", "OpenAI"],
+      title: "IA en production",
+      description: "Des fonctionnalités IA qui tiennent face à de vrais utilisateurs : agents outillés, pipelines RAG, recherche sémantique et streaming, avec des évaluations et des garde-fous plutôt qu'une démo.",
+      price: "5 000 €",
+      deliverables: ["Agent ou assistant branché sur vos données", "Pipeline RAG ou outils MCP", "Évaluation des modèles et garde-fous de coût", "Réponses streamées dans votre interface"],
+      stack: ["anthropic", "openai", "mcp", "rag", "vector", "langchain"],
+      proof: ["nightprint", "corpusai"],
+    },
+    {
+      title: "Lead technique & architecture",
+      description: "Pour une équipe qui démarre un produit ou dont la base de code ralentit : je pose ou je reprends l'architecture, et je mets en place les règles qui permettent d'avancer vite sans casser.",
+      price: "Sur devis",
+      deliverables: ["Audit d'architecture et plan d'action", "Architecture hexagonale, monorepo et contrats partagés", "CI, tests et process de release", "Accompagnement de votre équipe"],
+      stack: ["nestjs", "turborepo", "githubactions", "typescript", "swift", "git"],
+      proof: ["krown"],
     },
     {
       title: "Site vitrine performant & SEO",
-      description:
-        "Sites vitrines modernes, rapides et optimisés pour le référencement local : design responsive, intégration de prise de rendez-vous, données structurées schema.org et bonnes pratiques SEO techniques.",
-      price: "À partir de 1 500 €",
-      tags: ["Next.js", "SEO", "Responsive", "Performance"],
-    },
-    {
-      title: "Temps réel & architecture",
-      description:
-        "Systèmes temps réel (WebSocket, SSE, Redis), architectures monorepo (Turborepo), refonte technique et conseil. Pour fiabiliser et faire passer à l'échelle vos applications existantes.",
-      price: "Sur devis",
-      tags: ["WebSocket", "SSE", "Redis", "Turborepo"],
+      description: "Un site rapide, clair et bien référencé localement, avec la prise de rendez-vous ou le formulaire dont vous avez besoin.",
+      price: "1 500 €",
+      deliverables: ["Design responsive et rapide", "SEO local et données structurées", "Prise de rendez-vous ou formulaire", "Mise en ligne et suivi Search Console"],
+      stack: ["nextdotjs", "tailwindcss", "googlesearchconsole", "a11y"],
+      proof: ["cabinet-dentaire-desboeuf"],
     },
   ],
-  availability:
-    "Disponible pour des missions ponctuelles et au forfait, en parallèle d'une activité salariée. Idéal pour un projet cadré, une fonctionnalité à développer ou une intégration IA, avec un interlocuteur unique, fiable et réactif.",
   process: {
     title: "Comment je travaille",
     steps: [
-      {
-        title: "Échange & cadrage",
-        description:
-          "Un premier appel gratuit pour comprendre votre besoin, votre contexte et vos contraintes. Je vous oriente même si ce n'est pas pour moi.",
-      },
-      {
-        title: "Devis & planning",
-        description:
-          "Une proposition claire : périmètre, délais et budget. Pas de surprise, vous validez avant qu'on démarre.",
-      },
-      {
-        title: "Développement",
-        description:
-          "Je développe par itérations avec des points réguliers. Vous suivez l'avancement et ajustez en cours de route.",
-      },
-      {
-        title: "Livraison & suivi",
-        description:
-          "Mise en production, documentation et passation. Je reste disponible pour les évolutions et le support.",
-      },
+      { when: "Appel de 30 min", title: "Échange & cadrage", description: "Un premier appel gratuit pour comprendre votre besoin, votre contexte et vos contraintes. Je vous oriente même si ce n'est pas pour moi." },
+      { when: "Devis écrit", title: "Périmètre & planning", description: "Une proposition claire : périmètre, délais et budget. Pas de surprise, vous validez avant qu'on démarre." },
+      { when: "Itérations courtes", title: "Développement", description: "Je livre par étapes, avec des points réguliers. Vous voyez le produit avancer et ajustez en cours de route." },
+      { when: "Mise en ligne", title: "Livraison & suivi", description: "Mise en production, documentation et passation. Je reste disponible pour les évolutions et le support." },
     ],
   },
   cta: {
     title: "Un projet en tête ?",
-    description:
-      "Discutons-en. Le premier échange est gratuit et sans engagement : je vous aide à cadrer votre besoin et à estimer le projet.",
+    description: "Le premier échange est gratuit et sans engagement : on cadre votre besoin ensemble et je vous donne une estimation.",
   },
 };
 

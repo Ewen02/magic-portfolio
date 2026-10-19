@@ -22,10 +22,10 @@
 
 ## Services freelance
 
-1. **Application web & SaaS full stack** : conception et développement d'applications complètes (React/Next.js + Node/NestJS), à partir de 6 000 €.
-2. **Intégration IA, RAG & agents LLM** : assistants conversationnels, pipelines RAG, systèmes multi-agents, à partir de 5 000 €.
-3. **Site vitrine performant & SEO** : sites modernes optimisés pour le référencement local, à partir de 1 500 €.
-4. **Temps réel & architecture** : systèmes temps réel, monorepo, conseil technique, sur devis.
+1. **Produit SaaS full stack** : application web complète, de l'architecture au déploiement (Next.js, Node.js/NestJS, Stripe), à partir de 6 000 €.
+2. **IA en production** : agents outillés (MCP), pipelines RAG, recherche sémantique et streaming, avec évaluations et garde-fous, à partir de 5 000 €.
+3. **Lead technique & architecture** : audit, architecture hexagonale, monorepo et contrats partagés, CI et process de release, accompagnement d'équipe, sur devis.
+4. **Site vitrine performant & SEO** : site rapide et optimisé pour le référencement local, à partir de 1 500 €.
 
 ## Projets notables
 

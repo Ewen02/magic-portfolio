@@ -1,5 +1,7 @@
 import { setRequestLocale } from "next-intl/server";
-import { Button, Column, Flex, Heading, Icon, Tag, Text } from "@/once-ui/components";
+import { Column } from "@/once-ui/components";
+import { ServicesView } from "@/components/services/ServicesView";
+import { getPosts } from "@/app/utils/utils";
 import { baseURL } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
 
@@ -43,10 +45,20 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
 
 export default async function Services({ params: { locale } }: LocaleParam) {
   setRequestLocale(locale);
-  const { person, services, contact } = getContent(locale);
+  const { person, services, contact, about, uses } = getContent(locale);
+
+  // Projects that prove the offers: short name and cover of each /work page.
+  const projects = Object.fromEntries(
+    getPosts(["src", "app", "[locale]", "work", "projects"], locale).map((p) => [
+      p.slug,
+      { name: p.metadata.title.split(" – ")[0].replace(/ by .*$/, ""), image: p.metadata.images?.[0] ?? "" },
+    ]),
+  );
+  const toolNames: Record<string, string> = {};
+  for (const c of uses.categories) for (const it of c.items) toolNames[it.icon] ??= it.name;
 
   return (
-    <Column maxWidth="m" gap="xl">
+    <Column maxWidth="m">
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -81,134 +93,23 @@ export default async function Services({ params: { locale } }: LocaleParam) {
         }}
       />
 
-      <Column maxWidth="s" gap="m">
-        <Heading as="h1" variant="display-strong-s">
-          {services.title}
-        </Heading>
-        <Text variant="body-default-l" onBackground="neutral-weak" wrap="balance">
-          {services.intro}
-        </Text>
-      </Column>
-
-      {services.availability && (
-        <Flex
-          fillWidth
-          gap="12"
-          padding="m"
-          radius="l"
-          border="brand-alpha-medium"
-          background="brand-alpha-weak"
-          vertical="center"
-        >
-          <Icon name="check" onBackground="brand-weak" />
-          <Text variant="body-default-m" onBackground="neutral-strong">
-            {services.availability}
-          </Text>
-        </Flex>
-      )}
-
-      <Column fillWidth gap="l">
-        {services.items.map((item, index) => (
-          <Column
-            key={`service-${index}`}
-            fillWidth
-            gap="12"
-            padding="l"
-            radius="l"
-            border="neutral-medium"
-            background="surface"
-          >
-            <Flex fillWidth horizontal="space-between" vertical="start" wrap gap="12">
-              <Heading as="h2" variant="heading-strong-l">
-                {item.title}
-              </Heading>
-              <Tag size="l" variant="brand" label={item.price} />
-            </Flex>
-            <Text variant="body-default-m" onBackground="neutral-weak">
-              {item.description}
-            </Text>
-            {item.tags?.length > 0 && (
-              <Flex gap="8" wrap>
-                {item.tags.map((tag, i) => (
-                  <Tag key={`svc-${index}-tag-${i}`} size="s" label={tag} />
-                ))}
-              </Flex>
-            )}
-          </Column>
-        ))}
-      </Column>
-
-      {/* Process */}
-      {services.process && (
-        <Column fillWidth gap="l">
-          <Heading as="h2" variant="display-strong-xs">
-            {services.process.title}
-          </Heading>
-          <Column fillWidth gap="m">
-            {services.process.steps.map((step, index) => (
-              <Flex key={`step-${index}`} gap="16" vertical="start">
-                <Flex
-                  minWidth="32"
-                  height="32"
-                  radius="full"
-                  background="brand-alpha-weak"
-                  border="brand-alpha-medium"
-                  horizontal="center"
-                  vertical="center"
-                >
-                  <Text variant="body-strong-m" onBackground="brand-weak">
-                    {index + 1}
-                  </Text>
-                </Flex>
-                <Column gap="2">
-                  <Text variant="heading-strong-s">{step.title}</Text>
-                  <Text variant="body-default-s" onBackground="neutral-weak">
-                    {step.description}
-                  </Text>
-                </Column>
-              </Flex>
-            ))}
-          </Column>
-        </Column>
-      )}
-
-      {/* CTA */}
-      <Column
-        fillWidth
-        gap="16"
-        padding="l"
-        radius="l"
-        border="brand-alpha-medium"
-        background="brand-alpha-weak"
-        style={{ backdropFilter: "blur(var(--static-space-1))" }}
-        horizontal="center"
-      >
-        <Column gap="4" horizontal="center">
-          <Heading as="h2" variant="heading-strong-l">
-            {services.cta.title}
-          </Heading>
-          <Text variant="body-default-m" onBackground="neutral-weak" align="center" wrap="balance">
-            {services.cta.description}
-          </Text>
-        </Column>
-        <Flex gap="12" wrap horizontal="center">
-          <Button
-            href={contact.calendar.link}
-            prefixIcon="calendar"
-            label={locale === "en" ? "Book a call" : "Réserver un appel"}
-            variant="primary"
-            size="m"
-            arrowIcon
-          />
-          <Button
-            href="/contact"
-            prefixIcon="email"
-            label={locale === "en" ? "Contact me" : "Me contacter"}
-            variant="secondary"
-            size="m"
-          />
-        </Flex>
-      </Column>
+      <ServicesView
+        title={services.title}
+        eyebrow={services.eyebrow}
+        intro={services.intro}
+        status={services.status}
+        availability={services.availability}
+        labels={services.labels}
+        items={services.items}
+        process={services.process}
+        cta={services.cta}
+        testimonials={about.testimonials?.display ? about.testimonials.items : []}
+        projects={projects}
+        toolNames={toolNames}
+        calendarLink={contact.calendar.link}
+        avatar={person.avatar}
+        name={person.name}
+      />
     </Column>
   );
 }

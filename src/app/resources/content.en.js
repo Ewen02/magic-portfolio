@@ -641,71 +641,70 @@ const uses = {
 const services = {
   label: "Services",
   title: "Freelance development services",
-  description: `Freelance full stack developer in Paris, ${person.name} helps startups, SMEs and agencies: SaaS web apps, AI integration (RAG, LLM), SEO-optimized marketing websites and real-time systems.`,
+  description: `${person.name}, freelance lead full stack & AI developer in Paris: end-to-end SaaS products, AI in production (agents, RAG, MCP), technical leadership and architecture, SEO-friendly websites.`,
+  eyebrow: "Freelance · Paris and remote",
   intro:
-    "I design and build custom web products, from marketing websites to complete SaaS platforms. Here's how I can help: every project starts with a free call to scope your needs.",
+    "I design and ship web and AI products end to end, from architecture to production. Every offer below is backed by projects I have already shipped: you can open them.",
+  status: "Available for new projects",
+  availability:
+    "Fixed-price projects, alongside my lead role at Favikon: one point of contact, from scoping to launch.",
+  labels: {
+    from: "From",
+    deliverables: "What you get",
+    stack: "Stack",
+    proof: "Already shipped",
+    book: "Book a call",
+    contact: "Contact me",
+    testimonials: "What clients say",
+  },
   // ⚠️ Indicative ranges: validate/adjust against your real rates.
+  // A `price` without a number is shown as-is (no "From"); `proof` lists /work slugs.
   items: [
     {
-      title: "Web app & full stack SaaS",
-      description:
-        "Design and development of complete web applications: React / Next.js interfaces, Node.js / NestJS back-end, database, authentication, payments (Stripe). From architecture to deployment.",
-      price: "From €6,000",
-      tags: ["React", "Next.js", "NestJS", "PostgreSQL", "Stripe"],
+      title: "Full stack SaaS product",
+      description: "A complete web application, from architecture to deployment: Next.js interface, typed API, database, authentication and payments. Built to grow, not just to demo.",
+      price: "€6,000",
+      deliverables: ["Documented architecture and technical choices", "Next.js front end and Node.js / NestJS API", "Auth, Stripe payments and emails", "Tests, CI and production launch"],
+      stack: ["nextdotjs", "react", "nestjs", "postgresql", "stripe", "docker"],
+      proof: ["sidetown", "corpusai"],
     },
     {
-      title: "AI integration, RAG & LLM agents",
-      description:
-        "Bringing AI into your products: RAG pipelines (parsing, chunking, embeddings, reranking), conversational assistants, multi-agent systems (LangChain / LangGraph), semantic search and token-by-token streaming.",
-      price: "From €5,000",
-      tags: ["RAG", "LLM", "LangGraph", "Qdrant", "OpenAI"],
+      title: "AI in production",
+      description: "AI features that hold up with real users: tooled agents, RAG pipelines, semantic search and streaming, with evaluations and guardrails rather than a demo.",
+      price: "€5,000",
+      deliverables: ["An agent or assistant connected to your data", "RAG pipeline or MCP tools", "Model evaluation and cost guardrails", "Answers streamed into your interface"],
+      stack: ["anthropic", "openai", "mcp", "rag", "vector", "langchain"],
+      proof: ["nightprint", "corpusai"],
     },
     {
-      title: "Fast, SEO-friendly marketing website",
-      description:
-        "Modern, fast websites optimized for local search: responsive design, booking integration, schema.org structured data and technical SEO best practices.",
-      price: "From €1,500",
-      tags: ["Next.js", "SEO", "Responsive", "Performance"],
+      title: "Technical leadership & architecture",
+      description: "For a team starting a product, or whose codebase is slowing it down: I set up or take over the architecture, and put in place the rules that let you move fast without breaking things.",
+      price: "On quote",
+      deliverables: ["Architecture audit and action plan", "Hexagonal architecture, monorepo and shared contracts", "CI, tests and release process", "Hands-on support for your team"],
+      stack: ["nestjs", "turborepo", "githubactions", "typescript", "swift", "git"],
+      proof: ["krown"],
     },
     {
-      title: "Real-time & architecture",
-      description:
-        "Real-time systems (WebSocket, SSE, Redis), monorepo architectures (Turborepo), technical overhaul and consulting. To harden and scale your existing applications.",
-      price: "On request",
-      tags: ["WebSocket", "SSE", "Redis", "Turborepo"],
+      title: "Fast, SEO-friendly website",
+      description: "A fast, clear website that ranks well locally, with the booking flow or contact form you need.",
+      price: "€1,500",
+      deliverables: ["Fast, responsive design", "Local SEO and structured data", "Booking flow or contact form", "Launch and Search Console monitoring"],
+      stack: ["nextdotjs", "tailwindcss", "googlesearchconsole", "a11y"],
+      proof: ["cabinet-dentaire-desboeuf"],
     },
   ],
-  availability:
-    "Available for one-off and fixed-price projects, alongside a salaried position. Ideal for a well-scoped project, a feature to build or an AI integration, with a single, reliable and responsive point of contact.",
   process: {
     title: "How I work",
     steps: [
-      {
-        title: "Discovery & scoping",
-        description:
-          "A free first call to understand your need, context and constraints. I'll point you in the right direction even if it's not a fit for me.",
-      },
-      {
-        title: "Quote & timeline",
-        description:
-          "A clear proposal: scope, timeline and budget. No surprises: you approve before we start.",
-      },
-      {
-        title: "Development",
-        description:
-          "I build in iterations with regular check-ins. You follow progress and adjust along the way.",
-      },
-      {
-        title: "Delivery & support",
-        description:
-          "Deployment, documentation and handover. I stay available for future iterations and support.",
-      },
+      { when: "30-minute call", title: "Discovery & scoping", description: "A free first call to understand your needs, context and constraints. I'll point you in the right direction even if I'm not the right fit." },
+      { when: "Written quote", title: "Scope & timeline", description: "A clear proposal: scope, timeline and budget. No surprises: you approve before we start." },
+      { when: "Short iterations", title: "Development", description: "I ship in steps, with regular check-ins. You see the product take shape and can adjust along the way." },
+      { when: "Launch", title: "Delivery & follow-up", description: "Production launch, documentation and handover. I stay available for changes and support." },
     ],
   },
   cta: {
-    title: "Got a project in mind?",
-    description:
-      "Let's talk. The first call is free and no-strings: I'll help you scope your needs and estimate the project.",
+    title: "Have a project in mind?",
+    description: "The first call is free and with no commitment: we scope your needs together and I give you an estimate.",
   },
 };
 
