@@ -491,9 +491,7 @@ const uses = {
     usedIn: "Utilisé dans",
     notUsed: "Hors des projets présentés ici.",
     tools: "outils",
-    proofTitle: "Là où je m'en sers",
-    proofIntro: "Survolez un projet pour afficher sa stack. Dans la carte, seules ses branches restent allumées.",
-    stackOf: "La stack de {name}",
+    projectsLabel: "Survolez un projet",
     detailsTitle: "Le détail, outil par outil",
   },
   // Projets qui prouvent les outils (slugs des pages /work).

@@ -490,9 +490,7 @@ const uses = {
     usedIn: "Used in",
     notUsed: "Outside the projects shown here.",
     tools: "tools",
-    proofTitle: "Where I use them",
-    proofIntro: "Hover a project to show its stack. In the map, only its branches stay lit.",
-    stackOf: "{name}'s stack",
+    projectsLabel: "Hover a project",
     detailsTitle: "Every tool, in detail",
   },
   // Projects that prove the tools (slugs of the /work pages).
