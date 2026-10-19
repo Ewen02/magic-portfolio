@@ -9,7 +9,7 @@ const person = {
     return `${this.firstName} ${this.lastName}`;
   },
   role: "Lead Full Stack & AI Developer",
-  avatar: "/images/avatar.jpg",
+  avatar: "/images/ewen-le-quere.jpg",
   email: "ewen.le-quere@epitech.eu",
   location: "Europe/Paris",
   languages: ["French", "English"],
@@ -71,6 +71,11 @@ const social = [
     name: "LinkedIn",
     icon: "linkedin",
     link: "https://www.linkedin.com/in/ewen-le-qu%C3%A9r%C3%A9/",
+  },
+  {
+    name: "X",
+    icon: "x",
+    link: "https://x.com/ewenlq",
   },
   {
     name: "Malt",
