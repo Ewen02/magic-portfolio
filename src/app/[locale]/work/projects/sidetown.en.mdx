@@ -1,0 +1,146 @@
+---
+title: "Sidetown – Your Side Projects, as a City"
+publishedAt: "2026-10-11"
+summary: "Side project in production: each of a developer's side projects becomes a building in an isometric low-poly city (shipped = lit, in progress = construction site, abandoned = ruin with an epitaph). A 3D → SVG engine written from scratch in TypeScript, share images generated on the server, a timelapse MP4 encoded in the browser, GitHub import and Stripe payments. Next.js 16, Drizzle, Neon, Better Auth."
+images:
+  - "/images/projects/sidetown/cover-01.jpg"
+  - "/images/projects/sidetown/cover-02.jpg"
+  - "/images/projects/sidetown/cover-03.jpg"
+link: "https://sidetown.dev"
+---
+
+## Overview
+
+**Sidetown** turns a developer's side projects into an **isometric low-poly city**: a free, shareable visual portfolio.
+
+- **Shipped** projects become lit buildings
+- **In-progress** projects are construction sites with a crane: the more hours spent, the taller the building
+- **Abandoned** projects become ruins with an epitaph
+
+Type a GitHub username and you get, without an account, a city guessed from your public repositories. Sign in to claim it and fix the statuses.
+
+The product was designed, built and launched in **11 days**: 182 commits from October 1 to 11, 2026, v0.1.0 live on October 3, Pro offer on October 9.
+
+![Before / after: the city guessed from my public repos, then claimed and corrected](/images/projects/sidetown/preview-vs-claimed.jpg)
+
+## Key features
+
+### Public city
+- Orbit camera, zoom from 1× to 3×, immersive view, pause animations
+- **Living city**: cars, swinging cranes, flickering windows, a Mars rocket launching every 40 seconds
+- Project panel and a static page for each building
+- Accessibility: every building is a keyboard-accessible button, with touch targets widened to 44 px
+
+### GitHub import
+- Public preview at `/preview/<login>`: buildings grow one after another, nothing is stored
+- Review screen: proposed status, "Still alive?" badge, epitaph, hide
+- Detection of projects already added by hand
+
+### Share kit
+- Card (1200×630) and story (1080×1920) generated on the server
+- "Moment" cards when a project ships or dies
+- README badge, post text in 3 tones, sharing to X, LinkedIn and the phone's share sheet
+- **12-second timelapse MP4**, encoded in the browser
+
+### Dashboard & Pro offer
+- Live editor: a logarithmic hours slider (from 1 h to 3,000 h) grows the building in place
+- `/explore` gallery of published cities
+- Pro "Mars base" decor, purely cosmetic, as a one-time payment through Stripe Checkout
+- GDPR JSON export and immediate account deletion
+
+## Architecture
+
+### An in-house 3D engine with zero dependencies
+
+Instead of WebGL, Sidetown runs on a **low-poly 3D → SVG engine written from scratch in TypeScript** (~2,200 lines): projection, Newell normals, time-of-day lighting, painter's sort, seeded randomness. It is **byte-for-byte deterministic** and serves one renderer for three uses: the page, the share images and the video.
+
+```
+Postgres (Neon)
+   └─▶ CityInput ─▶ renderCity() ─▶ SVG
+          ├─▶ page: inline SVG in ISR HTML
+          ├─▶ browser: editor, camera, animations
+          ├─▶ sharing: resvg ─▶ PNG versioned by sha256
+          └─▶ video: canvas ─▶ WebCodecs ─▶ MP4
+```
+
+Pages are served with ISR (5-minute cache, invalidated by tag whenever a city changes), and the browser reuses the same engine for the live editor, the camera and the animations, at up to 15 frames per second.
+
+The decors (city and Mars) are **procedural modelling scripts in Python**, previewed in Blender through MCP and exported to JSON. The Mars base has 46 modules and 1,344 faces.
+
+![A 24-project Mars base, rendered by the in-house engine](/images/projects/sidetown/cover-03.jpg)
+
+### Folder layout
+
+```
+src/
+├── app/          # Routes: city, explore, dashboard, api
+├── engine/       # Pure 3D → SVG renderer
+├── video/        # Timelapse → MP4 encoder
+├── github/       # Repos, status guessing
+├── db/           # Drizzle schema and queries
+├── lib/          # env, auth, rate limit, analytics
+└── components/   # Atomic design + motion hooks
+kit/              # City and Mars decors (Python)
+design/           # Tokens, specs, 54 mockups
+```
+
+### Data model
+
+8 Postgres tables managed by Drizzle: the Better Auth ones (`user`, `session`, `account`, `verification`), then `city`, `project`, `entitlement` and `github_preview_cache`. IDs are UUID v7, business rules are mirrored as `CHECK` constraints, and every user table cascades on deletion: the GDPR deletion is a single statement.
+
+### Key decisions
+
+64 architecture decisions were logged in 11 days, each with what was chosen, what was rejected and why. The most structuring ones:
+
+- **Fixed lots in square rings**: adding a project never moves existing buildings. This is what made the timelapse possible.
+- **Image URLs versioned by the SVG fingerprint**: served as `immutable`, no cache ever needs purging.
+- **Pro is granted only by the Stripe webhook** (idempotent), and the decor is recomputed on every read: a refund reverts it automatically.
+- **An archived repo is proposed as RIP, an inactive one only gets "Still alive?"**: the owner always decides.
+- **Schema-driven GDPR tests**: every table with a `user_id` must appear in the export and be emptied on deletion.
+
+## Tech stack
+
+### Frontend
+- **Framework**: Next.js 16 (App Router, Server Actions, ISR, `unstable_cache`), React 19, strict TypeScript
+- **UI**: Tailwind CSS 4, atomic design system
+- **Rendering**: in-house 3D → SVG engine, resvg (PNG), WebCodecs + mediabunny (MP4)
+- **Validation**: zod 4
+
+### Backend
+- **Database**: PostgreSQL (Neon) + Drizzle ORM
+- **Auth**: Better Auth (GitHub OAuth, no token stored)
+- **GitHub**: Octokit
+- **Payments**: Stripe (Checkout, signed webhook, coupon, refunds)
+- **Analytics**: PostHog EU, server-side only, cookieless
+
+### Quality & DevOps
+- **Tests**: Vitest, close to 500 cases including tests against a real Postgres database, SVG snapshots of the engine
+- **CI/CD**: GitHub Actions. Lint, typecheck, tests and build, then a Docker image (GHCR), Drizzle migration, SSH deploy and external smoke tests.
+- **Hosting**: OVH VPS, Docker Compose behind Caddy, hardened container (read-only, `cap_drop ALL`, non-root, 512 MB and 1 CPU)
+- **Tooling**: pnpm, Biome, Playwright (Chromium + WebKit audits from 320 px to desktop), Lighthouse mobile 95–98
+- **Coding agents**: Claude Code, Cursor and Codex through a shared `AGENTS.md`, custom skills and MCP servers (Neon, Playwright, Blender)
+
+## Challenges and learnings
+
+- **Node in 512 MB**: Node 24 sizes its heap from the container limit. The young generation shrank to 2 MB and rendering spent its time in garbage collection (3.4× slower). `--max-semi-space-size=16` took a render loop from 1,330 ms to 364 ms, and `--v8-pool-size=1` the gallery from 1.1 s to 0.73 s.
+- **An erratic gallery** caused by Neon cold starts: `unstable_cache` and tag invalidation brought the TTFB from 1.5–2.7 s down to **9–24 ms**, and CPU per request from ~700 ms to ~10 ms.
+- **An SVG sent twice**, in the HTML and in the RSC payload: the gallery document went from 2.53 MB to 1.22 MB, and the RSC payload from 1.39 MB to 78 KB.
+- **A security bug caught by a test**: a raw SQL query unlocked Mars for every city. It was rewritten with Drizzle's query builder, and the test now includes another user's purchase.
+- **A refund tested in production**: ISR kept Mars on screen for 3 minutes after the refund. The webhook now revalidates the city.
+- **Safari**: a 1 px hydration mismatch caused by `Math.hypot`, `navigator.share` refused after an `await`, clicks lost when an animated SVG face was replaced.
+- **Privacy by design**: no OAuth token, IP or user agent stored, cookieless server-side analytics.
+
+## By the numbers
+
+- **182 commits** in 11 days, **2 releases**
+- **~23,500 lines** of TypeScript and ~1,900 lines of procedural Python
+- **~500 tests** across 76 files
+- **64 documented** architecture decisions
+- Timelapse: **15.5 ms per frame** in Chromium for a 24-project city
+- Lighthouse mobile: **95 to 98**
+
+## Current status
+
+Sidetown is live at [sidetown.dev](https://sidetown.dev), with real Stripe payments: the first purchase and the first refund were validated end to end. My own city is at [sidetown.dev/ewen02](https://sidetown.dev/ewen02).
+
+![My city on Sidetown](/images/projects/sidetown/city-ewen02.jpg)

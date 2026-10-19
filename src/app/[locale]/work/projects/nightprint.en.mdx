@@ -1,0 +1,134 @@
+---
+title: "Nightprint – Software Architecture Drawn as 3D Machines"
+publishedAt: "2026-10-18"
+summary: "Open-source side project: each architecture concept (hexagonal, event loop, DDD, retry storm, TLS 1.3…) becomes an interactive 3D machine rendered with WebGPU in the browser. An AI importer draws any JS/TS GitHub repository from its own code. Turborepo monorepo, Next.js 16, React Three Fiber, a deterministic engine and in-browser MP4 export."
+images:
+  - "/images/projects/nightprint/cover-01.jpg"
+  - "/images/projects/nightprint/cover-02.jpg"
+  - "/images/projects/nightprint/cover-03.jpg"
+link: "https://nightprint.dev"
+---
+
+## Overview
+
+**Nightprint** draws software architecture as **machines you can run**. Each concept becomes an interactive 3D machine in the browser, styled as a night-time engineering drawing: dark background, thin edges, four flow colours, a numbered bill of parts and a title block.
+
+A request travels through the machine step by step, with a transport bar and an event log. **"What if…"** switches, named like test cases ("Swap Postgres for InMemory", "Import Postgres in the core"), change the machine and replay the step to show **what the pattern protects you from**. Every machine cites its sources: Cockburn, Evans, RFC 8446, the Google SRE book…
+
+The project is built in public and open source (MIT for the code, CC BY 4.0 for the content): **217 commits in 7 days**, from October 12 to 18, 2026.
+
+![The "Hexagonal architecture" machine: Postgres adapter, latencies and "What if…" switches](/images/projects/nightprint/hexagonal.jpg)
+
+## Key features
+
+### 7 live machines in 4 series
+
+- **MCH-001 Hexagonal architecture**: 3 scenarios, 3 what-ifs, exploded view ("Unplug the adapters")
+- **MCH-002 JavaScript event loop**: code listing, "A D C B" console, blocked stack, endless microtasks
+- **MCH-003 Redis cache-aside**
+- **MCH-004 Domain-driven design**: aggregate root, versioning, outbox
+- **BEN-001 RAG vs CAG vs KAG**: a test bench with a scoreboard
+- **FMD-001 Retry storm**: "one click becomes 64 attempts", database load chart, the switches *repair* the machine
+- **PRT-001 TLS 1.3 handshake**: timing diagram
+
+### The machine page
+
+- Guided scenarios (play, step), "What if…" switches, clickable bill of parts, event log
+- Short article with sources, glossary and code listing
+- **Plain-language mode**: one line per step, out-of-focus parts dimmed
+- Copy link, **download video** (MP4 generated in the browser)
+- Accessibility: keyboard control (← → to step, space to play), reduced motion, AA contrast **tested in CI**, checked from 320 px to 1440 px
+
+### AI importer: "Draw your repository"
+
+On `/import`, a visitor pastes a public JS/TS GitHub repository. About two minutes later it comes back as a machine drawn **from its own code**, with a shareable link. Claude groups the code into parts and writes the story, but **every route between two parts must stand on a real import**. The model's reasoning summary is shown live while the machine is drawn.
+
+![PRJ-001: Nightprint drawn by its own importer](/images/projects/nightprint/prj-001.jpg)
+
+## Architecture
+
+```
+nightprint/
+├── apps/
+│   ├── web/        # Next.js 16, video export
+│   ├── importer/   # API + "draw" CLI
+│   └── video/      # Remotion (X / LinkedIn videos)
+└── packages/
+    ├── engine/     # zod schema, deterministic player
+    ├── catalog/    # Machines as pure data
+    ├── scene/      # R3F scene, WebGPU rendering
+    ├── blueprint/  # Repo survey, automatic layout
+    ├── ui/         # Design system (72 components)
+    └── tokens/     # Design tokens, contrast tests
+```
+
+### The site follows the rule it explains
+
+The engine is the hexagonal core: it depends on zod only, with no React, no three and no DOM. The boundaries are enforced by each `package.json` and by an **architecture test** that runs on every `pnpm check`. A wink: PRJ-001 is Nightprint drawn by its own importer, and its what-ifs are "Import the scene in the engine" and "Import engine in the UI kit".
+
+### A machine is data
+
+`defineMachine()` resolves **all 2ⁿ switch combinations** at import time: a broken step fails both the tests and the build. Adding a machine means one file and one line.
+
+### Time lives in the engine
+
+The player advances on a **fixed 1/60 s step**. The scene reads `player.sample()` once per frame, with no per-frame React state. That determinism pays off three times: frame-exact replay, frame-by-frame capture of the live site with Remotion (with Playwright freezing the clock), and an exact MP4 export in the browser (WebCodecs + mediabunny).
+
+### Importer pipeline
+
+1. Read the public repository at a fixed commit (≤ 3,000 files, JS/TS only)
+2. Survey it **without any LLM**: units, imports (TypeScript compiler API), libraries, entry points
+3. Claude produces a blueprint: parts, zones, scenarios, what-ifs, article, glossary
+4. `checkBlueprint` and `defineMachine` validate it; small slips are repaired in place, everything else goes back to the model (3 attempts max)
+5. `drawMachine` lays it out deterministically: zones, parts, right-angle routes
+
+Measured cost: **$0.01 to $0.035 per repository**, a global budget capped at $1 per day, 5 drawings per visitor per day, cached drawings free.
+
+## Tech stack
+
+### Frontend & 3D
+- **Framework**: Next.js 16 (App Router, Turbopack, static export), React 19, TypeScript 6
+- **3D**: three.js with `WebGPURenderer` (automatic WebGL2 fallback), **TSL** node materials, selective MRT bloom, `LineSegments2` fat-line edges
+- **R3F**: React Three Fiber 9, without drei or GLSL to stay WebGPU-safe
+- **UI**: Tailwind CSS 4 (default palette removed, tokens only), IBM Plex, atomic design system
+- **Validation**: zod 4
+
+### Video
+- **In the browser**: WebCodecs `VideoEncoder` (H.264, 1080p, 30 fps) + mediabunny for MP4 muxing
+- **Offline**: Remotion 4 + Playwright, frame-by-frame capture of the live site, 16:9 and 9:16 formats
+
+### AI (importer)
+- **Model**: Claude Haiku through the Anthropic SDK, streaming, adaptive thinking (summary shown live), prompt caching
+- **Static analysis**: TypeScript compiler API to extract imports
+- **Server**: plain Node `http` bundled with esbuild, in-memory job queue, JSON storage on a Docker volume
+
+### Quality & DevOps
+- **Monorepo**: Turborepo + pnpm (9 workspaces), Biome
+- **Tests**: ~270 tests (Vitest + `node:test` architecture tests)
+- **CI/CD**: GitHub Actions. The static site is deployed atomically over SSH (a key restricted to one forced command), then the job checks that the served commit is the right one. The importer ships as a Docker image (GHCR) with a healthcheck and automatic rollback.
+- **Hosting**: personal VPS behind Caddy (Let's Encrypt), hardened container (read-only filesystem, `cap_drop ALL`, non-root, 512 MB and 1 CPU)
+
+## Challenges and learnings
+
+- **WebGPU in production**: compiling a new pipeline when a switch flipped caused a **166 ms stall**. The fix: mount every possible route up front and fade them in through uniforms.
+- **DOM labels over the canvas**: drei's `<Html>` (9 React errors per page under Strict Mode) was replaced by a custom label projector.
+- **Making an LLM trustworthy**: deterministic survey, then the model, then rule checks with a feedback loop, then deterministic layout. The model effort was tuned by measurement: ~$0.01 and 70 to 100 s at medium, against ~$0.03 and ~180 s at high.
+- **Accuracy first**: each machine is reviewed against a primary source. I almost published a wrong counter-example: bypassing a port does not invert a dependency.
+- **TypeScript 6, not 7**: `next build` type-checks through the TypeScript JS API, which TS 7 does not ship.
+- **Discipline**: an MVP in a weekend, then atomic commits that each pass `pnpm check`.
+
+## By the numbers
+
+- **217 commits** in 7 days
+- **7 live machines** + a public importer
+- **~32,000 lines** of TypeScript, **~270 tests**
+- **9 workspaces** (6 packages, 3 apps), **72 UI components**
+- **~1 cent** of AI cost per repository drawn
+
+## Current status
+
+Nightprint is live at [nightprint.dev](https://nightprint.dev), open source on [GitHub](https://github.com/Ewen02/nightprint) and built in public on X and LinkedIn. Four new machines are announced in the catalogue: offline-first, CQRS/Event Sourcing, React rendering and Kafka.
+
+## Related articles
+
+- [Monorepo architecture with Turborepo: Next.js and NestJS](/blog/architecture-monorepo-turborepo)

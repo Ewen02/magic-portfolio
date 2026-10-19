@@ -1,0 +1,156 @@
+---
+title: "Krown by Favikon – B2C iOS App for Content Creators (Tech Lead)"
+publishedAt: "2026-10-19"
+summary: "Tech lead of Krown, Favikon's B2C product: an iOS app that turns a content creator's growth into a game (daily score, rankings, streaks, widgets and Koach, an AI coach). A polyglot monorepo (SwiftUI, NestJS, Next.js, Kotlin) taken from an empty repo to the App Store in five and a half months, with shared contracts generated for all three clients."
+images:
+  - "/images/projects/krown/cover-01-en.jpg"
+  - "/images/projects/krown/cover-02.jpg"
+  - "/images/projects/krown/cover-03-en.jpg"
+link: "https://apps.apple.com/app/krown/id6773348963"
+---
+
+## Overview
+
+**Krown** is **[Favikon](/work/favikon)'s B2C product**: where the Favikon platform serves brands and agencies, Krown speaks directly to **content creators** (Instagram, TikTok, YouTube, X, LinkedIn). Its idea: *turn a creator's growth into a game you can win*.
+
+Every day, the app computes an **Authority Score**, places the creator in real **rankings** (global, by niche, by country), tracks posting **streaks** and breaks down what their content does. It reads public data only and never posts on the creator's behalf.
+
+The app is available on the App Store ("Krown - Become a Top Creator"), as a freemium download with a **Krown Pro** subscription.
+
+### My role
+
+I was the **tech lead of the product from start to finish**, from the first commit on an empty repo (April 2026) to the App Store release (October 2026):
+
+- **Full architecture** of the monorepo: NestJS API, SwiftUI app, Next.js web, design tokens, i18n and shared contracts
+- **~1,600 commits**, about 62% of the project, alongside a second developer and Android and web reinforcements
+- Design and development of **Koach**, the AI coach shipped in version 1.1.0
+- **App Store submission**, Apple guideline compliance, StoreKit 2 billing, release process and branching rules
+
+![Krown screens: sign-in, niche picker, daily points, home](/images/projects/krown/cover-02.jpg)
+
+## Key features
+
+- **Daily Authority Score**: broken down into Reach, Engagement, Audience and Consistency, with a daily target ring
+- **Rankings**: global, by niche and by country, with a target rank and a celebration every time you move up
+- **Streaks**: a weekly posting streak, with levels from Bronze to Challenger
+- **Post score**: a "Top N%" percentile, elite medals (top 5, 3 and 1%) and "Krowns" for the best post in each arena
+- **Content DNA**: performance by platform, format and topic
+- **Explore & Compare**: find creators in any niche and compare your numbers with theirs
+- **Widgets, Live Activity and Control Center**: rank, rival, score trend and streak on the Home Screen and Lock Screen
+- **Account verification** through the official Instagram, TikTok and YouTube OAuth
+- **Subscription**: StoreKit 2 paywall, purchase restore, cancellation flow, account deletion in 4 taps
+
+### Koach, the AI coach
+
+A chat ("What should I post tomorrow?") that answers **with the creator's own data**, as cards: score breakdowns, post lists, comparisons. It accepts a post or a draft as input and has its own widgets.
+
+- An LLM agent through OpenRouter. The model was picked after an **evaluation of 13 models on 100 questions**, with a fallback model, prompt caching and versioned prompts.
+- Tools go through an **in-house MCP server** (9 tools: score, posts, patterns, benchmark, creator and post search…) that reuses the app's own use-cases. The in-app chat and external MCP clients therefore share the same tools.
+- Guardrails live in code, not only in the prompt: the tool loop is capped at 6 turns and 40 seconds, with per-tool timeouts and quotas.
+- A scenario bench and a **24-attack red-team pass** before going to production.
+
+![Koach: welcome screen and an answer grounded in the creator's score](/images/projects/krown/cover-03-en.jpg)
+
+## Architecture
+
+```
+krown/
+├── apps/
+│   ├── ios/            # SwiftUI (iOS 17+), widgets
+│   ├── api/            # NestJS 11, hexagonal
+│   ├── web/            # Next.js 16
+│   └── android/        # Jetpack Compose (in progress)
+└── packages/
+    ├── types/          # 149 JSON Schemas → TS, Swift, Kotlin
+    ├── design-tokens/  # 211 tokens → iOS, web, Android
+    ├── ui-ios/         # SwiftUI design system
+    ├── ui-web/         # Web design system
+    ├── ui-android/     # Compose design system
+    ├── i18n/           # ~3,000 keys × 4 languages
+    ├── content/        # Legal texts → iOS + web
+    └── brand-assets/   # Logos, badges, illustrations
+```
+
+### One source of truth for three clients
+
+Every API type is described **once** as a JSON Schema, then generated into TypeScript, Swift and Kotlin with quicktype. When a client and the API disagree, the fix always goes into the schema, never into a local patch. The same principle applies to design tokens (Style Dictionary), translations (xcstrings, strings.xml, next-intl) and legal texts, which removes a whole class of client/server drift bugs. A pre-commit hook also checks that domain enums have not drifted from the schemas.
+
+### Data flow
+
+```
+iOS app / Web ──REST──▶ NestJS API
+                          ├─▶ MongoDB + Elasticsearch
+                          ├─▶ App Store Server Notif. V2
+                          ├─▶ APNs, OAuth Google/Meta/TikTok
+                          └─▶ LLM (Koach) ◀─ MCP server
+
+iOS app: Repository → HybridCache → NetworkService
+```
+
+- The API builds on Favikon's data platform (MongoDB and Elasticsearch), refreshed every night by the scoring engine.
+- On iOS, a stale-while-revalidate hybrid cache keeps the app usable offline.
+- The app never decides access on its own: `GET /billing/me` returns a `hasAccess` computed on the server.
+- `GET /app-config` carries version gating and remote feature flags: turning a feature on does not require a new build.
+
+### Atomic Design on all three platforms
+
+The same atoms / molecules / organisms / templates split applies on iOS, web and Android. On iOS, the design system has 119 atoms, 131 molecules, 56 organisms and 7 templates, all covered by **snapshot tests**.
+
+## Tech stack
+
+### iOS
+- **Swift 5.9, SwiftUI**, iOS 17+, project generated with XcodeGen
+- MVVM with `@Observable`, typed navigation (`NavigationStack`)
+- WidgetKit, ActivityKit (Live Activities), AppIntents (Control Center), **StoreKit 2**, Sign in with Apple, RealityKit (3D badges), BackgroundTasks
+- Google Sign-In, Amplitude, swift-snapshot-testing
+
+### Backend
+- **NestJS 11**, Node 20, TypeScript: hexagonal architecture (ports & adapters), 34 modules, 94 controllers
+- MongoDB (Mongoose), **Elasticsearch 8** (posts and rankings), S3 storage
+- App Store Server Library (receipts, V2 notifications, signed offers), APNs over HTTP/2, Brevo, Swagger, zod
+
+### AI
+- LLM agent through OpenRouter, **MCP** server (`@modelcontextprotocol/sdk`), embeddings, LLM topic classification of posts
+
+### Web & Android
+- Next.js 16, React 19, Tailwind CSS 4, next-intl, strict CSP
+- Kotlin 2, Jetpack Compose, Material 3 (in progress)
+
+### Tooling & CI/CD
+- **Monorepo**: pnpm workspaces + Turborepo
+- **Quality**: ESLint, Prettier, SwiftLint, SwiftFormat, ktlint, commitlint (Conventional Commits), husky
+- **Git hooks** that enforce the branching rules (trunk, release, production)
+- **CI**: Bitbucket Pipelines (Android build and tests on every pull request)
+- **Deployment**: self-hosted API and web, separate preprod and prod environments
+
+## Release process
+
+- `master` is the trunk and deploys to preprod. `production` only moves through a **fast-forward promotion** of a commit validated on preprod, tagged on every release.
+- The API and the web always ship together, and nothing is promoted during an Apple review.
+- iOS: one release branch per version (fixes only, cherry-picked) and one tag per uploaded build.
+- Each deployable has its own semver version. The iOS build number only ever goes up, so the API can compare builds.
+
+## Challenges and learnings
+
+- **From an empty repo to the App Store in five and a half months**, on a polyglot product (iOS, API, web, Android) with shared contracts.
+- **App Store compliance**: before submitting, I audited the app against Apple's guidelines and turned the gaps into 16 prioritized work items: Sign in with Apple, paywall and free-trial honesty, account deletion, AI consent, privacy manifest, legal texts, demo accounts for App Review…
+- **Billing done properly**: server-side entitlements, idempotent App Store V2 notifications, sandbox and production verified side by side, handling an Apple ID already tied to another account.
+- **Third-party reviews**: OAuth apps approved by Google (YouTube), Meta (Instagram) and TikTok.
+- **A CI lesson**: regenerating the shared types from iOS work silently broke the Android build for 9 days. Since then, an Android CI runs on every pull request.
+
+## By the numbers
+
+- **~2,600 commits** in 6 months, **~1,600** of them mine
+- **~10,000 automated tests**: ~6,300 on the API, ~3,700 on iOS
+- **1,561 reference snapshots** for the iOS UI
+- **149** shared schemas, **211** design tokens, **~3,000** translation keys in 4 languages
+- **25 builds** uploaded to Apple
+
+## Current status
+
+Krown is live on the [App Store](https://apps.apple.com/app/krown/id6773348963) and presented on [krown.me](https://www.krown.me). Version 1.1.0, which introduces Koach, is ready to ship; the Android app is in development.
+
+## Related articles
+
+- [Designing multi-agent systems with LangGraph in production](/blog/systemes-multi-agents-langgraph)
+- [Monorepo architecture with Turborepo: Next.js and NestJS](/blog/architecture-monorepo-turborepo)
