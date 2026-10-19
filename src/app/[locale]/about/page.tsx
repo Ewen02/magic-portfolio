@@ -35,6 +35,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
       languages: {
         fr: `https://${baseURL}/about`,
         en: `https://${baseURL}/en/about`,
+        "x-default": `https://${baseURL}/about`,
       },
     },
     openGraph: {
@@ -148,41 +149,6 @@ export default async function About({ params: { locale } }: LocaleParam) {
           }),
         }}
       />
-      {about.testimonials?.display && about.testimonials.items.length > 0 && (
-        <script
-          type="application/ld+json"
-          suppressHydrationWarning
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "Person",
-              name: person.name,
-              jobTitle: person.role,
-              review: about.testimonials.items.map((item) => ({
-                "@type": "Review",
-                reviewBody: item.quote,
-                // Author named as "Entity (context)" (e.g. "Hercules Thrustmaster
-                // (Marketing Team)") and typed as an Organization, which Google
-                // treats as a more credible reviewer than a vague person name.
-                author: {
-                  "@type": "Organization",
-                  name: item.role ? `${item.role} (${item.author})` : item.author,
-                },
-                reviewRating: {
-                  "@type": "Rating",
-                  ratingValue: 5,
-                  bestRating: 5,
-                },
-                itemReviewed: {
-                  "@type": "Person",
-                  name: person.name,
-                  jobTitle: person.role,
-                },
-              })),
-            }),
-          }}
-        />
-      )}
       {about.tableOfContent.display && (
         <Column
           left="0"

@@ -45,6 +45,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
       languages: {
         fr: `https://${baseURL}`,
         en: `https://${baseURL}/en`,
+        "x-default": `https://${baseURL}`,
       },
     },
     verification: {

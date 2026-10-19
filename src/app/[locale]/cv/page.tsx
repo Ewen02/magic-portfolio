@@ -49,6 +49,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
       languages: {
         fr: `https://${baseURL}/cv`,
         en: `https://${baseURL}/en/cv`,
+        "x-default": `https://${baseURL}/cv`,
       },
     },
     openGraph: {

@@ -57,6 +57,7 @@ export function generateMetadata({ params: { locale, slug } }: WorkParams) {
       languages: {
         fr: `https://${baseURL}/work/${post.slug}`,
         en: `https://${baseURL}/en/work/${post.slug}`,
+        "x-default": `https://${baseURL}/work/${post.slug}`,
       },
     },
     openGraph: {

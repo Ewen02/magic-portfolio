@@ -24,6 +24,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
       languages: {
         fr: `https://${baseURL}/services`,
         en: `https://${baseURL}/en/services`,
+        "x-default": `https://${baseURL}/services`,
       },
     },
     openGraph: {

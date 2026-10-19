@@ -23,6 +23,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
       languages: {
         fr: `https://${baseURL}/contact`,
         en: `https://${baseURL}/en/contact`,
+        "x-default": `https://${baseURL}/contact`,
       },
     },
     openGraph: {

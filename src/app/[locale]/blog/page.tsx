@@ -25,6 +25,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
       languages: {
         fr: `https://${baseURL}/blog`,
         en: `https://${baseURL}/en/blog`,
+        "x-default": `https://${baseURL}/blog`,
       },
       types: {
         "application/rss+xml": `https://${baseURL}/blog/feed.xml`,

@@ -17,6 +17,14 @@ const nextConfig = {
   // C'est ce qui rend l'image Docker publiable : sans cette ligne, il
   // faudrait embarquer 400 Mo de dependances a l'execution.
   output: "standalone",
+  // French is served without a prefix: /fr and /fr/... redirect permanently
+  // (next-intl alone answers with a temporary 307).
+  async redirects() {
+    return [
+      { source: "/fr", destination: "/", permanent: true },
+      { source: "/fr/:path*", destination: "/:path*", permanent: true },
+    ];
+  },
   async headers() {
     return [
       {

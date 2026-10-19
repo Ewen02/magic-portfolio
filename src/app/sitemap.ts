@@ -12,8 +12,10 @@ const url = (locale: string, path: string) =>
   locale === routing.defaultLocale ? `${origin}${path}` : `${origin}/${locale}${path}`;
 
 // hreflang alternates map for a given path, across all locales.
-const languagesFor = (path: string) =>
-  Object.fromEntries(routing.locales.map((locale) => [locale, url(locale, path)]));
+const languagesFor = (path: string) => ({
+  ...Object.fromEntries(routing.locales.map((locale) => [locale, url(locale, path)])),
+  "x-default": url(routing.defaultLocale, path),
+});
 
 // Per-route SEO hints. Falls back to sensible defaults for anything not listed.
 const routeMeta: Record<string, { priority: number; changeFrequency: ChangeFreq }> = {
@@ -29,8 +31,6 @@ const routeMeta: Record<string, { priority: number; changeFrequency: ChangeFreq 
 };
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const today = new Date().toISOString().split("T")[0];
-
   // One entry per (locale, path), each carrying hreflang alternates.
   const entries: MetadataRoute.Sitemap = [];
 
@@ -44,8 +44,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const path = route !== "/" ? route : "";
     for (const locale of routing.locales) {
       entries.push({
+        // No lastmod for static pages: the build date is not when they changed,
+        // and a lastmod that is always "today" teaches crawlers to ignore it.
         url: url(locale, path),
-        lastModified: today,
         changeFrequency: meta.changeFrequency,
         priority: meta.priority,
         alternates: { languages: languagesFor(path) },

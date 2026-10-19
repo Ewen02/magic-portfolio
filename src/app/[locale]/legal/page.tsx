@@ -23,6 +23,7 @@ export async function generateMetadata({ params: { locale } }: LocaleParam) {
       languages: {
         fr: `https://${baseURL}/legal`,
         en: `https://${baseURL}/en/legal`,
+        "x-default": `https://${baseURL}/legal`,
       },
     },
     robots: { index: true, follow: true },

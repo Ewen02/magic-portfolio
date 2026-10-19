@@ -39,11 +39,11 @@
 
 ## Liens
 
-- Site : https://ewenlq.fr
-- Services : https://ewenlq.fr/services
-- Projets : https://ewenlq.fr/work
-- Blog technique : https://ewenlq.fr/blog
-- Contact : https://ewenlq.fr/contact
+- Site : https://www.ewenlq.fr
+- Services : https://www.ewenlq.fr/services
+- Projets : https://www.ewenlq.fr/work
+- Blog technique : https://www.ewenlq.fr/blog
+- Contact : https://www.ewenlq.fr/contact
 - GitHub : https://github.com/Ewen02
 - LinkedIn : https://www.linkedin.com/in/ewen-le-quéré/
 - X : https://x.com/ewenlq
