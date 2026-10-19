@@ -107,7 +107,7 @@ const newsletter = {
 const home = {
   label: "Home",
   title: `${person.name} | Lead Développeur Full Stack & IA, freelance à Paris`,
-  description: `Lead développeur full stack & IA freelance à Paris, diplômé d'Epitech. Lead technique d'une app iOS publiée sur l'App Store. React, Next.js, NestJS, Swift et IA en production (agents, MCP, RAG).`,
+  description: "Lead développeur full stack & IA freelance à Paris : produits SaaS, IA en production et apps iOS, de l'architecture à la mise en ligne.",
   headline: <>Ewen Le Quéré, Lead Développeur Full Stack & IA</>,
   subline: (
     <>
@@ -125,6 +125,7 @@ const home = {
 const about = {
   label: "About",
   title: "À propos",
+  seoTitle: "À propos : lead développeur full stack & IA",
   description: `${person.name}, ${person.role} basé à Paris. Lead technique d'une app iOS publiée sur l'App Store, 3 ans d'expérience en SaaS et IA appliquée.`,
 
   tableOfContent: {
@@ -463,7 +464,8 @@ const about = {
 const blog = {
   label: "Blog",
   title: "Articles tech : IA, temps réel & architecture",
-  description: `Articles techniques de ${person.name}, lead développeur full stack & IA à Paris : agents et pipelines RAG, architecture hexagonale, temps réel (WebSocket, SSE) et performance.`,
+  seoTitle: "Blog tech : IA, architecture, performance",
+  description: "Retours d'expérience d'un lead développeur : agents IA et RAG, architecture hexagonale, temps réel et performance, chiffres à l'appui.",
   intro:
     "Des retours d'expérience tirés de mes projets en production : ce que j'ai construit, ce que j'ai mesuré et ce que je referais autrement.",
   labels: {
@@ -491,7 +493,8 @@ const blog = {
 const work = {
   label: "Work",
   title: "Mes projets",
-  description: `Projets de développement fullstack par ${person.name} : SaaS, IA, temps réel et architectures modernes.`,
+  seoTitle: "Projets : SaaS, IA et apps iOS",
+  description: "Les projets d'Ewen Le Quéré : app iOS Krown, SaaS d'IA, side-projects en 3D et missions freelance, avec stack, architecture et chiffres.",
 };
 
 // ============================================================================
@@ -501,6 +504,7 @@ const work = {
 const uses = {
   label: "Uses",
   title: "Stack & outils",
+  seoTitle: "Stack technique : outils et technologies",
   description: `Les technologies qu'utilise ${person.name} en production, reliées aux projets qui les prouvent : frontend, mobile, backend, IA, données, qualité et DevOps.`,
   intro:
     "Les technologies que j'utilise en production, en branches autour de moi : le côté client à gauche, le côté serveur à droite, l'IA en haut et la qualité en bas. Chaque outil est relié aux projets où je m'en sers.",
@@ -642,7 +646,8 @@ const uses = {
 const services = {
   label: "Services",
   title: "Prestations de développement freelance",
-  description: `${person.name}, lead développeur full stack & IA freelance à Paris : produits SaaS de bout en bout, IA en production (agents, RAG, MCP), lead technique et architecture, sites vitrines optimisés SEO.`,
+  seoTitle: "Prestations freelance : SaaS, IA, lead tech",
+  description: "Prestations freelance à Paris : produit SaaS, IA en production (agents, RAG, MCP), lead technique et site vitrine SEO. Premier appel gratuit.",
   eyebrow: "Freelance · Paris et à distance",
   intro:
     "Je conçois et livre des produits web et IA de bout en bout, de l'architecture à la mise en production. Chaque offre ci-dessous s'appuie sur des projets que j'ai déjà livrés : vous pouvez les ouvrir.",
@@ -716,6 +721,7 @@ const services = {
 const contact = {
   label: "Contact",
   title: "Me contacter",
+  seoTitle: "Contact : mission freelance ou poste de lead",
   description: `Contactez ${person.name}, ${person.role} basé à Paris, pour une mission freelance, une collaboration ou toute question.`,
   intro:
     "Une mission freelance, un projet web ou une simple question ? Le plus simple est de planifier un appel ou de m'écrire directement : je réponds rapidement.",

@@ -49,13 +49,16 @@ export function generateMetadata({ params: { locale, slug } }: BlogParams) {
     return;
   }
 
-  let { title, publishedAt: publishedTime, summary: description, images } = post.metadata;
-  let ogImage = images?.[0]
-    ? `https://${baseURL}${images[0]}`
+  const { title, publishedAt: publishedTime } = post.metadata;
+  const description = post.metadata.description || post.metadata.summary;
+  // Share image: the article's cover (its project image), else a generated card.
+  const cover = getPostSummaries(locale).find((p) => p.slug === slug)?.image;
+  const ogImage = cover
+    ? `https://${baseURL}${cover}`
     : `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
   return {
-    title,
+    title: post.metadata.seoTitle || title,
     description,
     alternates: {
       canonical: localeUrl(locale, `/blog/${post.slug}`),

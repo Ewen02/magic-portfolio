@@ -106,7 +106,7 @@ const newsletter = {
 const home = {
   label: "Home",
   title: `${person.name} | Lead Full Stack & AI Developer, freelance in Paris`,
-  description: `Lead full stack & AI developer, freelance in Paris, Epitech graduate. Tech lead of an iOS app live on the App Store. React, Next.js, NestJS, Swift and AI in production (agents, MCP, RAG).`,
+  description: "Lead full stack & AI developer, freelance in Paris: SaaS products, AI in production and iOS apps, from architecture to launch.",
   headline: <>Ewen Le Quéré, Lead Full Stack & AI Developer</>,
   subline: (
     <>
@@ -124,6 +124,7 @@ const home = {
 const about = {
   label: "About",
   title: "About",
+  seoTitle: "About: lead full stack & AI developer",
   description: `${person.name}, ${person.role} based in Paris. Tech lead of an iOS app live on the App Store, 3 years of experience in SaaS and applied AI.`,
 
   tableOfContent: {
@@ -462,7 +463,8 @@ const about = {
 const blog = {
   label: "Blog",
   title: "Tech articles: AI, real-time & architecture",
-  description: `Technical articles by ${person.name}, lead full stack & AI developer in Paris: agents and RAG pipelines, hexagonal architecture, real-time (WebSocket, SSE) and performance.`,
+  seoTitle: "Tech blog: AI, architecture, performance",
+  description: "Field notes from a lead developer: AI agents and RAG, hexagonal architecture, real-time systems and performance, with real figures.",
   intro:
     "Field notes from my projects in production: what I built, what I measured and what I would do differently.",
   labels: {
@@ -490,7 +492,8 @@ const blog = {
 const work = {
   label: "Work",
   title: "My projects",
-  description: `Full stack development projects by ${person.name}: SaaS, AI, real-time and modern architectures.`,
+  seoTitle: "Projects: SaaS, AI and iOS apps",
+  description: "Ewen Le Quéré's projects: the Krown iOS app, AI SaaS, 3D side projects and freelance work, with stack, architecture and figures.",
 };
 
 // ============================================================================
@@ -500,6 +503,7 @@ const work = {
 const uses = {
   label: "Uses",
   title: "Stack & tools",
+  seoTitle: "Tech stack: tools and technologies",
   description: `The technologies ${person.name} uses in production, linked to the projects that prove them: frontend, mobile, backend, AI, data, quality and DevOps.`,
   intro:
     "The technologies I use in production, as branches around me: the client side on the left, the server side on the right, AI at the top and quality at the bottom. Each tool is linked to the projects where I use it.",
@@ -641,7 +645,8 @@ const uses = {
 const services = {
   label: "Services",
   title: "Freelance development services",
-  description: `${person.name}, freelance lead full stack & AI developer in Paris: end-to-end SaaS products, AI in production (agents, RAG, MCP), technical leadership and architecture, SEO-friendly websites.`,
+  seoTitle: "Freelance services: SaaS, AI, tech lead",
+  description: "Freelance services in Paris: SaaS products, AI in production (agents, RAG, MCP), technical leadership and SEO websites. Free first call.",
   eyebrow: "Freelance · Paris and remote",
   intro:
     "I design and ship web and AI products end to end, from architecture to production. Every offer below is backed by projects I have already shipped: you can open them.",
@@ -715,6 +720,7 @@ const services = {
 const contact = {
   label: "Contact",
   title: "Get in touch",
+  seoTitle: "Contact: freelance project or lead role",
   description: `Contact ${person.name}, ${person.role} based in Paris, for a freelance project, a collaboration or any question.`,
   intro:
     "A freelance project, a web project or just a question? The easiest is to schedule a call or write to me directly: I reply quickly.",

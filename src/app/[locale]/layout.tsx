@@ -5,7 +5,8 @@ import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 
 import { Footer, Header } from "@/components";
-import { baseURL, effects, style } from "@/app/resources";
+import Script from "next/script";
+import { analytics, baseURL, effects, style } from "@/app/resources";
 
 import { Inter } from "next/font/google";
 import { Source_Code_Pro } from "next/font/google";
@@ -205,6 +206,14 @@ export default async function LocaleLayout({ children, params: { locale } }: Loc
               </Flex>
             </Flex>
             <Footer />
+            {/* Inside <body>: anything rendered next to it breaks hydration. */}
+            {analytics.umami.src && analytics.umami.websiteId && (
+              <Script
+                src={analytics.umami.src}
+                data-website-id={analytics.umami.websiteId}
+                strategy="afterInteractive"
+              />
+            )}
           </Column>
         </ToastProvider>
       </NextIntlClientProvider>

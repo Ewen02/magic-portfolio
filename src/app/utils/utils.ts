@@ -13,6 +13,10 @@ type Metadata = {
   title: string;
   publishedAt: string;
   summary: string;
+  // Short <title> (the layout appends the name) and meta description; the
+  // page falls back to `title` and `summary` when they are missing.
+  seoTitle?: string;
+  description?: string;
   image?: string;
   images: string[];
   tag?: string;
@@ -44,6 +48,8 @@ function readMDXFile(filePath: string) {
     title: data.title || "",
     publishedAt: data.publishedAt,
     summary: data.summary || "",
+    seoTitle: data.seoTitle || "",
+    description: data.description || "",
     image: data.image || "",
     images: data.images || [],
     tag: data.tag || [],

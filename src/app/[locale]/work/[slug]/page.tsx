@@ -41,13 +41,14 @@ export function generateMetadata({ params: { locale, slug } }: WorkParams) {
     return;
   }
 
-  let { title, publishedAt: publishedTime, summary: description, images, team } = post.metadata;
+  let { title, publishedAt: publishedTime, images, team } = post.metadata;
+  const description = post.metadata.description || post.metadata.summary;
   let ogImage = images?.[0]
     ? `https://${baseURL}${images[0]}`
     : `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
   return {
-    title,
+    title: post.metadata.seoTitle || title,
     description,
     images,
     team,

@@ -1,6 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
 import { Column, Heading, Text } from "@/once-ui/components";
-import { baseURL } from "@/app/resources";
+import { analytics, baseURL } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
 
 type LocaleParam = { params: { locale: Locale } };
@@ -33,6 +33,7 @@ export default async function Privacy({ params: { locale } }: LocaleParam) {
   setRequestLocale(locale);
   const { person } = getContent(locale);
   const en = locale === "en";
+  const umami = Boolean(analytics.umami.src && analytics.umami.websiteId);
 
   return (
     <Column maxWidth="s" gap="l">
@@ -52,8 +53,12 @@ export default async function Privacy({ params: { locale } }: LocaleParam) {
         </Heading>
         <Text variant="body-default-m" onBackground="neutral-weak">
           {en
-            ? "This site does not use any tracking cookies and does not collect personal data directly. If you contact me by email or via the contact form, the information you provide is used solely to reply to you."
-            : "Ce site n'utilise aucun cookie de suivi publicitaire et ne collecte pas directement de données personnelles. Si vous me contactez par email ou via le formulaire de contact, les informations transmises servent uniquement à vous répondre."}
+            ? `This site does not use any tracking cookies and does not collect personal data directly.${
+                umami ? " Anonymous audience measurement is done with Umami: no cookie, no personal identifier, no cross-site tracking." : ""
+              } If you contact me by email or via the contact form, the information you provide is used solely to reply to you.`
+            : `Ce site n'utilise aucun cookie de suivi publicitaire et ne collecte pas directement de données personnelles.${
+                umami ? " Une mesure d'audience anonyme est réalisée avec Umami : sans cookie, sans identifiant personnel ni suivi inter-sites." : ""
+              } Si vous me contactez par email ou via le formulaire de contact, les informations transmises servent uniquement à vous répondre.`}
         </Text>
       </Column>
 

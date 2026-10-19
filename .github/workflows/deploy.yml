@@ -181,3 +181,23 @@ jobs:
             echo "| Tag | \`${{ github.sha }}\` |"
             echo "| Résultat | ${{ job.status }} |"
           } >> "$GITHUB_STEP_SUMMARY"
+
+  # Signale à IndexNow (Bing, Copilot…) les pages modifiées par ce push, une
+  # fois la nouvelle version en ligne. Un échec ici ne remet pas en cause le
+  # déploiement.
+  indexnow:
+    name: Signalement IndexNow
+    needs: deploy
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    permissions:
+      contents: read
+    steps:
+      - name: Récupération du code et de l'historique
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Envoi des URL modifiées
+        run: node scripts/indexnow.mjs "${{ github.event.before }}" "${{ github.sha }}"

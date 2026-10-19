@@ -76,7 +76,7 @@ export const Header = () => {
           >
             <Flex gap="4" vertical="center" textVariant="body-default-s">
               {routes["/"] && (
-                <ToggleButton prefixIcon="home" href="/" selected={pathname === "/"} />
+                <ToggleButton prefixIcon="home" href="/" aria-label={t("home")} selected={pathname === "/"} />
               )}
               <Line vert maxHeight="24" />
               {routes["/about"] && (
@@ -92,6 +92,7 @@ export const Header = () => {
                     className="s-flex-show"
                     prefixIcon="person"
                     href="/about"
+                    aria-label={t("about")}
                     selected={pathname === "/about"}
                   />
                 </>
@@ -109,6 +110,7 @@ export const Header = () => {
                     className="s-flex-show"
                     prefixIcon="grid"
                     href="/work"
+                    aria-label={t("work")}
                     selected={pathname.startsWith("/work")}
                   />
                 </>
@@ -126,6 +128,7 @@ export const Header = () => {
                     className="s-flex-show"
                     prefixIcon="grid"
                     href="/uses"
+                    aria-label={t("uses")}
                     selected={pathname.startsWith("/uses")}
                   />
                 </>
@@ -143,6 +146,7 @@ export const Header = () => {
                     className="s-flex-show"
                     prefixIcon="openLink"
                     href="/services"
+                    aria-label={t("services")}
                     selected={pathname.startsWith("/services")}
                   />
                 </>
@@ -160,6 +164,7 @@ export const Header = () => {
                     className="s-flex-show"
                     prefixIcon="book"
                     href="/blog"
+                    aria-label={t("blog")}
                     selected={pathname.startsWith("/blog")}
                   />
                 </>
@@ -177,6 +182,7 @@ export const Header = () => {
                     className="s-flex-show"
                     prefixIcon="email"
                     href="/contact"
+                    aria-label={t("contact")}
                     selected={pathname.startsWith("/contact")}
                   />
                 </>

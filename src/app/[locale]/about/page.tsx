@@ -23,7 +23,7 @@ const localeUrl = (locale: Locale, path: string) =>
 
 export async function generateMetadata({ params: { locale } }: LocaleParam) {
   const { about } = getContent(locale);
-  const title = about.title;
+  const title = about.seoTitle ?? about.title;
   const description = about.description;
   const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 
@@ -286,6 +286,7 @@ export default async function About({ params: { locale } }: LocaleParam) {
                                 key={`${item.name}-icon`}
                                 href={item.link}
                                 icon={item.icon}
+                                aria-label={item.name}
                                 variant="secondary"
                             />
                         </>

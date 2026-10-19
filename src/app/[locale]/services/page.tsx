@@ -12,7 +12,7 @@ const localeUrl = (locale: Locale, path: string) =>
 
 export async function generateMetadata({ params: { locale } }: LocaleParam) {
   const { services } = getContent(locale);
-  const title = services.title;
+  const title = services.seoTitle ?? services.title;
   const description = services.description;
   const ogImage = `https://${baseURL}/og?title=${encodeURIComponent(title)}`;
 

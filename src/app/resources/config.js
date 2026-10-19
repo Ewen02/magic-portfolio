@@ -68,6 +68,15 @@ const display = {
   time: true,
 };
 
+// Audience measurement with Umami: cookieless, no personal data. Empty values
+// keep it off; set the script URL and the website id once Umami is hosted.
+const analytics = {
+  umami: {
+    src: "", // e.g. "https://analytics.ewenlq.fr/script.js"
+    websiteId: "",
+  },
+};
+
 const mailchimp = {
   action: "https://url/subscribe/post?parameters",
   effects: {
@@ -107,4 +116,4 @@ const mailchimp = {
   },
 };
 
-export { routes, protectedRoutes, effects, style, display, mailchimp, baseURL };
+export { routes, protectedRoutes, effects, style, display, mailchimp, baseURL, analytics };
