@@ -72,8 +72,8 @@ const display = {
 // keep it off; set the script URL and the website id once Umami is hosted.
 const analytics = {
   umami: {
-    src: "", // e.g. "https://analytics.ewenlq.fr/script.js"
-    websiteId: "",
+    src: "https://cloud.umami.is/script.js",
+    websiteId: "bb351c4b-3b32-4d50-8560-a9191645e993",
   },
 };
 
