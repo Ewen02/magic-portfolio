@@ -1,5 +1,6 @@
 import { setRequestLocale } from "next-intl/server";
-import { Column, Flex, Heading, Tag, Text } from "@/once-ui/components";
+import { Column, Heading, Text } from "@/once-ui/components";
+import { SkillTree } from "@/components/uses/SkillTree";
 import { baseURL } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
 
@@ -51,7 +52,7 @@ export default async function Uses({ params: { locale } }: LocaleParam) {
   const { person, uses } = getContent(locale);
 
   return (
-    <Column maxWidth="m" gap="xl">
+    <Column maxWidth="l" gap="xl">
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -78,27 +79,14 @@ export default async function Uses({ params: { locale } }: LocaleParam) {
         </Text>
       </Column>
 
-      <Column fillWidth gap="xl">
-        {uses.categories.map((category, index) => (
-          <Column key={`uses-${index}`} fillWidth gap="m">
-            <Heading as="h2" variant="display-strong-xs">
-              {category.title}
-            </Heading>
-            <Column fillWidth gap="16">
-              {category.items.map((item, i) => (
-                <Flex key={`item-${i}`} gap="12" vertical="start" mobileDirection="column">
-                  <Flex minWidth={12} fitWidth>
-                    <Tag size="l" label={item.name} variant="brand" />
-                  </Flex>
-                  <Text variant="body-default-m" onBackground="neutral-weak">
-                    {item.note}
-                  </Text>
-                </Flex>
-              ))}
-            </Column>
-          </Column>
-        ))}
-      </Column>
+      <SkillTree
+        name={person.name}
+        role={person.role}
+        avatar={person.avatar}
+        categories={uses.categories}
+        projects={uses.projects}
+        labels={uses.labels}
+      />
     </Column>
   );
 }
