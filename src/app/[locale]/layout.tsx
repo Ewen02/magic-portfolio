@@ -212,6 +212,7 @@ export default async function LocaleLayout({ children, params: { locale } }: Loc
               <Script
                 src={analytics.umami.src}
                 data-website-id={analytics.umami.websiteId}
+                data-host-url={analytics.umami.hostUrl || undefined}
                 strategy="afterInteractive"
               />
             )}

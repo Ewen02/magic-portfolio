@@ -19,6 +19,13 @@ const nextConfig = {
   output: "standalone",
   // French is served without a prefix: /fr and /fr/... redirect permanently
   // (next-intl alone answers with a temporary 307).
+  // Umami tracker served from our own domain (ad blockers block
+  // cloud.umami.is); events go through src/app/u/api/send/route.ts.
+  async rewrites() {
+    return {
+      beforeFiles: [{ source: "/u/s.js", destination: "https://cloud.umami.is/script.js" }],
+    };
+  },
   async redirects() {
     return [
       { source: "/fr", destination: "/", permanent: true },

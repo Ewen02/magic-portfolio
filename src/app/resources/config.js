@@ -72,7 +72,10 @@ const display = {
 // keep it off; set the script URL and the website id once Umami is hosted.
 const analytics = {
   umami: {
-    src: "https://cloud.umami.is/script.js",
+    // Served from our own domain so ad blockers let it through: /u/s.js is
+    // proxied to cloud.umami.is, and hostUrl sends events to /u/api/send.
+    src: "/u/s.js",
+    hostUrl: "/u",
     websiteId: "bb351c4b-3b32-4d50-8560-a9191645e993",
   },
 };
