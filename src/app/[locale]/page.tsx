@@ -136,12 +136,14 @@ export default async function Home({ params: { locale } }: LocaleParam) {
       />
       <Column fillWidth paddingY="l" gap="m">
         <Column maxWidth="s">
-          <RevealFx translateY="4" fillWidth horizontal="start" paddingBottom="m">
+          {/* The headline and subline are the largest paint of the page: they
+              are shown from the first render, without waiting for JavaScript. */}
+          <RevealFx revealedByDefault fillWidth horizontal="start" paddingBottom="m">
             <Heading wrap="balance" variant="display-strong-l">
               {home.headline}
             </Heading>
           </RevealFx>
-          <RevealFx translateY="8" delay={0.2} fillWidth horizontal="start" paddingBottom="m">
+          <RevealFx revealedByDefault fillWidth horizontal="start" paddingBottom="m">
             <Text wrap="balance" onBackground="neutral-weak" variant="heading-default-xl">
               {home.subline}
             </Text>
