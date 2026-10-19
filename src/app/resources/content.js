@@ -492,7 +492,8 @@ const uses = {
     notUsed: "Hors des projets présentés ici.",
     tools: "outils",
     proofTitle: "Là où je m'en sers",
-    proofIntro: "Survolez un projet : seules les branches et les outils qu'il mobilise restent allumés.",
+    proofIntro: "Survolez un projet pour afficher sa stack. Dans la carte, seules ses branches restent allumées.",
+    stackOf: "La stack de {name}",
     detailsTitle: "Le détail, outil par outil",
   },
   // Projets qui prouvent les outils (slugs des pages /work).

@@ -405,6 +405,14 @@ $desktop: 1024px;
   text-decoration: none;
   transition: opacity 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
 
+  // The global `a:not(.button):hover` underlines links; a card is not running
+  // text. Nesting under .projects is what outranks that selector.
+  .projects &,
+  .projects &:hover {
+    color: inherit;
+    text-decoration-line: none;
+  }
+
   &:hover {
     border-color: var(--brand-border-strong);
   }
@@ -421,6 +429,74 @@ $desktop: 1024px;
 
   &.dim {
     opacity: 0.35;
+  }
+}
+
+// The project's tools as a row of logos: readable at a glance, on any screen.
+.stackIcons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-top: 0.55rem;
+
+  svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    color: var(--neutral-on-background-medium);
+    transition: color 0.2s ease;
+  }
+}
+
+.project.lit .stackIcons svg,
+.project.shown .stackIcons svg {
+  color: var(--brand-on-background-strong);
+}
+
+.project.shown {
+  border-color: var(--brand-border-medium);
+}
+
+// Stack of the hovered project, right under the cards (desktop only: on touch
+// screens the logo rows already carry it, and a tap opens the project).
+.panel {
+  display: none;
+
+  @media (min-width: $desktop) {
+    display: block;
+    min-height: 11rem;
+    padding: 1.25rem 1.375rem 1rem;
+    border: 1px solid var(--brand-border-medium);
+    border-radius: 1.125rem;
+    background: var(--neutral-alpha-weak);
+  }
+
+  .chip {
+    cursor: default;
+  }
+}
+
+.panelHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.panelTitle {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--neutral-on-background-strong);
+}
+
+.panelGroups {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+  gap: 1rem 1.75rem;
+
+  .cardTitle {
+    margin-bottom: 0.5rem;
   }
 }
 

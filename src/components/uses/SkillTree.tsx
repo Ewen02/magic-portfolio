@@ -115,6 +115,7 @@ export type UsesLabels = {
   tools: string;
   proofTitle: string;
   proofIntro: string;
+  stackOf: string;
   detailsTitle: string;
 };
 
@@ -192,6 +193,9 @@ export function SkillTree({ name, role, avatar, categories, projects, labels }: 
   const [branches, setBranches] = useState<Branch[]>([]);
   const [size, setSize] = useState({ w: 0, h: 0 });
   const [focus, setFocus] = useState<Focus>(null);
+  // Project whose stack the panel shows. It keeps the last one hovered so the
+  // panel can be read after the pointer leaves the card.
+  const [shown, setShown] = useState(projects[0]?.slug ?? "");
 
   const items = useMemo(() => {
     const byKey = new Map<string, UsesItem>();
@@ -212,6 +216,16 @@ export function SkillTree({ name, role, avatar, categories, projects, labels }: 
   );
 
   const projectName = useMemo(() => Object.fromEntries(projects.map((p) => [p.slug, p.name])), [projects]);
+
+  const stackOf = useMemo(() => {
+    const out: Record<string, { category: UsesCategory; items: UsesItem[] }[]> = {};
+    for (const p of projects) {
+      out[p.slug] = ordered
+        .map((category) => ({ category, items: category.items.filter((it) => it.projects.includes(p.slug)) }))
+        .filter((g) => g.items.length > 0);
+    }
+    return out;
+  }, [ordered, projects]);
 
   // Branch geometry is measured from the laid-out cards, so it follows any
   // viewport width. Routes are orthogonal with rounded corners and run in the
@@ -318,6 +332,11 @@ export function SkillTree({ name, role, avatar, categories, projects, labels }: 
   const focusedItem = focus?.kind === "item" ? items.get(focus.key) : undefined;
   const focusedProject = focus?.kind === "project" ? projects.find((p) => p.slug === focus.slug) : undefined;
   const clear = () => setFocus(null);
+  const showProject = (slug: string) => {
+    setFocus({ kind: "project", slug });
+    setShown(slug);
+  };
+  const shownProject = projects.find((p) => p.slug === shown);
 
   return (
     <div className={styles.root}>
@@ -441,10 +460,12 @@ export function SkillTree({ name, role, avatar, categories, projects, labels }: 
             <li key={p.slug}>
               <Link
                 href={`/work/${p.slug}`}
-                className={`${styles.project} ${state(projectLit(p.slug))}`}
-                onMouseEnter={() => setFocus({ kind: "project", slug: p.slug })}
+                className={`${styles.project} ${state(projectLit(p.slug))} ${
+                  !focus && shown === p.slug ? styles.shown : ""
+                }`}
+                onMouseEnter={() => showProject(p.slug)}
                 onMouseLeave={clear}
-                onFocus={() => setFocus({ kind: "project", slug: p.slug })}
+                onFocus={() => showProject(p.slug)}
                 onBlur={clear}
               >
                 <span className={styles.thumb}>
@@ -455,10 +476,47 @@ export function SkillTree({ name, role, avatar, categories, projects, labels }: 
                 <span className={styles.count}>
                   {toolCount[p.slug] ?? 0} {labels.tools}
                 </span>
+                <span className={styles.stackIcons} aria-hidden="true">
+                  {stackOf[p.slug]?.flatMap((g) =>
+                    g.items.map((it) => {
+                      const Icon = ICONS[it.icon];
+                      return Icon ? <Icon key={`${g.category.id}:${it.name}`} title={it.name} /> : null;
+                    }),
+                  )}
+                </span>
               </Link>
             </li>
           ))}
         </ul>
+
+        {shownProject && (
+          <div className={styles.panel} aria-live="polite">
+            <div className={styles.panelHead}>
+              <h3 className={styles.panelTitle}>{labels.stackOf.replace("{name}", shownProject.name)}</h3>
+              <span className={styles.count}>
+                {toolCount[shownProject.slug] ?? 0} {labels.tools}
+              </span>
+            </div>
+            <div className={styles.panelGroups}>
+              {stackOf[shownProject.slug]?.map((g) => (
+                <div key={g.category.id}>
+                  <p className={styles.cardTitle}>{g.category.title}</p>
+                  <ul className={styles.chips}>
+                    {g.items.map((it) => {
+                      const Icon = ICONS[it.icon];
+                      return (
+                        <li key={it.name} className={`${styles.chip} ${styles.lit}`} title={it.note}>
+                          {Icon && <Icon aria-hidden="true" />}
+                          {it.name}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </section>
 
       <details className={styles.details}>

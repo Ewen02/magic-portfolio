@@ -491,7 +491,8 @@ const uses = {
     notUsed: "Outside the projects shown here.",
     tools: "tools",
     proofTitle: "Where I use them",
-    proofIntro: "Hover a project: only the branches and tools it relies on stay lit.",
+    proofIntro: "Hover a project to show its stack. In the map, only its branches stay lit.",
+    stackOf: "{name}'s stack",
     detailsTitle: "Every tool, in detail",
   },
   // Projects that prove the tools (slugs of the /work pages).
