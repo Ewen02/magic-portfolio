@@ -21,10 +21,10 @@ L'app est disponible sur l'App Store (« Krown - Become a Top Creator »), en fr
 
 J'ai porté le **lead technique du produit de A à Z**, du premier commit sur un repo vide (avril 2026) à la publication sur l'App Store (octobre 2026) :
 
-- **Architecture complète** du monorepo : API NestJS, app SwiftUI, web Next.js, design tokens, i18n et contrats partagés
-- **~1 600 commits**, soit environ 62 % du projet, avec un second développeur et des renforts Android et web
-- Conception et développement de **Koach**, le coach IA de la version 1.1.0
-- **Soumission App Store**, conformité aux guidelines Apple, billing StoreKit 2, process de release et règles de branches
+- **Architecture posée dès le premier commit** : monorepo, API NestJS, app SwiftUI, web Next.js, design tokens, i18n et contrats partagés
+- **Pilotage technique d'une équipe de 4 développeurs** (iOS et API, Android, web) : standards de code, guides d'architecture, règles de branches et process de release
+- **Koach conçu et développé de bout en bout**, du prompt au serveur MCP, en passant par l'évaluation des modèles et le streaming des réponses
+- **Soumission App Store**, conformité aux guidelines Apple et billing StoreKit 2
 
 ![Écrans de Krown : connexion, choix de la niche, points du jour, accueil](/images/projects/krown/cover-02.jpg)
 
@@ -46,7 +46,9 @@ Un chat (« Que devrais-je poster demain ? ») qui répond **avec les données d
 
 - Agent LLM via OpenRouter. Le modèle a été choisi après une **évaluation de 13 modèles sur 100 questions**, avec un modèle de secours, du prompt caching et des prompts versionnés.
 - Les outils passent par un **serveur MCP maison** (9 outils : score, posts, patterns, benchmark, recherche de créateurs et de posts…) qui réutilise les use-cases de l'app. Le chat in-app et les clients MCP externes partagent donc les mêmes outils.
-- Les garde-fous sont dans le code, pas seulement dans le prompt : boucle d'outils limitée à 6 tours et 40 secondes, timeouts et quotas par outil.
+- La recherche de posts est **sémantique** (embeddings Gemini), avec un repli sur les mots exacts.
+- Les réponses sont **streamées en SSE** et décodées en natif côté iOS.
+- Les garde-fous sont dans le code, pas seulement dans le prompt : 6 appels au modèle et 40 secondes maximum par réponse, 30 secondes par appel au modèle, 15 secondes par outil, quotas par créateur.
 - Banc de scénarios et **red-teaming de 24 attaques** avant la mise en production.
 
 ![Koach : écran d'accueil et réponse appuyée sur le score du créateur](/images/projects/krown/cover-03.jpg)
@@ -140,7 +142,7 @@ Le même découpage atoms / molecules / organisms / templates est appliqué sur 
 
 ## En chiffres
 
-- **~2 600 commits** en 6 mois, dont **~1 600** de ma main
+- **~2 600 commits** en 6 mois, par une équipe de 4 développeurs
 - **~10 000 tests automatisés** : ~6 300 côté API, ~3 700 côté iOS
 - **1 561 snapshots** de référence pour l'UI iOS
 - **149** schémas partagés, **211** design tokens, **~3 000** clés de traduction en 4 langues
@@ -152,5 +154,5 @@ Krown est en ligne sur l'[App Store](https://apps.apple.com/app/krown/id67733489
 
 ## Articles liés
 
-- [Concevoir des systèmes multi-agents avec LangGraph en production](/blog/systemes-multi-agents-langgraph)
+- [Streaming IA token-par-token : le SSE en production avec Next.js](/blog/streaming-ia-sse-token-par-token)
 - [Architecture monorepo avec Turborepo : Next.js et NestJS](/blog/architecture-monorepo-turborepo)

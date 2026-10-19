@@ -185,7 +185,7 @@ const about = {
           <>
             <strong>Lead technique de Krown</strong>, le produit B2C : app <strong>iOS native (SwiftUI)</strong> pour créateurs
             de contenu, d'un repo vide à l'<strong>App Store</strong> en 5 mois et demi. Architecture du monorepo (SwiftUI,
-            NestJS, Next.js, Kotlin), ~62 % des commits et pilotage technique de l'équipe.
+            NestJS, Next.js, Kotlin) posée dès le premier commit et pilotage technique d'une équipe de 4 développeurs.
           </>,
           <>
             <strong>Cadre d'ingénierie :</strong> contrats partagés générés (JSON Schema vers Swift, TypeScript et Kotlin),
@@ -193,13 +193,14 @@ const about = {
             conformité App Store et billing StoreKit 2 côté serveur.
           </>,
           <>
-            <strong>IA :</strong> conception de <strong>Koach</strong>, un coach IA outillé par un serveur MCP (évaluation de
-            13 modèles, red-teaming, garde-fous dans le code), systèmes multi-agents (LangChain/LangGraph), recherche sémantique.
+            <strong>IA :</strong> conception de <strong>Koach</strong>, un agent LLM outillé par un serveur MCP : évaluation de
+            13 modèles sur 100 questions, red-teaming de 24 attaques, garde-fous dans le code (6 appels au modèle et 40 s maximum
+            par réponse), recherche sémantique sur les posts (embeddings Gemini), réponses streamées en SSE.
           </>,
           <>
             <strong>Plateforme SaaS B2B</strong> de marketing d'influence (<strong>210K+ utilisateurs</strong>,{" "}
             <strong>11,5M+ créateurs</strong>, <strong>30M+ posts</strong>) : architecture frontend Next.js/React, temps réel
-            (Socket.io, SSE), modules backend (campaigns, discovery, messaging) sur MongoDB, Elasticsearch, Qdrant et Redis.
+            (Socket.io, SSE), systèmes multi-agents (LangChain/LangGraph), modules backend (campaigns, discovery, messaging) sur MongoDB, Elasticsearch, Qdrant et Redis.
           </>,
         ],
         images: [],
@@ -319,7 +320,7 @@ const about = {
       {
         question: "As-tu de l'expérience en IA et LLM ?",
         answer:
-          "Oui, en production. J'ai conçu Koach, un coach IA outillé par un serveur MCP (évaluation de 13 modèles, red-teaming, garde-fous dans le code), des pipelines RAG complets (parsing, chunking, embeddings, reranking), des systèmes multi-agents et du streaming IA token par token sur des plateformes SaaS.",
+          "Oui, en production. J'ai conçu Koach, l'agent IA de l'app Krown, outillé par un serveur MCP (évaluation de 13 modèles sur 100 questions, red-teaming de 24 attaques, garde-fous dans le code, réponses streamées en SSE). J'ai aussi travaillé sur des systèmes multi-agents pour la plateforme SaaS B2B de Favikon, et construit un pipeline RAG complet (parsing, chunking, embeddings, reranking hybride) sur CorpusAI.",
       },
       {
         question: "Travailles-tu en freelance ?",
