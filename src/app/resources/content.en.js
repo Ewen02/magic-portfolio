@@ -192,14 +192,13 @@ const about = {
             (SwiftUI, NestJS, Next.js, Kotlin) laid down from the first commit, and technical leadership of a team of 4 developers.
           </>,
           <>
-            <strong>Engineering framework:</strong> generated shared contracts (JSON Schema to Swift, TypeScript and Kotlin),
+            <strong>Engineering framework:</strong> 13 architecture guides, generated shared contracts (JSON Schema to Swift, TypeScript and Kotlin),
             promotion-based release process, branching rules enforced by hooks, <strong>~10,000 automated tests</strong>,
             App Store compliance and server-side StoreKit 2 billing.
           </>,
           <>
-            <strong>AI:</strong> designed <strong>Koach</strong>, an LLM agent powered by an MCP server: evaluation of 13
-            models on 100 questions, a 24-attack red-team, guardrails in code (at most 6 model calls and 40 s per answer),
-            semantic post search (Gemini embeddings), answers streamed over SSE.
+            <strong>AI:</strong> designed <strong>Koach</strong>, the app's AI agent: an LLM agent powered by an MCP server,
+            evaluation of 13 models, red-teaming, cost and time limits enforced in code, answers streamed over SSE.
           </>,
           <>
             <strong>B2B SaaS platform</strong> for influencer marketing (<strong>210K+ users</strong>,{" "}
@@ -324,7 +323,7 @@ const about = {
       {
         question: "Do you have experience with AI and LLMs?",
         answer:
-          "Yes, in production. I designed Koach, the AI agent of the Krown app, powered by an MCP server (evaluation of 13 models on 100 questions, a 24-attack red-team, guardrails in code, answers streamed over SSE). I also worked on multi-agent systems for Favikon's B2B SaaS platform, and built a complete RAG pipeline (parsing, chunking, embeddings, hybrid reranking) for CorpusAI.",
+          "Yes, in production. I designed Koach, the AI agent of the Krown app, powered by an MCP server (evaluation of 13 models, red-teaming, guardrails in code, answers streamed over SSE). I also worked on multi-agent systems for Favikon's B2B SaaS platform, and built a complete RAG pipeline (parsing, chunking, embeddings, hybrid reranking) for CorpusAI.",
       },
       {
         question: "Do you work as a freelancer?",

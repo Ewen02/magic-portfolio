@@ -193,14 +193,13 @@ const about = {
             NestJS, Next.js, Kotlin) posée dès le premier commit et pilotage technique d'une équipe de 4 développeurs.
           </>,
           <>
-            <strong>Cadre d'ingénierie :</strong> contrats partagés générés (JSON Schema vers Swift, TypeScript et Kotlin),
+            <strong>Cadre d'ingénierie :</strong> 13 guides d'architecture, contrats partagés générés (JSON Schema vers Swift, TypeScript et Kotlin),
             process de release par promotion, règles de branches imposées par hooks, <strong>~10 000 tests</strong> automatisés,
             conformité App Store et billing StoreKit 2 côté serveur.
           </>,
           <>
-            <strong>IA :</strong> conception de <strong>Koach</strong>, un agent LLM outillé par un serveur MCP : évaluation de
-            13 modèles sur 100 questions, red-teaming de 24 attaques, garde-fous dans le code (6 appels au modèle et 40 s maximum
-            par réponse), recherche sémantique sur les posts (embeddings Gemini), réponses streamées en SSE.
+            <strong>IA :</strong> conception de <strong>Koach</strong>, l'agent IA de l'app : agent LLM outillé par un serveur MCP,
+            évaluation de 13 modèles, red-teaming, limites de coût et de temps imposées dans le code, réponses streamées en SSE.
           </>,
           <>
             <strong>Plateforme SaaS B2B</strong> de marketing d'influence (<strong>210K+ utilisateurs</strong>,{" "}
@@ -325,7 +324,7 @@ const about = {
       {
         question: "As-tu de l'expérience en IA et LLM ?",
         answer:
-          "Oui, en production. J'ai conçu Koach, l'agent IA de l'app Krown, outillé par un serveur MCP (évaluation de 13 modèles sur 100 questions, red-teaming de 24 attaques, garde-fous dans le code, réponses streamées en SSE). J'ai aussi travaillé sur des systèmes multi-agents pour la plateforme SaaS B2B de Favikon, et construit un pipeline RAG complet (parsing, chunking, embeddings, reranking hybride) sur CorpusAI.",
+          "Oui, en production. J'ai conçu Koach, l'agent IA de l'app Krown, outillé par un serveur MCP (évaluation de 13 modèles, red-teaming, garde-fous dans le code, réponses streamées en SSE). J'ai aussi travaillé sur des systèmes multi-agents pour la plateforme SaaS B2B de Favikon, et construit un pipeline RAG complet (parsing, chunking, embeddings, reranking hybride) sur CorpusAI.",
       },
       {
         question: "Travailles-tu en freelance ?",
