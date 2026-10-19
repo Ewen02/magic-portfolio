@@ -39,7 +39,7 @@ export function ContactForm({ to, locale }: { to: string; locale: "fr" | "en" })
   const [copied, setCopied] = useState(false);
 
   // Builds a mailto: link from the fields and opens the visitor's mail client.
-  // No backend, no spam surface — the email is composed locally.
+  // No backend, no spam surface: the email is composed locally.
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const subject =
@@ -47,7 +47,7 @@ export function ContactForm({ to, locale }: { to: string; locale: "fr" | "en" })
     const bodyLines = [
       message,
       "",
-      "—",
+      "--",
       name && (locale === "en" ? `Name: ${name}` : `Nom : ${name}`),
       email && (locale === "en" ? `Email: ${email}` : `Email : ${email}`),
     ].filter(Boolean);

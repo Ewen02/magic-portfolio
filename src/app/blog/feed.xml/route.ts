@@ -34,7 +34,7 @@ export async function GET() {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>${escape(blog.title)} — ${escape(person.name)}</title>
+    <title>${escape(blog.title)} | ${escape(person.name)}</title>
     <link>${origin}/blog</link>
     <description>${escape(blog.description)}</description>
     <language>fr-FR</language>

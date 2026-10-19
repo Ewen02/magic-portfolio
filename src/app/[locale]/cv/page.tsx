@@ -38,7 +38,7 @@ const t = (locale: Locale) =>
 export async function generateMetadata({ params: { locale } }: LocaleParam) {
   const { person } = getContent(locale);
   const l = t(locale);
-  const title = `${l.title} — ${person.name}`;
+  const title = `${l.title} | ${person.name}`;
   const description = `${person.name}, ${person.role}. ${l.description}.`;
 
   return {
@@ -183,7 +183,7 @@ export default async function CV({ params: { locale } }: LocaleParam) {
 
         <Line />
 
-        {/* Skills — compact: one dense line per category */}
+        {/* Skills, compact: one dense line per category */}
         {about.technical.display && (
           <Column className={styles.entry} fillWidth gap="8">
             <Heading as="h2" className={`${styles.heading} ${styles.section}`} variant="display-strong-xs">

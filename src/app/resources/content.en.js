@@ -8,7 +8,7 @@ const person = {
   get name() {
     return `${this.firstName} ${this.lastName}`;
   },
-  role: "Full Stack Developer",
+  role: "Lead Full Stack & AI Developer",
   avatar: "/images/avatar.jpg",
   email: "ewen.le-quere@epitech.eu",
   location: "Europe/Paris",
@@ -22,6 +22,9 @@ const person = {
 const keywords = [
   // Primary keyword and commercial variants (freelance + Paris)
   "freelance full stack developer Paris",
+  "lead full stack developer",
+  "lead AI developer",
+  "freelance tech lead Paris",
   "freelance full stack developer",
   "freelance developer Paris",
   "freelance web developer Paris",
@@ -97,13 +100,13 @@ const newsletter = {
 
 const home = {
   label: "Home",
-  title: `${person.name} — Freelance Full Stack Developer in Paris`,
-  description: `Freelance full stack developer in Paris, Epitech graduate. Available for your web projects: React, Next.js, Node.js, NestJS and applied AI (RAG, LLM, agents). Let's discuss your project.`,
-  headline: <>Ewen Le Quéré, Freelance Full Stack Developer</>,
+  title: `${person.name} | Lead Full Stack & AI Developer, freelance in Paris`,
+  description: `Lead full stack & AI developer, freelance in Paris, Epitech graduate. Tech lead of an iOS app live on the App Store. React, Next.js, NestJS, Swift and AI in production (agents, MCP, RAG).`,
+  headline: <>Ewen Le Quéré, Lead Full Stack & AI Developer</>,
   subline: (
     <>
-      I'm Ewen, a Full Stack Developer and Epitech graduate, with 3 years of experience
-      in companies and on side projects. Passionate about modern architectures, real-time systems and applied AI.
+      I'm Ewen, an Epitech graduate with 3 years of experience. I was the tech lead of Krown, an iOS app live on
+      the App Store, and I build AI products in production, from architecture to deployment.
       <br />Currently a full-time developer at Favikon, <strong>open to freelance projects.</strong>
     </>
   ),
@@ -116,7 +119,7 @@ const home = {
 const about = {
   label: "About",
   title: "About",
-  description: `${person.name}, ${person.role} based in Paris. 3 years of experience in SaaS, real-time and applied AI.`,
+  description: `${person.name}, ${person.role} based in Paris. Tech lead of an iOS app live on the App Store, 3 years of experience in SaaS and applied AI.`,
 
   tableOfContent: {
     display: true,
@@ -141,18 +144,26 @@ const about = {
     description: (
       <>
         <p>
-          A Full Stack Developer and Epitech graduate (Master's level), I have <strong>3 years of experience</strong> in
-          companies and as a freelancer across a wide range of projects: B2B SaaS, marketing platforms, real-time systems and applied AI.
+          <strong>Lead Full Stack & AI Developer</strong> and Epitech graduate (Master's level), with <strong>3 years of
+          experience</strong> in companies and as a freelancer. I own products end to end: architecture, development, release
+          and team standards (CI, testing, release process).
         </p>
         <p>
-          My expertise spans the <strong>frontend</strong> (React, Next.js), the <strong>backend</strong> (Node.js,
-          NestJS) and the integration of <strong>AI systems</strong> (LLMs, RAG pipelines, agents, semantic search).
+          At Favikon, I was the <strong>tech lead of Krown</strong>, the B2C product: a native iOS app taken from an empty repo
+          to the <strong>App Store</strong> in five and a half months, with a NestJS API, a Next.js web app and an AI coach
+          powered by an MCP server.
         </p>
         <p>
-          I also build <strong>complete SaaS products</strong> as side projects, from monorepo architecture to deployment.
+          My expertise covers <strong>applied AI in production</strong> (LLM agents, MCP servers, RAG pipelines, semantic
+          search, model evaluation), the <strong>frontend</strong> (React, Next.js), the <strong>backend</strong> (Node.js,
+          NestJS) and <strong>mobile</strong> (Swift, SwiftUI).
         </p>
         <p>
-          Currently a <strong>full-time developer at Favikon</strong> and <strong>open to freelance projects</strong> — feel free to reach out.
+          On the side, I launch my own products, such as <strong>Nightprint</strong> and <strong>Sidetown</strong>, from the
+          monorepo to deployment on my own server.
+        </p>
+        <p>
+          Currently a <strong>full-time developer at Favikon</strong> and <strong>open to freelance projects</strong>. Feel free to reach out.
         </p>
       </>
     ),
@@ -168,26 +179,46 @@ const about = {
       {
         company: "Favikon",
         timeframe: "2025 - Present",
-        role: "Full Stack Developer",
+        role: "Lead Full Stack & AI Developer",
         achievements: [
           <>
-            Building features on an AI-powered <strong>B2B influencer marketing SaaS</strong> platform,
-            at scale: <strong>210K+ users</strong>, <strong>11.5M+ creators</strong> and <strong>30M+ indexed posts</strong>.
+            <strong>Tech lead of Krown</strong>, the B2C product: a <strong>native iOS app (SwiftUI)</strong> for content
+            creators, from an empty repo to the <strong>App Store</strong> in five and a half months. Monorepo architecture
+            (SwiftUI, NestJS, Next.js, Kotlin), ~62% of the commits and technical leadership of the team.
           </>,
           <>
-            <strong>Frontend:</strong> Modular Next.js/React architecture, state management (React Query, Redux),
-            real-time (Socket.io, SSE), drag & drop widgets, token-by-token streaming.
+            <strong>Engineering framework:</strong> generated shared contracts (JSON Schema to Swift, TypeScript and Kotlin),
+            promotion-based release process, branching rules enforced by hooks, <strong>~10,000 automated tests</strong>,
+            App Store compliance and server-side StoreKit 2 billing.
           </>,
           <>
-            <strong>Backend:</strong> Business-critical modules (campaigns, discovery, messaging), specialized
-            databases (MongoDB, Elasticsearch, Qdrant, Redis), real-time pipelines.
+            <strong>AI:</strong> designed <strong>Koach</strong>, an AI coach powered by an MCP server (evaluation of 13
+            models, red-teaming, guardrails in code), multi-agent systems (LangChain/LangGraph), semantic search.
           </>,
           <>
-            <strong>AI:</strong> Multi-agent systems (LangChain/LangGraph), AI streaming, semantic search,
-            automated message generation and recommendations.
+            <strong>B2B SaaS platform</strong> for influencer marketing (<strong>210K+ users</strong>,{" "}
+            <strong>11.5M+ creators</strong>, <strong>30M+ posts</strong>): Next.js/React frontend architecture, real-time
+            (Socket.io, SSE), backend modules (campaigns, discovery, messaging) on MongoDB, Elasticsearch, Qdrant and Redis.
+          </>,
+        ],
+        images: [],
+      },
+      {
+        company: "Side projects",
+        timeframe: "2026",
+        role: "Design, development and release",
+        achievements: [
+          <>
+            <strong>Nightprint</strong> (nightprint.dev): software architecture drawn as interactive 3D machines (WebGPU,
+            React Three Fiber), with an AI importer that draws a GitHub repository from its own code. Open source.
           </>,
           <>
-            <strong>Mobile:</strong> Development of a <strong>native iOS app in Swift</strong>.
+            <strong>Sidetown</strong> (sidetown.dev): a developer's side projects rendered as an isometric city by a 3D to SVG
+            engine written from scratch. Next.js 16, Drizzle, Stripe, launched in 11 days with real payments.
+          </>,
+          <>
+            <strong>CorpusAI</strong>: document-based conversational AI SaaS, complete RAG pipeline (chunking, embeddings,
+            hybrid reranking), SSE streaming, Stripe billing, Turborepo monorepo.
           </>,
         ],
         images: [],
@@ -272,7 +303,7 @@ const about = {
       {
         question: "Which technologies do you work with?",
         answer:
-          "On the frontend: React, Next.js and TypeScript. On the backend: Node.js, NestJS and Express. I also develop in Swift (iOS app at Favikon). I work on applied AI (RAG pipelines, LLMs, multi-agent systems with LangChain/LangGraph), real-time architectures (WebSocket, SSE, Redis), as well as technical SEO, accessibility and testing (Jest).",
+          "On the frontend: React, Next.js and TypeScript. On the backend: Node.js, NestJS and Express. On mobile: Swift and SwiftUI (tech lead of the Krown iOS app at Favikon). I work on applied AI (LLM agents, MCP servers, RAG pipelines, multi-agent systems with LangChain/LangGraph), real-time architectures (WebSocket, SSE, Redis), as well as technical SEO, accessibility and testing (Jest, Vitest, Playwright).",
       },
       {
         question: "Do you handle a website's SEO and performance?",
@@ -280,9 +311,14 @@ const about = {
           "Yes. I implement technical SEO end to end: per-page metadata and Open Graph, schema.org structured data for rich snippets, sitemap and robots, monitoring through Search Console, plus Core Web Vitals and accessibility optimization. This is exactly what I did on this portfolio and on client websites.",
       },
       {
+        question: "Have you led a project as a tech lead?",
+        answer:
+          "Yes. At Favikon, I was the tech lead of Krown, the B2C product, from an empty repo to the App Store: monorepo architecture, coding standards, release process, CI, Apple submission and technical leadership of the other developers on the project.",
+      },
+      {
         question: "Do you have experience with AI and LLMs?",
         answer:
-          "Yes. I have built complete RAG pipelines (parsing, chunking, embeddings, reranking), multi-agent systems and token-by-token AI streaming in production, notably on B2B SaaS platforms.",
+          "Yes, in production. I designed Koach, an AI coach powered by an MCP server (evaluation of 13 models, red-teaming, guardrails in code), complete RAG pipelines (parsing, chunking, embeddings, reranking), multi-agent systems and token-by-token AI streaming on SaaS platforms.",
       },
       {
         question: "Do you work as a freelancer?",
@@ -329,19 +365,10 @@ const about = {
     title: "Technical skills",
     skills: [
       {
-        title: "Frontend",
+        title: "Technical leadership & Architecture",
         description: (
           <>
-            React / Next.js, TypeScript, Tailwind CSS, React Query, Redux Toolkit, Socket.io / SSE, Angular
-          </>
-        ),
-        images: [],
-      },
-      {
-        title: "Backend",
-        description: (
-          <>
-            Node.js / Express, NestJS, Prisma, BullMQ, Stripe, .NET / C#
+            Hexagonal architecture, polyglot monorepos (Turborepo, pnpm), generated shared contracts (JSON Schema, quicktype), release process and branching rules, CI/CD, code review, App Store compliance
           </>
         ),
         images: [],
@@ -350,7 +377,34 @@ const about = {
         title: "AI & Agents",
         description: (
           <>
-            LangChain / LangGraph, RAG pipeline (chunking, embeddings, reranking), Multi-agent systems, AI streaming (SSE), Qdrant / Semantic search
+            LLM agents (Claude, OpenRouter), MCP servers, LangChain / LangGraph, RAG pipelines (chunking, embeddings, reranking), model evaluation and red-teaming, AI streaming (SSE), Qdrant / semantic search
+          </>
+        ),
+        images: [],
+      },
+      {
+        title: "Frontend",
+        description: (
+          <>
+            React / Next.js, TypeScript, Tailwind CSS, React Query, Redux Toolkit, three.js / React Three Fiber (WebGPU), Socket.io / SSE, Angular
+          </>
+        ),
+        images: [],
+      },
+      {
+        title: "Backend",
+        description: (
+          <>
+            Node.js / Express, NestJS, Prisma, Drizzle, BullMQ, Stripe, Better Auth, .NET / C#
+          </>
+        ),
+        images: [],
+      },
+      {
+        title: "Mobile",
+        description: (
+          <>
+            Swift / SwiftUI, WidgetKit, Live Activities, StoreKit 2, Flutter / Dart
           </>
         ),
         images: [],
@@ -359,7 +413,7 @@ const about = {
         title: "Databases",
         description: (
           <>
-            MongoDB, PostgreSQL / MySQL, Elasticsearch, Qdrant (vector DB), Redis
+            MongoDB, PostgreSQL (Neon) / MySQL, Elasticsearch, Qdrant (vector DB), Redis
           </>
         ),
         images: [],
@@ -368,7 +422,7 @@ const about = {
         title: "SEO, Testing & Quality",
         description: (
           <>
-            Technical SEO (metadata, sitemap, schema.org / rich snippets, Search Console), Accessibility (a11y), Core Web Vitals, Unit & integration testing (Jest)
+            Unit and integration testing (Jest, Vitest), E2E testing (Playwright), iOS snapshot tests, technical SEO (metadata, sitemap, schema.org, Search Console), accessibility, Core Web Vitals
           </>
         ),
         images: [],
@@ -377,16 +431,16 @@ const about = {
         title: "DevOps & Tools",
         description: (
           <>
-            Git (GitHub, GitLab), Docker, CI/CD, Turborepo / pnpm, TypeSpec
+            Git (GitHub, GitLab, Bitbucket), Docker, GitHub Actions, self-hosted VPS (Caddy, Docker Compose), TypeSpec
           </>
         ),
         images: [],
       },
       {
-        title: "Mobile & Design",
+        title: "Design",
         description: (
           <>
-            Swift (iOS), Flutter / Dart, Figma, Zeplin
+            Figma, Zeplin, design systems (Atomic Design, design tokens)
           </>
         ),
         images: [],
@@ -424,7 +478,7 @@ const uses = {
   title: "Stack & tools",
   description: `The technologies, languages and tools ${person.name} uses every day: frontend, backend, AI, databases and DevOps.`,
   intro:
-    "Here are the tools and technologies I use every day to build modern, performant and maintainable web products — from the frontend to AI and infrastructure.",
+    "Here are the tools and technologies I use every day to build modern, performant and maintainable web products, from the frontend to AI and infrastructure.",
   categories: [
     {
       title: "Languages",
@@ -441,7 +495,7 @@ const uses = {
       title: "Frontend",
       items: [
         { name: "React", note: "The foundation of all my interfaces." },
-        { name: "Next.js", note: "App Router, SSR/SSG, streaming — my favorite framework." },
+        { name: "Next.js", note: "App Router, SSR/SSG, streaming: my favorite framework." },
         { name: "Tailwind CSS", note: "To style fast and stay consistent." },
         { name: "React Query", note: "Server cache, invalidation and optimistic updates." },
         { name: "Redux Toolkit", note: "Global state when it's justified." },
@@ -510,8 +564,8 @@ const services = {
   title: "Freelance development services",
   description: `Freelance full stack developer in Paris, ${person.name} helps startups, SMEs and agencies: SaaS web apps, AI integration (RAG, LLM), SEO-optimized marketing websites and real-time systems.`,
   intro:
-    "I design and build custom web products, from marketing websites to complete SaaS platforms. Here's how I can help — every project starts with a free call to scope your needs.",
-  // ⚠️ Indicative ranges — validate/adjust against your real rates.
+    "I design and build custom web products, from marketing websites to complete SaaS platforms. Here's how I can help: every project starts with a free call to scope your needs.",
+  // ⚠️ Indicative ranges: validate/adjust against your real rates.
   items: [
     {
       title: "Web app & full stack SaaS",
@@ -543,7 +597,7 @@ const services = {
     },
   ],
   availability:
-    "Available for one-off and fixed-price projects, alongside a salaried position. Ideal for a well-scoped project, a feature to build or an AI integration — with a single, reliable and responsive point of contact.",
+    "Available for one-off and fixed-price projects, alongside a salaried position. Ideal for a well-scoped project, a feature to build or an AI integration, with a single, reliable and responsive point of contact.",
   process: {
     title: "How I work",
     steps: [
@@ -555,7 +609,7 @@ const services = {
       {
         title: "Quote & timeline",
         description:
-          "A clear proposal: scope, timeline and budget. No surprises — you approve before we start.",
+          "A clear proposal: scope, timeline and budget. No surprises: you approve before we start.",
       },
       {
         title: "Development",
@@ -585,7 +639,7 @@ const contact = {
   title: "Get in touch",
   description: `Contact ${person.name}, ${person.role} based in Paris, for a freelance project, a collaboration or any question.`,
   intro:
-    "A freelance project, a web project or just a question? The easiest is to schedule a call or write to me directly — I reply quickly.",
+    "A freelance project, a web project or just a question? The easiest is to schedule a call or write to me directly: I reply quickly.",
   calendar: {
     display: true,
     link: "https://cal.com/ewenlq/30min",

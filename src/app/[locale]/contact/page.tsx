@@ -144,8 +144,8 @@ export default async function Contact({ params: { locale } }: LocaleParam) {
         </Heading>
         <Text variant="body-default-s" onBackground="neutral-weak">
           {locale === "en"
-            ? "Fill in the form — it opens your email client, pre-filled and ready to send."
-            : "Remplissez le formulaire — il ouvre votre messagerie, pré-rempli et prêt à envoyer."}
+            ? "Fill in the form: it opens your email client, pre-filled and ready to send."
+            : "Remplissez le formulaire : il ouvre votre messagerie, pré-rempli et prêt à envoyer."}
         </Text>
         <ContactForm to={person.email} locale={locale} />
       </Column>

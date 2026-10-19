@@ -119,6 +119,13 @@ export default async function About({ params: { locale } }: LocaleParam) {
               "LLM",
               "Architecture logicielle",
               "Développement Full Stack",
+              "Lead technique",
+              "Agents IA",
+              "Model Context Protocol (MCP)",
+              "Swift",
+              "SwiftUI",
+              "iOS",
+              "Architecture hexagonale",
               "SEO technique",
               "Accessibilité web",
             ],
@@ -154,12 +161,12 @@ export default async function About({ params: { locale } }: LocaleParam) {
               review: about.testimonials.items.map((item) => ({
                 "@type": "Review",
                 reviewBody: item.quote,
-                // Author named as "Entity — context" (e.g. "Hercules Thrustmaster
-                // — Marketing Team") and typed as an Organization, which Google
+                // Author named as "Entity (context)" (e.g. "Hercules Thrustmaster
+                // (Marketing Team)") and typed as an Organization, which Google
                 // treats as a more credible reviewer than a vague person name.
                 author: {
                   "@type": "Organization",
-                  name: item.role ? `${item.role} — ${item.author}` : item.author,
+                  name: item.role ? `${item.role} (${item.author})` : item.author,
                 },
                 reviewRating: {
                   "@type": "Rating",

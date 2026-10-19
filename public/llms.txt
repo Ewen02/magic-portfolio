@@ -1,15 +1,15 @@
-# Ewen Le Quéré — Développeur Full Stack Freelance
+# Ewen Le Quéré, Lead Développeur Full Stack & IA
 
-> Ewen Le Quéré est un développeur web full stack freelance basé à Paris (Île-de-France, France), diplômé d'Epitech (Bac+5, RNCP 7). Il est spécialisé dans le développement d'applications web et SaaS, l'intégration d'intelligence artificielle (RAG, LLM, agents) et les systèmes temps réel. Il est disponible pour des missions freelance.
+> Ewen Le Quéré est un lead développeur full stack et IA basé à Paris (Île-de-France, France), diplômé d'Epitech (Bac+5, RNCP 7). Il a été le lead technique de Krown, l'app iOS B2C de Favikon publiée sur l'App Store. Il est spécialisé dans le développement d'applications web, mobiles et SaaS, l'intégration d'intelligence artificielle en production (agents LLM, serveurs MCP, RAG) et les systèmes temps réel. Il est disponible pour des missions freelance.
 
 ## Profil
 
 - **Nom** : Ewen Le Quéré
-- **Métier** : Développeur Full Stack Freelance
+- **Métier** : Lead Développeur Full Stack & IA, disponible en freelance
 - **Localisation** : Paris, Île-de-France, France
-- **Formation** : Epitech Paris — Expert en Technologies de l'Information (RNCP 7, Bac+5), promotion 2025
+- **Formation** : Epitech Paris, Expert en Technologies de l'Information (RNCP 7, Bac+5), promotion 2025
 - **Langues** : Français (natif), Anglais (professionnel)
-- **Disponibilité** : ouvert aux missions freelance (actuellement développeur full stack chez Favikon)
+- **Disponibilité** : ouvert aux missions freelance (actuellement chez Favikon, lead technique de Krown)
 
 ## Compétences
 
@@ -22,17 +22,20 @@
 
 ## Services freelance
 
-1. **Application web & SaaS full stack** — conception et développement d'applications complètes (React/Next.js + Node/NestJS), à partir de 6 000 €.
-2. **Intégration IA, RAG & agents LLM** — assistants conversationnels, pipelines RAG, systèmes multi-agents, à partir de 5 000 €.
-3. **Site vitrine performant & SEO** — sites modernes optimisés pour le référencement local, à partir de 1 500 €.
-4. **Temps réel & architecture** — systèmes temps réel, monorepo, conseil technique, sur devis.
+1. **Application web & SaaS full stack** : conception et développement d'applications complètes (React/Next.js + Node/NestJS), à partir de 6 000 €.
+2. **Intégration IA, RAG & agents LLM** : assistants conversationnels, pipelines RAG, systèmes multi-agents, à partir de 5 000 €.
+3. **Site vitrine performant & SEO** : sites modernes optimisés pour le référencement local, à partir de 1 500 €.
+4. **Temps réel & architecture** : systèmes temps réel, monorepo, conseil technique, sur devis.
 
 ## Projets notables
 
-- **Favikon** — plateforme SaaS B2B de marketing d'influence augmentée par l'IA (210K+ utilisateurs, 11,5M+ créateurs, 30M+ posts indexés).
-- **CorpusAI** — plateforme SaaS d'IA conversationnelle par documents (pipeline RAG complet).
-- **Système d'affiliation Hercules Thrustmaster** — mission freelance, en production depuis 2023.
-- **Cabinet Dentaire Desboeuf** — site vitrine freelance optimisé SEO local.
+- **Favikon** : plateforme SaaS B2B de marketing d'influence augmentée par l'IA (210K+ utilisateurs, 11,5M+ créateurs, 30M+ posts indexés).
+- **Krown by Favikon** : produit B2C de Favikon dont il a été le lead technique : app iOS native (SwiftUI) pour créateurs de contenu, publiée sur l'App Store, avec API NestJS et coach IA (https://apps.apple.com/app/krown/id6773348963).
+- **Nightprint** : side-project open source : l'architecture logicielle dessinée en machines 3D interactives (WebGPU, React Three Fiber), avec un importeur IA qui dessine un repo GitHub depuis son propre code (https://nightprint.dev).
+- **Sidetown** : side-project en production : les side-projects d'un développeur rendus en ville isométrique par un moteur 3D → SVG maison (Next.js 16, Drizzle, Stripe) (https://sidetown.dev).
+- **CorpusAI** : plateforme SaaS d'IA conversationnelle par documents (pipeline RAG complet).
+- **Système d'affiliation Hercules Thrustmaster** : mission freelance, en production depuis 2023.
+- **Cabinet Dentaire Desboeuf** : site vitrine freelance optimisé SEO local.
 
 ## Liens
 
@@ -47,4 +50,4 @@
 
 ## Contact
 
-Pour une mission freelance ou un projet web, réserver un appel : https://cal.com/ewenlq/30min — ou écrire à ewen.le-quere@epitech.eu.
+Pour une mission freelance ou un projet web, réserver un appel : https://cal.com/ewenlq/30min, ou écrire à ewen.le-quere@epitech.eu.

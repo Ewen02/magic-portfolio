@@ -93,7 +93,7 @@ export default async function Home({ params: { locale } }: LocaleParam) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ProfessionalService",
-            name: `${person.name} — ${person.role} Freelance`,
+            name: `${person.name}, ${person.role} freelance`,
             description: home.description,
             url: baseUrl,
             image: `https://${baseURL}${person.avatar}`,

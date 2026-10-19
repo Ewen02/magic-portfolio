@@ -54,7 +54,7 @@ export default async function Services({ params: { locale } }: LocaleParam) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "ProfessionalService",
-            name: `${person.name} — ${services.title}`,
+            name: `${person.name} | ${services.title}`,
             description: services.description,
             url: localeUrl(locale, "/services"),
             inLanguage: locale === "en" ? "en-US" : "fr-FR",
