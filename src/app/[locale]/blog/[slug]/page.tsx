@@ -1,13 +1,19 @@
 import { notFound } from "next/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { CustomMDX } from "@/components/mdx";
+import Image from "next/image";
+import { CustomMDX, slugify } from "@/components/mdx";
 import { getPosts, type Locale } from "@/app/utils/utils";
-import { AvatarGroup, Button, Column, Heading, Row, Text } from "@/once-ui/components";
+import { Column } from "@/once-ui/components";
+import { Link } from "@/i18n/navigation";
 import { baseURL } from "@/app/resources";
 import { getContent } from "@/app/resources/getContent";
 import { formatDate } from "@/app/utils/formatDate";
 import ScrollToHash from "@/components/ScrollToHash";
 import { ShareButtons } from "@/components/blog/ShareButtons";
+import { ArticleToc, ReadingProgress } from "@/components/blog/ArticleToc";
+import { Posts } from "@/components/blog/Posts";
+import { getPostSummaries } from "@/components/blog/data";
+import styles from "@/components/blog/Article.module.scss";
 import { routing } from "@/i18n/routing";
 
 interface BlogParams {
@@ -79,24 +85,19 @@ export function generateMetadata({ params: { locale, slug } }: BlogParams) {
 export default async function Blog({ params: { locale, slug } }: BlogParams) {
   setRequestLocale(locale);
   const t = await getTranslations();
-  const { person } = getContent(locale);
-  let post = getPosts(POSTS_PATH, locale).find((post) => post.slug === slug);
+  const { person, blog } = getContent(locale);
+  const post = getPosts(POSTS_PATH, locale).find((post) => post.slug === slug);
+  const summary = getPostSummaries(locale).find((p) => p.slug === slug);
 
-  if (!post) {
+  if (!post || !summary) {
     notFound();
   }
 
-  const avatars =
-    post.metadata.team?.map((person) => ({
-      src: person.avatar,
-    })) || [];
-
-  // Reading time estimate: ~200 words per minute.
-  const wordCount = post.content.trim().split(/\s+/).length;
-  const readingTime = Math.max(1, Math.round(wordCount / 200));
+  const headings = getHeadings(post.content);
 
   return (
-    <Column as="section" maxWidth="xs" gap="l">
+    <Column as="section" maxWidth="l" fillWidth>
+      <ReadingProgress />
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -109,8 +110,8 @@ export default async function Blog({ params: { locale, slug } }: BlogParams) {
             dateModified: post.metadata.publishedAt,
             description: post.metadata.summary,
             inLanguage: locale === "en" ? "en-US" : "fr-FR",
-            image: post.metadata.images?.[0]
-              ? `https://${baseURL}${post.metadata.images[0]}`
+            image: summary.image
+              ? `https://${baseURL}${summary.image}`
               : `https://${baseURL}/og?title=${encodeURIComponent(post.metadata.title)}`,
             url: localeUrl(locale, `/blog/${post.slug}`),
             author: {
@@ -155,31 +156,96 @@ export default async function Blog({ params: { locale, slug } }: BlogParams) {
           }),
         }}
       />
-      <Button href="/blog" weight="default" variant="tertiary" size="s" prefixIcon="chevronLeft">
-        {t("blog.backToPosts")}
-      </Button>
-      <Heading variant="display-strong-s">{post.metadata.title}</Heading>
-      <Row gap="12" vertical="center">
-        {avatars.length > 0 && <AvatarGroup size="s" avatars={avatars} />}
-        <Text variant="body-default-s" onBackground="neutral-weak">
-          {formatDate(post.metadata.publishedAt)}
-        </Text>
-        <Text variant="body-default-s" onBackground="neutral-weak">
-          ·
-        </Text>
-        <Text variant="body-default-s" onBackground="neutral-weak">
-          {readingTime} {locale === "en" ? "min read" : "min de lecture"}
-        </Text>
-      </Row>
-      <Column as="article" fillWidth>
-        <CustomMDX source={post.content} />
-      </Column>
-      <ShareButtons
-        url={localeUrl(locale, `/blog/${post.slug}`)}
-        title={post.metadata.title}
-        locale={locale}
-      />
+
+      <div className={styles.layout}>
+        <header className={styles.header}>
+          <Link href="/blog" className={styles.back}>
+            <span aria-hidden="true">←</span> {blog.labels.allPosts}
+          </Link>
+          <p className={styles.meta}>
+            {[summary.tag, formatDate(summary.publishedAt, locale), `${summary.minutes} ${blog.labels.minutes}`]
+              .filter(Boolean)
+              .join(" · ")}
+          </p>
+          <h1 className={styles.title}>{summary.title}</h1>
+          <p className={styles.lede}>{summary.summary}</p>
+          <div className={styles.byline}>
+            <span className={styles.author}>
+              <span className={styles.avatar}>
+                <Image src={person.avatar} alt="" fill sizes="40px" />
+              </span>
+              <span>
+                <strong>{person.name}</strong>
+                <span>{person.role}</span>
+              </span>
+            </span>
+            {summary.project && (
+              <Link href={`/work/${summary.project.slug}`} className={styles.projectLink}>
+                {blog.labels.fromProject} <strong>{summary.project.name}</strong>
+                <span aria-hidden="true">→</span>
+              </Link>
+            )}
+          </div>
+        </header>
+
+        {summary.image && (
+          <figure className={styles.cover}>
+            <Image src={summary.image} alt="" fill priority sizes="(max-width: 1100px) 100vw, 1040px" />
+          </figure>
+        )}
+
+        <article className={styles.body}>
+          <CustomMDX source={post.content} />
+        </article>
+
+        <aside className={styles.aside} style={{ gridRow: summary.image ? 3 : 2 }}>
+          <ArticleToc headings={headings} label={blog.labels.toc} />
+        </aside>
+
+        <footer className={styles.footer}>
+          <ShareButtons
+            url={localeUrl(locale, `/blog/${post.slug}`)}
+            title={post.metadata.title}
+            locale={locale}
+          />
+          <div className={styles.authorCard}>
+            <span className={styles.avatarLarge}>
+              <Image src={person.avatar} alt="" fill sizes="64px" />
+            </span>
+            <div>
+              <p className={styles.authorLabel}>{blog.labels.writtenBy}</p>
+              <p className={styles.authorName}>{person.name}</p>
+              <p className={styles.authorNote}>{blog.labels.authorNote}</p>
+              <div className={styles.authorLinks}>
+                <Link href="/about">{t("nav.about")}</Link>
+                <Link href="/contact">{blog.labels.contact}</Link>
+              </div>
+            </div>
+          </div>
+        </footer>
+      </div>
+
+      <section className={styles.related} aria-labelledby="related-title">
+        <h2 id="related-title" className={styles.relatedTitle}>
+          {blog.labels.related}
+        </h2>
+        <Posts range={[1, 2]} columns="2" locale={locale} exclude={post.slug} />
+      </section>
       <ScrollToHash />
     </Column>
   );
+}
+
+// Section headings of the article, with the ids the MDX renderer gives them.
+function getHeadings(content: string) {
+  const headings: { id: string; text: string }[] = [];
+  let inCode = false;
+  for (const line of content.split("\n")) {
+    if (line.trim().startsWith("```")) inCode = !inCode;
+    if (inCode || !line.startsWith("## ")) continue;
+    const text = line.slice(3).trim();
+    // The contents number the sections itself: drop a leading "1. ".
+    headings.push({ id: slugify(text), text: text.replace(/^\d+\.\s+/, "") });
+  }
+  return headings;
 }

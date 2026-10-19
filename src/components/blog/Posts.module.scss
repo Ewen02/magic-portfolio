@@ -1,7 +1,99 @@
-.hover {
-    transition: var(--transition-micro-medium);
+// Article cards (home page, "read next" under an article).
 
-    &:hover {
-        transform: translateX(var(--static-space-8));
-    }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 1), minmax(0, 1fr));
+  gap: 1.25rem;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.6rem 0.6rem 1rem;
+  border: 1px solid var(--neutral-alpha-medium);
+  border-radius: 1.25rem;
+  background: var(--neutral-alpha-weak);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+
+  // The doubled class outranks the global `a:not(.button):hover` style.
+  &#{&},
+  &#{&}:hover {
+    color: inherit;
+    text-decoration-line: none;
+  }
+
+  &:hover {
+    border-color: var(--brand-border-strong);
+    box-shadow: 0 20px 48px -32px var(--brand-alpha-strong);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--brand-solid-strong);
+    outline-offset: 3px;
+  }
+}
+
+.cover {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 9;
+  margin-bottom: 0.4rem;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background: var(--neutral-alpha-medium);
+
+  img {
+    object-fit: cover;
+    object-position: top;
+    transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .card:hover & img {
+    transform: scale(1.03);
+  }
+}
+
+.meta {
+  padding: 0 0.4rem;
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  color: var(--neutral-on-background-weak);
+}
+
+.title {
+  padding: 0 0.4rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
+  color: var(--neutral-on-background-strong);
+  transition: color 0.2s ease;
+
+  .card:hover & {
+    color: var(--brand-on-background-strong);
+  }
+}
+
+.summary {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  padding: 0 0.4rem;
+  font-size: 0.875rem;
+  line-height: 1.55;
+  color: var(--neutral-on-background-weak);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cover img {
+    transition: none;
+  }
 }

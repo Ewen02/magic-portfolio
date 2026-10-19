@@ -167,7 +167,7 @@ export default async function Project({ params: { locale, slug } }: WorkParams) 
         <Flex gap="12" marginBottom="24" vertical="center">
           {post.metadata.team && <AvatarGroup reverse avatars={avatars} size="m" />}
           <Text variant="body-default-s" onBackground="neutral-weak">
-            {formatDate(post.metadata.publishedAt)}
+            {formatDate(post.metadata.publishedAt, locale)}
           </Text>
         </Flex>
         <CustomMDX source={post.content} />

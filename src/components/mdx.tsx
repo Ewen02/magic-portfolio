@@ -1,9 +1,11 @@
 import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
 import React, { ReactNode } from "react";
+import remarkGfm from "remark-gfm";
 
 import { SmartImage, SmartLink, Text } from "@/once-ui/components";
 import { CodeBlock } from "@/once-ui/modules";
 import { HeadingLink } from "@/components";
+import styles from "./mdx.module.scss";
 import { MdxVideo } from "@/components/MdxVideo";
 
 import { TextProps } from "@/once-ui/interfaces";
@@ -84,7 +86,7 @@ function createImage({ alt, src, ...props }: SmartImageProps & { src: string }) 
   );
 }
 
-function slugify(str: string): string {
+export function slugify(str: string): string {
   return str
     .toString()
     .toLowerCase()
@@ -129,6 +131,15 @@ function createParagraph({ children }: TextProps) {
   );
 }
 
+// Markdown (GFM) tables, scrollable on narrow screens.
+function MarkdownTable({ children }: { children?: ReactNode }) {
+  return (
+    <div className={styles.tableWrap}>
+      <table className={styles.table}>{children}</table>
+    </div>
+  );
+}
+
 // Inline code (`code`) — rendered as a styled <code> chip.
 function InlineCode({ children }: { children?: ReactNode }) {
   return <code className="inline-code">{children}</code>;
@@ -167,6 +178,7 @@ const components = {
   a: CustomLink as any,
   pre: CodeBlockWrapper as any,
   code: InlineCode as any,
+  table: MarkdownTable as any,
   Table,
   CodeBlock,
   Video: MdxVideo,
@@ -179,6 +191,11 @@ type CustomMDXProps = MDXRemoteProps & {
 export function CustomMDX(props: CustomMDXProps) {
   return (
     // @ts-ignore: Suppressing type error for MDXRemote usage
-    <MDXRemote {...props} components={{ ...components, ...(props.components || {}) }} />
+    <MDXRemote
+      {...props}
+      // GFM adds Markdown tables, which plain MDX renders as text.
+      options={{ ...props.options, mdxOptions: { ...props.options?.mdxOptions, remarkPlugins: [remarkGfm] } }}
+      components={{ ...components, ...(props.components || {}) }}
+    />
   );
 }

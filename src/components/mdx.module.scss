@@ -1,0 +1,48 @@
+// Markdown tables in articles and case studies.
+
+.tableWrap {
+  width: 100%;
+  margin: var(--static-space-16) 0 var(--static-space-20);
+  overflow-x: auto;
+  border: 1px solid var(--neutral-alpha-medium);
+  border-radius: var(--radius-m);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-body-s);
+  line-height: 1.5;
+
+  th,
+  td {
+    padding: 0.625rem 0.875rem;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--neutral-alpha-weak);
+  }
+
+  th {
+    font-family: var(--font-code);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    color: var(--neutral-on-background-medium);
+    background: var(--neutral-alpha-weak);
+  }
+
+  td {
+    color: var(--neutral-on-background-weak);
+  }
+
+  td:first-child {
+    font-weight: 600;
+    color: var(--neutral-on-background-strong);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}

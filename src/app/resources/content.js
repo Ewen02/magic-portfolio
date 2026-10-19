@@ -463,7 +463,25 @@ const about = {
 const blog = {
   label: "Blog",
   title: "Articles tech : IA, temps réel & architecture",
-  description: `Articles techniques de ${person.name}, développeur full stack freelance à Paris : pipelines RAG, LLM, systèmes temps réel (WebSocket, SSE) et architectures modernes.`,
+  description: `Articles techniques de ${person.name}, lead développeur full stack & IA à Paris : agents et pipelines RAG, architecture hexagonale, temps réel (WebSocket, SSE) et performance.`,
+  intro:
+    "Des retours d'expérience tirés de mes projets en production : ce que j'ai construit, ce que j'ai mesuré et ce que je referais autrement.",
+  labels: {
+    eyebrow: "Journal technique",
+    articles: "articles",
+    all: "Tous",
+    filterBy: "Filtrer par sujet",
+    latest: "Dernier article",
+    read: "Lire l'article",
+    minutes: "min",
+    fromProject: "Tiré du projet",
+    toc: "Sommaire",
+    related: "À lire ensuite",
+    writtenBy: "Écrit par",
+    authorNote: "Je conçois des produits web et IA de bout en bout, de l'architecture à la mise en production.",
+    contact: "Me contacter",
+    allPosts: "Tous les articles",
+  },
 };
 
 // ============================================================================

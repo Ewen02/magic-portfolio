@@ -462,7 +462,25 @@ const about = {
 const blog = {
   label: "Blog",
   title: "Tech articles: AI, real-time & architecture",
-  description: `Technical articles by ${person.name}, freelance full stack developer in Paris: RAG pipelines, LLMs, real-time systems (WebSocket, SSE) and modern architectures.`,
+  description: `Technical articles by ${person.name}, lead full stack & AI developer in Paris: agents and RAG pipelines, hexagonal architecture, real-time (WebSocket, SSE) and performance.`,
+  intro:
+    "Field notes from my projects in production: what I built, what I measured and what I would do differently.",
+  labels: {
+    eyebrow: "Engineering journal",
+    articles: "articles",
+    all: "All",
+    filterBy: "Filter by topic",
+    latest: "Latest article",
+    read: "Read the article",
+    minutes: "min",
+    fromProject: "From the project",
+    toc: "Contents",
+    related: "Read next",
+    writtenBy: "Written by",
+    authorNote: "I build web and AI products end to end, from architecture to production.",
+    contact: "Get in touch",
+    allPosts: "All articles",
+  },
 };
 
 // ============================================================================

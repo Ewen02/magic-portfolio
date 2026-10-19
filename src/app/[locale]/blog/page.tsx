@@ -1,7 +1,8 @@
 import { setRequestLocale } from "next-intl/server";
 import { Column, Heading } from "@/once-ui/components";
 import { Mailchimp } from "@/components";
-import { Posts } from "@/components/blog/Posts";
+import { BlogIndex } from "@/components/blog/BlogIndex";
+import { getPostSummaries } from "@/components/blog/data";
 import { baseURL } from "@/app/resources";
 import { getContent, type Locale } from "@/app/resources/getContent";
 
@@ -56,7 +57,7 @@ export default async function Blog({ params: { locale } }: LocaleParam) {
   const { blog, person, newsletter } = getContent(locale);
 
   return (
-    <Column maxWidth="s">
+    <Column maxWidth="m">
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -81,13 +82,13 @@ export default async function Blog({ params: { locale } }: LocaleParam) {
           }),
         }}
       />
-      <Heading as="h1" marginBottom="l" variant="display-strong-s">
-        {blog.title}
-      </Heading>
-      <Column fillWidth flex={1}>
-        <Posts range={[1, 3]} thumbnail locale={locale} />
-        <Posts range={[4]} columns="2" locale={locale} />
-      </Column>
+      <BlogIndex
+        title={blog.title}
+        intro={blog.intro}
+        posts={getPostSummaries(locale)}
+        labels={blog.labels}
+        locale={locale}
+      />
       {newsletter.display && <Mailchimp newsletter={newsletter} />}
     </Column>
   );
