@@ -58,7 +58,25 @@ J'ai fait de **JSON Schema la source unique des types d'API** : 149 schémas, g�
 
 ### Une API hexagonale
 
-J'ai structuré l'API NestJS en **monolithe modulaire hexagonal** (34 modules) : le domaine et les use-cases ne dépendent d'aucune technologie, et les données partagées de la plateforme Favikon (MongoDB, Elasticsearch) ne sont accessibles que depuis la couche infrastructure. Les mêmes use-cases servent l'app, le web et les outils de l'agent IA.
+J'ai posé dès le premier commit une API NestJS en **monolithe modulaire hexagonal** : 34 modules, tous découpés de la même façon.
+
+```
+modules/<module>/
+├── domain/          # entités et value objects, sans framework
+├── application/
+│   ├── ports/       # interfaces vers l'extérieur
+│   └── use-cases/   # logique applicative, ne connaît que les ports
+├── infrastructure/  # adapters : données, recherche, paiement, LLM
+└── presentation/    # controllers REST et DTO
+```
+
+- **Les dépendances pointent vers le domaine.** Le domaine n'importe ni NestJS, ni l'ORM, ni le moteur de recherche. Les use-cases ne connaissent que des ports, et NestJS ne leur sert qu'à l'injection de dépendances.
+- **Tout ce qui est externe est un adapter** : base de données, moteur de recherche, App Store, analytics, notifications et modèle de langage. Changer de fournisseur revient à écrire un nouvel adapter, sans toucher aux use-cases.
+- **Deux adapters d'entrée, une seule logique.** Les controllers REST de l'app et le serveur MCP de l'agent IA appellent les mêmes use-cases : l'agent réutilise la logique métier au lieu de la dupliquer.
+- **Testable sans infrastructure.** 227 des 234 fichiers de tests de use-cases tournent sur des fakes en mémoire des ports (188 fakes, modèle de langage compris), sans base de données ni réseau.
+- **Les données partagées de Favikon** ne sont accessibles que depuis la couche infrastructure, une règle posée dès le premier commit et documentée dans le guide de l'API.
+
+C'est aussi le sujet de la première machine de [Nightprint](/work/nightprint), mon side-project qui dessine l'architecture hexagonale en machine 3D.
 
 ### Le serveur garde la main
 

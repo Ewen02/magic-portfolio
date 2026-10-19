@@ -188,8 +188,9 @@ const about = {
         achievements: [
           <>
             <strong>Tech lead of Krown</strong>, the B2C product: a <strong>native iOS app (SwiftUI)</strong> for content
-            creators, from an empty repo to the <strong>App Store</strong> in five and a half months. Monorepo architecture
-            (SwiftUI, NestJS, Next.js, Kotlin) laid down from the first commit, and technical leadership of a team of 4 developers.
+            creators, from an empty repo to the <strong>App Store</strong> in five and a half months. Architecture laid down from
+            the first commit: monorepo (SwiftUI, NestJS, Next.js, Kotlin) and a <strong>hexagonal NestJS API</strong> (ports and
+            adapters, use-cases tested on in-memory fakes), then technical leadership of a team of 4 developers.
           </>,
           <>
             <strong>Engineering framework:</strong> 13 architecture guides, generated shared contracts (JSON Schema to Swift, TypeScript and Kotlin),

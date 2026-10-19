@@ -58,7 +58,25 @@ I made **JSON Schema the single source of API types**: 149 schemas, generated in
 
 ### A hexagonal API
 
-I structured the NestJS API as a **hexagonal modular monolith** (34 modules): the domain and the use-cases depend on no technology, and the shared data of the Favikon platform (MongoDB, Elasticsearch) can only be reached from the infrastructure layer. The same use-cases serve the app, the web and the AI agent's tools.
+From the first commit, I set up the NestJS API as a **hexagonal modular monolith**: 34 modules, all split the same way.
+
+```
+modules/<module>/
+├── domain/          # entities and value objects, no framework
+├── application/
+│   ├── ports/       # interfaces to the outside world
+│   └── use-cases/   # application logic, knows only the ports
+├── infrastructure/  # adapters: data, search, payments, LLM
+└── presentation/    # REST controllers and DTOs
+```
+
+- **Dependencies point to the domain.** The domain imports neither NestJS, nor the ORM, nor the search engine. Use-cases only know ports, and NestJS only provides their dependency injection.
+- **Everything external is an adapter**: database, search engine, App Store, analytics, notifications and the language model. Switching provider means writing a new adapter, without touching the use-cases.
+- **Two driving adapters, one logic.** The app's REST controllers and the AI agent's MCP server call the same use-cases: the agent reuses the business logic instead of duplicating it.
+- **Testable without infrastructure.** 227 of the 234 use-case test files run on in-memory fakes of the ports (188 fakes, the language model included), with no database and no network.
+- **Favikon's shared data** can only be reached from the infrastructure layer, a rule set from the first commit and documented in the API guide.
+
+It is also the subject of the first machine of [Nightprint](/work/nightprint), my side project that draws hexagonal architecture as a 3D machine.
 
 ### The server stays in charge
 

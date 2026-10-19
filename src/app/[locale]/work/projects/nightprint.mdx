@@ -66,7 +66,7 @@ nightprint/
 
 ### Le site applique ce qu'il explique
 
-Le moteur (`engine`) est le cœur hexagonal : il ne dépend que de zod, sans React, ni three, ni DOM. Les frontières sont imposées par les `package.json` et par un **test d'architecture** lancé à chaque `pnpm check`. Clin d'œil : PRJ-001 est Nightprint dessiné par son propre importeur, et ses « et si » s'appellent « Importer la scène dans le moteur » et « Importer le moteur dans le kit UI ».
+Le moteur (`engine`) est le cœur hexagonal : il ne dépend que de zod, sans React, ni three, ni DOM. Les frontières sont imposées par les `package.json` et par un **test d'architecture** lancé à chaque `pnpm check`. Clin d'œil : PRJ-001 est Nightprint dessiné par son propre importeur, et ses « et si » s'appellent « Importer la scène dans le moteur » et « Importer le moteur dans le kit UI ». J'applique la même architecture en production sur l'API de [Krown](/work/krown).
 
 ### Une machine est une donnée
 
