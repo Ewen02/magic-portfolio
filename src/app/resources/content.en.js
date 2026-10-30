@@ -83,6 +83,11 @@ const social = [
     link: "https://www.malt.fr/profile/ewenlequere",
   },
   {
+    name: "Freelance studio",
+    icon: "globe",
+    link: "https://studio.ewenlq.fr/en",
+  },
+  {
     name: "Email",
     icon: "email",
     link: "mailto:ewen.le-quere@epitech.eu",
