@@ -110,7 +110,7 @@ const home = {
   headline: <>Ewen Le Quéré, Lead Full Stack & AI Developer</>,
   subline: (
     <>
-      I'm Ewen, an Epitech graduate with 3 years of experience. I was the tech lead of Krown, an iOS app live on
+      I'm Ewen, an Epitech graduate with 3 years of experience. I was the tech lead of Krown, an iOS app approved by
       the App Store, and I build AI products in production, from architecture to deployment.
       <br />Currently a full-time developer at Favikon, <strong>open to freelance projects.</strong>
     </>
@@ -125,7 +125,7 @@ const about = {
   label: "About",
   title: "About",
   seoTitle: "About: lead full stack & AI developer",
-  description: `${person.name}, ${person.role} based in Paris. Tech lead of an iOS app live on the App Store, 3 years of experience in SaaS and applied AI.`,
+  description: `${person.name}, ${person.role} based in Paris. Tech lead of an iOS app approved by the App Store, 3 years of experience in SaaS and applied AI.`,
 
   tableOfContent: {
     display: true,
@@ -156,7 +156,7 @@ const about = {
         </p>
         <p>
           At Favikon, I was the <strong>tech lead of Krown</strong>, the B2C product: a native iOS app taken from an empty repo
-          to the <strong>App Store</strong> in five and a half months, with a NestJS API, a Next.js web app and an AI coach
+          to <strong>App Store</strong> approval in five and a half months, with a NestJS API, a Next.js web app and an AI coach
           powered by an MCP server.
         </p>
         <p>
@@ -189,7 +189,7 @@ const about = {
         achievements: [
           <>
             <strong>Tech lead of Krown</strong>, the B2C product: a <strong>native iOS app (SwiftUI)</strong> for content
-            creators, from an empty repo to the <strong>App Store</strong> in five and a half months. Architecture laid down from
+            creators, from an empty repo to <strong>App Store</strong> approval in five and a half months. Architecture laid down from
             the first commit: monorepo (SwiftUI, NestJS, Next.js, Kotlin) and a <strong>hexagonal NestJS API</strong> (ports and
             adapters, use-cases tested on in-memory fakes), then technical leadership of a team of 4 developers.
           </>,
@@ -320,7 +320,7 @@ const about = {
       {
         question: "Have you led a project as a tech lead?",
         answer:
-          "Yes. At Favikon, I was the tech lead of Krown, the B2C product, from an empty repo to the App Store: monorepo architecture, coding standards, release process, CI, Apple submission and technical leadership of the other developers on the project.",
+          "Yes. At Favikon, I was the tech lead of Krown, the B2C product, from an empty repo to App Store approval: monorepo architecture, coding standards, release process, CI, Apple submission and technical leadership of the other developers on the project.",
       },
       {
         question: "Do you have experience with AI and LLMs?",

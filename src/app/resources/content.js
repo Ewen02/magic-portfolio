@@ -112,7 +112,7 @@ const home = {
   subline: (
     <>
       Je suis Ewen, diplômé d'Epitech, avec 3 ans d'expérience. J'ai porté le lead technique de Krown,
-      une app iOS publiée sur l'App Store, et je conçois des produits IA en production, de l'architecture au déploiement.
+      une app iOS validée par l'App Store, et je conçois des produits IA en production, de l'architecture au déploiement.
       <br />Actuellement en CDI chez Favikon, <strong>ouvert aux missions freelance.</strong>
     </>
   ),
@@ -126,7 +126,7 @@ const about = {
   label: "About",
   title: "À propos",
   seoTitle: "À propos : lead développeur full stack & IA",
-  description: `${person.name}, ${person.role} basé à Paris. Lead technique d'une app iOS publiée sur l'App Store, 3 ans d'expérience en SaaS et IA appliquée.`,
+  description: `${person.name}, ${person.role} basé à Paris. Lead technique d'une app iOS validée par l'App Store, 3 ans d'expérience en SaaS et IA appliquée.`,
 
   tableOfContent: {
     display: true,
@@ -157,7 +157,7 @@ const about = {
         </p>
         <p>
           Chez Favikon, j'ai pris le <strong>lead technique de Krown</strong>, le produit B2C : une app iOS native partie d'un
-          repo vide et publiée sur l'<strong>App Store</strong> en cinq mois et demi, avec une API NestJS, un web Next.js et un
+          repo vide et validée par l'<strong>App Store</strong> en cinq mois et demi, avec une API NestJS, un web Next.js et un
           coach IA outillé par un serveur MCP.
         </p>
         <p>
@@ -190,7 +190,7 @@ const about = {
         achievements: [
           <>
             <strong>Lead technique de Krown</strong>, le produit B2C : app <strong>iOS native (SwiftUI)</strong> pour créateurs
-            de contenu, d'un repo vide à l'<strong>App Store</strong> en 5 mois et demi. Architecture posée dès le premier commit :
+            de contenu, d'un repo vide à la validation par l'<strong>App Store</strong> en 5 mois et demi. Architecture posée dès le premier commit :
             monorepo (SwiftUI, NestJS, Next.js, Kotlin) et <strong>API NestJS hexagonale</strong> (ports et adapters,
             use-cases testés sur des fakes en mémoire), puis pilotage technique d'une équipe de 4 développeurs.
           </>,
@@ -321,7 +321,7 @@ const about = {
       {
         question: "As-tu déjà mené un projet en tant que lead ?",
         answer:
-          "Oui. Chez Favikon, j'ai pris le lead technique de Krown, le produit B2C, d'un repo vide à l'App Store : architecture du monorepo, standards de code, process de release, CI, soumission Apple et pilotage technique des autres développeurs du projet.",
+          "Oui. Chez Favikon, j'ai pris le lead technique de Krown, le produit B2C, d'un repo vide à la validation par l'App Store : architecture du monorepo, standards de code, process de release, CI, soumission Apple et pilotage technique des autres développeurs du projet.",
       },
       {
         question: "As-tu de l'expérience en IA et LLM ?",
